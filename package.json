@@ -1,0 +1,41 @@
+{
+  "name": "boilerplate",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start --port 4000"
+  },
+  "dependencies": {
+    "@react-google-maps/api": "^2.1.1",
+    "@reduxjs/toolkit": "^1.5.0",
+    "@stripe/react-stripe-js": "^1.4.0",
+    "@stripe/stripe-js": "^1.13.1",
+    "aws-sdk": "^2.1098.0",
+    "axios": "^0.21.1",
+    "babel-plugin-styled-components": "^1.12.0",
+    "crypto-js": "^4.0.0",
+    "icheck": "^1.0.2",
+    "js-cookie": "^2.2.1",
+    "moment": "^2.29.1",
+    "next": "10.0.5",
+    "next-auth": "^3.4.1",
+    "next-redux-wrapper": "^6.0.2",
+    "react": "17.0.1",
+    "react-bootstrap": "^2.2.0",
+    "react-dom": "17.0.1",
+    "react-hook-form": "^6.14.2",
+    "react-icheck": "^0.3.8",
+    "react-loader-spinner": "^4.0.0",
+    "react-redux": "^7.2.2",
+    "react-responsive-modal": "^6.0.1",
+    "react-select": "^4.1.0",
+    "react-styled-flexboxgrid": "^3.2.1",
+    "react-toastify": "^7.0.3",
+    "redux-persist": "^6.0.0",
+    "simple-react-lightbox": "^3.6.4",
+    "styled-components": "^5.2.1",
+    "svg-inline-react": "^3.2.1"
+  }
+}
