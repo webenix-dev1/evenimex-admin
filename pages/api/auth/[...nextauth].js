@@ -2,7 +2,7 @@ import axios from "axios";
 import NextAuth from "next-auth";
 import Providers from "next-auth/providers";
 import apiRouter from "../../../utils/apiRouter";
-import { axiosPost } from "../../../utils/axois";
+import { axiosPost } from "../../../utils/axiosHelper";
 import router from "../../../utils/router";
 
 const options = {

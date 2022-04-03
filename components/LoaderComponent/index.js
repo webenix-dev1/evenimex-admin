@@ -33,8 +33,8 @@ class LoaderComponent extends React.PureComponent {
         >
           <Loader
             className={"cos_circleView"}
-            type="Rings"
-            color="#00BFFF"
+            type="BallTriangle"
+            color="#1AB394"
             height={80}
             width={80}
             visible={isLoading}

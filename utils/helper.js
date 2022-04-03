@@ -19,9 +19,9 @@ export const decodeData = (token, key) => {
 
 export const getUserData = () => {
   if (typeof window !== "undefined") {
-    const userDataToken = localStorage.getItem(localStorageKeys.userToken);
+    const userDataToken = localStorage.getItem(localStorageKeys.userData);
     if (userDataToken) {
-      const userData = decodeData(userDataToken, secureKeys.userToken);
+      const userData = decodeData(userDataToken, secureKeys.userData);
       return userData;
     }
   }

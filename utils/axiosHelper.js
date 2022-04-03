@@ -21,7 +21,7 @@ export const axiosPost = async (
 ) => {
   let response = {};
   try {
-    const localToken = getDecodedData(localStorageKeys.token, secureKeys.userToken) || token || "";
+    const localToken = getUserToken() || token || "";
     const result = await axiosApi.post(url, data, {
       headers: {
         Authorization: `Bearer ${localToken}`,
@@ -49,9 +49,7 @@ export const axiosPost = async (
 
 export const axiosGet = async (url, token = null) => {
   let response = {};
-  const localToken =
-    getDecodedData(localStorageKeys.token, secureKeys.userToken) || token || "";
-  //   let localToken = getUserToken();
+  const localToken = getUserToken() || token || "";
   console.log("TOKEN ::", localToken);
   try {
     const result = await axiosApi.get(url, {
