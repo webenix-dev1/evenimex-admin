@@ -26,9 +26,9 @@ const store = () => {
   });
 
   const persistConfig = {
-    key: "meement",
+    key: "evenimex",
     storage,
-    blacklist: ["profile"],
+    blacklist: [],
   };
 
   const persistedReducer = persistReducer(persistConfig, combinedReducer);

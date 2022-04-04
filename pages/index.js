@@ -10,12 +10,13 @@ const Home = () => {
 
   // State
 
-  // useEffect(() => {
-  //   const { isLogin, redirect } = checkLogin();
-  //   if (!isLogin) {
-  //     return Router.push(redirect);
-  //   }
-  // }, []);
+  // Effects
+  useEffect(() => {
+    const { isLogin, redirect } = checkLogin();
+    if (!isLogin) {
+      return Router.push(redirect);
+    }
+  }, []);
 
   // Methods
 

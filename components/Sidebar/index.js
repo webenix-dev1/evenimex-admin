@@ -1,10 +1,24 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
 import React from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { profileSelector, removeProfileData } from "../../redux/profileSlice";
+import { removeTokenFromLocal } from "../../utils/helper";
 import router from "../../utils/router";
 
 const Sidebar = () => {
   const Router = useRouter();
+  const { userData } = useSelector(profileSelector);
+  console.log("userData ::", userData);
+  const dispatch = useDispatch();
+
+  // Method
+  const logout = () => {
+    dispatch(removeProfileData);
+    removeTokenFromLocal();
+    Router.push(router.SIGNIN);
+  };
+
   return (
     <nav className="navbar-default navbar-static-side" role="navigation">
       <div className="sidebar-collapse">
@@ -24,7 +38,9 @@ const Sidebar = () => {
                   {" "}
                   <span className="block m-t-xs">
                     {" "}
-                    <strong className="font-bold">David Williams</strong>
+                    <strong className="font-bold">
+                      {userData?.user?.fname} {userData?.user?.lname}
+                    </strong>
                   </span>{" "}
                   <span className="text-muted text-xs block">
                     Art Director <b className="caret"></b>
@@ -42,8 +58,8 @@ const Sidebar = () => {
                   <a href="mailbox.html">Mailbox</a>
                 </li>
                 <li className="divider"></li>
-                <li>
-                  <a href="login.html">Logout</a>
+                <li onClick={logout}>
+                  <a href="#">Logout</a>
                 </li>
               </ul>
             </div>
@@ -75,34 +91,55 @@ const Sidebar = () => {
             </a>
             <ul className="nav nav-second-level">
               <li>
-                <a href="#">Venue Beverage</a>
+                <Link href={router.VENUE_BEVERAGE}>
+                  <a href="#">Venue Beverage</a>
+                </Link>
               </li>
               <li>
-                <a href="#">Venue Disabled Facility</a>
+                <Link href={router.VENUE_DISABLED}>
+                  <a href="#">Venue Disabled Facility</a>
+                </Link>
               </li>
               <li>
-                <a href="#">Venue Equipment</a>
+                <Link href={router.VENUE_EQUIPMENT}>
+                  <a href="#">Venue Equipment</a>
+                </Link>
               </li>
               <li>
-                <a href="#">Venue Events</a>
+                <Link href={router.VENUE_EVENT}>
+                  <a href="#">Venue Events</a>
+                </Link>
               </li>
               <li>
-                <a href="#">Venue Facility</a>
+                <Link href={router.VENUE_FACILITY}>
+                  <a href="#">Venue Facility</a>
+                </Link>
               </li>
               <li>
-                <a href="#">Venue Location</a>
+                <Link href={router.VENUE_LOCATION}>
+                  <a href="#">Venue Location</a>
+                </Link>
               </li>
               <li>
-                <a href="#">Venue Location City</a>
+                <Link href={router.VENUE_LOCATION_CITY}>
+                  <a href="#">Venue Location City</a>
+                </Link>
+              </li>
+
+              <li>
+                <Link href={router.VENUE_LOCATION_TYPE}>
+                  <a href="#">Venue Location Type</a>
+                </Link>
               </li>
               <li>
-                <a href="#">Venue Location Type</a>
+                <Link href={router.VENUE_MENU}>
+                  <a href="#">Venue Menu</a>
+                </Link>
               </li>
               <li>
-                <a href="#">Venue Menu</a>
-              </li>
-              <li>
-                <a href="#">Venue Services</a>
+                <Link href={router.VENUE_SERVICE}>
+                  <a href="#">Venue Services</a>
+                </Link>
               </li>
             </ul>
           </li>

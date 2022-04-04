@@ -49,6 +49,7 @@ export const getDecodedData = (localKey, secureKey) => {
 
 export const checkLogin = () => {
   const user = getUserData();
+  console.log("GT USER", user);
   const userDetails = {};
   if (user) {
     userDetails.isLogin = true;
@@ -61,11 +62,12 @@ export const checkLogin = () => {
     }
   } else {
     userDetails.isLogin = false;
-    userDetails.redirect = "/register";
+    userDetails.redirect = "/login";
   }
   return userDetails;
 };
 
 export const removeTokenFromLocal = () => {
   localStorage.removeItem(localStorageKeys.userToken);
+  localStorage.removeItem(localStorageKeys.userData);
 };
