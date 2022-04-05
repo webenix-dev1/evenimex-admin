@@ -13,7 +13,7 @@ const router = {
   HERO_BANNER: "/heroBanner",
   VENUE: "/venue",
   VENUE_BEVERAGE: "/venue/beverage",
-  VENUE_DISABLED: "/venue/disabled",
+  VENUE_DISABLED: "/venue/disableFacility",
   VENUE_EQUIPMENT: "/venue/equipment",
   VENUE_EVENT: "/venue/event",
   VENUE_FACILITY: "/venue/facility",

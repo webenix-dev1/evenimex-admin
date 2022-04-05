@@ -7,11 +7,11 @@ import Sidebar from "../../../components/Sidebar";
 import apiRouter from "../../../utils/apiRouter";
 import { axiosGet, axiosPost } from "../../../utils/axiosHelper";
 
-const VenueCity = () => {
+const VenueEvent = () => {
   // Const
   const { register, setValue, handleSubmit, watch, errors, reset } = useForm();
   // State
-  const [heroSliderList, setHeroSliderList] = useState([]);
+  const [venueEntityList, setVenueEntityList] = useState([]);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [isEditId, setIsEditId] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
@@ -25,9 +25,9 @@ const VenueCity = () => {
   const fetchVenueEntityList = async () => {
     try {
       setIsLoading(true);
-      const result = await axiosGet(apiRouter.VENUE_CITY_LIST);
+      const result = await axiosGet(apiRouter.VENUE_EVENTS_LIST);
       if (result.status) {
-        setHeroSliderList(result?.data?.data);
+        setVenueEntityList(result?.data?.data);
       }
     } catch (error) {
     } finally {
@@ -37,6 +37,7 @@ const VenueCity = () => {
   const handleFormToggle = (val) => {
     if (val === false) {
       reset();
+      setIsEditId(false);
     }
     setIsFormOpen(val);
   };
@@ -53,23 +54,23 @@ const VenueCity = () => {
   };
 
   const handleFormSubmit = async (val) => {
-    const { name, isActive, image } = val;
+    const { name, isActive } = val;
     const insertData = {
       name,
       isActive,
-      image: "/images/home-slide-01.jpg",
     };
-
+    console.log("insertData ::", insertData, isActive);
     if (isEditId) {
       insertData.id = isEditId;
     }
 
     try {
       setIsLoading(true);
-      const result = await axiosPost(apiRouter.ADD_VENUE_CITY, insertData);
+      const result = await axiosPost(apiRouter.ADD_VENUE_EVENTS, insertData);
       if (result.status) {
-        fetchVenueEntityList();
+        setIsEditId("");
         handleFormToggle(false);
+        fetchVenueEntityList();
       }
     } catch (error) {
       console.log("Error ::", error);
@@ -84,7 +85,7 @@ const VenueCity = () => {
     try {
       setIsLoading(true);
 
-      const result = await axiosGet(apiRouter.REMOVE_VENUE_CITY + "/" + id);
+      const result = await axiosGet(apiRouter.REMOVE_VENUE_EVENTS + "/" + id);
       if (result.status) {
         fetchVenueEntityList();
         handleFormToggle(false);
@@ -95,6 +96,8 @@ const VenueCity = () => {
       setIsLoading(false);
     }
   };
+
+  // Render
 
   return (
     <>
@@ -114,7 +117,7 @@ const VenueCity = () => {
                   <div className="ibox ">
                     <div className="ibox-title">
                       <h5>
-                        Venue City <small>Create</small>
+                        Venue Event <small>Create</small>
                       </h5>
                     </div>
                     <div className="ibox-content">
@@ -123,40 +126,21 @@ const VenueCity = () => {
                           <form onSubmit={handleSubmit(handleFormSubmit)}>
                             <div className="form-group row">
                               <label className="col-sm-2 col-form-label">
-                                City
+                                Event
                               </label>
                               <div className="col-sm-10">
                                 <input
                                   type="text"
                                   className="form-control"
                                   name="name"
-                                  placeholder="Enter City"
+                                  placeholder="Enter Event"
                                   ref={register({
                                     required: false,
                                   })}
                                 />
                               </div>
                             </div>
-                            <div className="form-group row">
-                              <label className="col-sm-2 col-form-label">
-                                Image
-                              </label>
-                              <div className="col-sm-10">
-                                <input
-                                  type="file"
-                                  className="form-control"
-                                  name="image"
-                                  ref={register({
-                                    required: "Image is required",
-                                  })}
-                                />
-                                {errors?.image && (
-                                  <p className="m-t text-danger">
-                                    {errors?.image?.message}
-                                  </p>
-                                )}
-                              </div>
-                            </div>
+
                             <div>
                               <label>
                                 {" "}
@@ -234,8 +218,7 @@ const VenueCity = () => {
                         <thead>
                           <tr>
                             {/* <!-- <th>Id</th> --> */}
-                            <th>Image</th>
-                            <th>City</th>
+                            <th>Event</th>
                             <th>Status</th>
                             <th>Action</th>
                           </tr>
@@ -243,17 +226,15 @@ const VenueCity = () => {
                         <tfoot>
                           <tr>
                             {/* <!-- <th>Id</th> --> */}
-                            <th>Image</th>
-                            <th>City</th>
+                            <th>Event</th>
                             <th>Status</th>
                             <th>Action</th>
                           </tr>
                         </tfoot>
                         <tbody>
-                          {heroSliderList?.map((item, index) => {
+                          {venueEntityList?.map((item, index) => {
                             return (
                               <tr className="gradeX" key={index}>
-                                <td>{item.image}</td>
                                 <td>{item.name}</td>
                                 <td>{item.isActive ? "active" : "disabled"}</td>
                                 <td className="center">
@@ -268,6 +249,8 @@ const VenueCity = () => {
                                     href="javascript:void(0)"
                                     id="data.id"
                                     className="admin_remove btn btn-danger btn-sm"
+                                    data-toggle="modal"
+                                    data-target="#exampleModal"
                                     onClick={() => handleItemDelete(item)}
                                   >
                                     <i className="fa fa-trash"></i>
@@ -284,7 +267,6 @@ const VenueCity = () => {
               </div>
             </div>
           </div>
-
           {/* End Hero Table */}
         </div>
         {isLoading && <LoaderComponent isLoading={isLoading} />}
@@ -293,4 +275,4 @@ const VenueCity = () => {
   );
 };
 
-export default VenueCity;
+export default VenueEvent;
