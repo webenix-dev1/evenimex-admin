@@ -73,6 +73,14 @@ const Sidebar = () => {
               </a>
             </Link>
           </li>
+          <li className={Router.pathname === router.USERS ? "active" : ""}>
+            <Link href={router.USERS}>
+              <a href={router.USERS}>
+                <i className="fa fa-diamond"></i>{" "}
+                <span className="nav-label">Users</span>
+              </a>
+            </Link>
+          </li>
           <li
             className={Router.pathname === router.HERO_BANNER ? "active" : ""}
           >
@@ -146,15 +154,19 @@ const Sidebar = () => {
           <li>
             <a href="index.html">
               <i className="fa fa-th-large"></i>{" "}
-              <span className="nav-label">Vender Details</span>{" "}
+              <span className="nav-label">Venue Details</span>{" "}
               <span className="fa arrow"></span>
             </a>
             <ul className="nav nav-second-level">
               <li>
-                <a href="#">Vender List</a>
+                <Link href={router.VENUE_DETAIL}>
+                  <a href="#">Venue</a>
+                </Link>
               </li>
               <li>
-                <a href="#">Venue Create</a>
+                <Link href={router.VENUE_PLACE}>
+                  <a href="#">Venue Places</a>
+                </Link>
               </li>
             </ul>
           </li>

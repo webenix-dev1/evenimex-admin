@@ -3,8 +3,11 @@ const prefixRouteV1 = (route) => {
 };
 
 const apiRouter = {
-  SIGNUP: prefixRouteV1("user/auth/register-user"),
+  SIGNUP: prefixRouteV1("signup"),
   LOGIN: prefixRouteV1("adminSignIn"),
+  // User
+  VENDERS: prefixRouteV1("getAllVender"),
+  USER_UPDATE: prefixRouteV1("adminUpdateUser"),
   // Home Slider
   HERO_SLIDER_LIST: prefixRouteV1("heroSliderList"),
   ADD_UPDATE_HERO_SLIDER_LIST: prefixRouteV1("addHeroSlider"),
@@ -49,6 +52,9 @@ const apiRouter = {
   VENUE_SERVICE_LIST: prefixRouteV1("getVenueServiceList"),
   ADD_VENUE_SERVICE: prefixRouteV1("addVenueService"),
   REMOVE_VENUE_SERVICE: prefixRouteV1("removeVenueService"),
+
+  // Venue DEtails
+  VENUE_LIST: prefixRouteV1("venueList"),
 
   //third party api to get city from lat lng
   GETCITYAPI: "https://nominatim.openstreetmap.org/reverse",
