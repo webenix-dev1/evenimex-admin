@@ -151,26 +151,15 @@ const Sidebar = () => {
               </li>
             </ul>
           </li>
-          <li>
+          <li
+            className={Router.pathname === router.VENUE_DETAIL ? "active" : ""}
+          >
             <Link href={router.VENUE_DETAIL}>
               <a href={router.VENUE_DETAIL}>
-                <i className="fa fa-th-large"></i>{" "}
-                <span className="nav-label">Venue Details</span>{" "}
-                <span className="fa arrow"></span>
+                <i className="fa fa-diamond"></i>{" "}
+                <span className="nav-label">Venue Detail</span>
               </a>
             </Link>
-            <ul className="nav nav-second-level">
-              <li>
-                <Link href={router.VENUE_DETAIL}>
-                  <a href="#">Venue</a>
-                </Link>
-              </li>
-              <li>
-                <Link href={router.VENUE_PLACE}>
-                  <a href="#">Venue Places</a>
-                </Link>
-              </li>
-            </ul>
           </li>
         </ul>
       </div>
