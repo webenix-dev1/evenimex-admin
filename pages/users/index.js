@@ -327,7 +327,7 @@ const Users = () => {
                                   {item.fname} {item.lname}
                                 </td>
                                 <td>{item.email}</td>
-                                {isAdmin ? (
+                                {item?.isAdmin ? (
                                   <td>Admin</td>
                                 ) : (
                                   <td>{item.isClient ? "Client" : "User"}</td>
