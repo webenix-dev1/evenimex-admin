@@ -152,11 +152,13 @@ const Sidebar = () => {
             </ul>
           </li>
           <li>
-            <a href="index.html">
-              <i className="fa fa-th-large"></i>{" "}
-              <span className="nav-label">Venue Details</span>{" "}
-              <span className="fa arrow"></span>
-            </a>
+            <Link href={router.VENUE_DETAIL}>
+              <a href={router.VENUE_DETAIL}>
+                <i className="fa fa-th-large"></i>{" "}
+                <span className="nav-label">Venue Details</span>{" "}
+                <span className="fa arrow"></span>
+              </a>
+            </Link>
             <ul className="nav nav-second-level">
               <li>
                 <Link href={router.VENUE_DETAIL}>

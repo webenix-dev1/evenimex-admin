@@ -306,7 +306,7 @@ const Users = () => {
                             {/* <!-- <th>Id</th> --> */}
                             <th>Name</th>
                             <th>Email</th>
-                            {/* <th>Status</th> */}
+                            <th>UserType</th>
                             <th>Action</th>
                           </tr>
                         </thead>
@@ -315,7 +315,7 @@ const Users = () => {
                             {/* <!-- <th>Id</th> --> */}
                             <th>Name</th>
                             <th>Email</th>
-                            {/* <th>Status</th> */}
+                            <th>UserType</th>
                             <th>Action</th>
                           </tr>
                         </tfoot>
@@ -327,7 +327,11 @@ const Users = () => {
                                   {item.fname} {item.lname}
                                 </td>
                                 <td>{item.email}</td>
-                                {/* <td>{item.isClient ? "active" : "disabled"}</td> */}
+                                {isAdmin ? (
+                                  <td>Admin</td>
+                                ) : (
+                                  <td>{item.isClient ? "Client" : "User"}</td>
+                                )}
                                 <td className="center">
                                   <a
                                     href="javascript:void(0)"
