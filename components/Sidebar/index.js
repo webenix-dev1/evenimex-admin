@@ -81,6 +81,14 @@ const Sidebar = () => {
               </a>
             </Link>
           </li>
+          <li className={Router.pathname === router.VENDERS ? "active" : ""}>
+            <Link href={router.VENDERS}>
+              <a href={router.VENDERS}>
+                <i className="fa fa-diamond"></i>{" "}
+                <span className="nav-label">Venders</span>
+              </a>
+            </Link>
+          </li>
           <li
             className={Router.pathname === router.HERO_BANNER ? "active" : ""}
           >
@@ -88,6 +96,22 @@ const Sidebar = () => {
               <a href={router.HERO_BANNER}>
                 <i className="fa fa-diamond"></i>{" "}
                 <span className="nav-label">Home Slider</span>
+              </a>
+            </Link>
+          </li>
+          <li className={Router.pathname === router.VENUE_LIST ? "active" : ""}>
+            <Link href={router.VENUE_LIST}>
+              <a href={router.VENUE_LIST}>
+                <i className="fa fa-diamond"></i>{" "}
+                <span className="nav-label">Venue List</span>
+              </a>
+            </Link>
+          </li>
+          <li className={Router.pathname === router.CONTACTUS ? "active" : ""}>
+            <Link href={router.CONTACTUS}>
+              <a href={router.CONTACTUS}>
+                <i className="fa fa-diamond"></i>{" "}
+                <span className="nav-label">Contact List</span>
               </a>
             </Link>
           </li>
@@ -150,16 +174,6 @@ const Sidebar = () => {
                 </Link>
               </li>
             </ul>
-          </li>
-          <li
-            className={Router.pathname === router.VENUE_DETAIL ? "active" : ""}
-          >
-            <Link href={router.VENUE_DETAIL}>
-              <a href={router.VENUE_DETAIL}>
-                <i className="fa fa-diamond"></i>{" "}
-                <span className="nav-label">Venue Detail</span>
-              </a>
-            </Link>
           </li>
         </ul>
       </div>

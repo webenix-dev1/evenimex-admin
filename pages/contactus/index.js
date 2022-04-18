@@ -7,7 +7,7 @@ import Sidebar from "../../components/Sidebar";
 import apiRouter from "../../utils/apiRouter";
 import { axiosGet, axiosPost } from "../../utils/axiosHelper";
 
-const Users = () => {
+const ContactUs = () => {
   // Const
   const { register, setValue, handleSubmit, watch, errors, reset } = useForm();
   // State
@@ -25,7 +25,7 @@ const Users = () => {
   const fetchVenueEntityList = async () => {
     try {
       setIsLoading(true);
-      const result = await axiosGet(apiRouter.ALL_USERS);
+      const result = await axiosGet(apiRouter.CONTACTUS_LIST);
       console.log("result ::", result);
       if (result.status) {
         setVenueEntityList(result?.data?.data);
@@ -44,43 +44,31 @@ const Users = () => {
   };
 
   const handleFormEdit = async (data) => {
-    const { fname, lname, email, id, isActive } = data;
+    const { id, isActive, isApprove } = data;
     handleFormToggle(true);
 
     setIsEditId(id);
     setTimeout(() => {
-      setValue("fname", fname);
-      setValue("lname", lname);
-      setValue("email", email);
+      setValue("isApprove", isApprove);
       setValue("isActive", isActive);
     }, 300);
   };
 
   const handleFormSubmit = async (val) => {
     console.log("val ::", val);
-    const { fname, lname, email, password, isActive } = val;
+    const { isActive, isApprove } = val;
     const insertData = {
-      fname,
-      lname,
-      email,
       isActive,
+      isApprove,
     };
-    if (password) {
-      insertData.password = password;
-      insertData.isUser = true;
-      insertData.loginType = "email";
-    }
     if (isEditId) {
-      insertData.userId = isEditId;
+      insertData.venueId = isEditId;
     }
     console.log("insertData ::", insertData, isActive);
 
     try {
       setIsLoading(true);
-      const result = await axiosPost(
-        isEditId ? apiRouter.USER_UPDATE : apiRouter.SIGNUP,
-        insertData
-      );
+      const result = await axiosPost(apiRouter.VENUE_UPDATE, insertData);
       if (result.status) {
         setIsEditId("");
         handleFormToggle(false);
@@ -138,73 +126,21 @@ const Users = () => {
                       <div className="row">
                         <div className="col-sm-12">
                           <form onSubmit={handleSubmit(handleFormSubmit)}>
-                            <div className="form-group row">
-                              <label className="col-sm-2 col-form-label">
-                                First Name
-                              </label>
-                              <div className="col-sm-10">
+                            <div>
+                              <label>
+                                {" "}
                                 <input
-                                  type="text"
-                                  className="form-control"
-                                  name="fname"
-                                  placeholder="Enter First Name"
+                                  type="checkbox"
+                                  name="isApprove"
+                                  defaultChecked={true}
                                   ref={register({
-                                    required: false,
+                                    required: true,
                                   })}
-                                />
-                              </div>
-                            </div>
-                            <div className="form-group row">
-                              <label className="col-sm-2 col-form-label">
-                                Last Name
+                                  class="i-checks"
+                                />{" "}
+                                Approve Venue{" "}
                               </label>
-                              <div className="col-sm-10">
-                                <input
-                                  type="text"
-                                  className="form-control"
-                                  name="lname"
-                                  placeholder="Enter Last Name"
-                                  ref={register({
-                                    required: false,
-                                  })}
-                                />
-                              </div>
                             </div>
-                            <div className="form-group row">
-                              <label className="col-sm-2 col-form-label">
-                                Email
-                              </label>
-                              <div className="col-sm-10">
-                                <input
-                                  type="email"
-                                  className="form-control"
-                                  name="email"
-                                  placeholder="Enter email"
-                                  ref={register({
-                                    required: false,
-                                  })}
-                                />
-                              </div>
-                            </div>
-                            {!isEditId && (
-                              <div className="form-group row">
-                                <label className="col-sm-2 col-form-label">
-                                  Password
-                                </label>
-                                <div className="col-sm-10">
-                                  <input
-                                    type="text"
-                                    className="form-control"
-                                    name="password"
-                                    placeholder="Enter Password"
-                                    ref={register({
-                                      required: false,
-                                    })}
-                                  />
-                                </div>
-                              </div>
-                            )}
-
                             <div>
                               <label>
                                 {" "}
@@ -217,7 +153,7 @@ const Users = () => {
                                   })}
                                   class="i-checks"
                                 />{" "}
-                                Is Active{" "}
+                                Venue Is Active{" "}
                               </label>
                             </div>
 
@@ -256,7 +192,7 @@ const Users = () => {
               <div className="col-lg-12">
                 <div className="ibox">
                   <div className="ibox-title">
-                    <h5>Admin</h5>
+                    <h5>Contact List</h5>
                     <div className="ibox-tools">
                       <a className="collapse-link">
                         <i className="fa fa-chevron-up"></i>
@@ -264,7 +200,7 @@ const Users = () => {
                       <a
                         href="javascript:void(0)"
                         onClick={() => {
-                          handleFormToggle(true);
+                          // handleFormToggle(true);
                         }}
                       >
                         <i className="fa fa-plus"></i>
@@ -281,19 +217,19 @@ const Users = () => {
                       >
                         <thead>
                           <tr>
-                            {/* <!-- <th>Id</th> --> */}
                             <th>Name</th>
+                            <th>Phone</th>
                             <th>Email</th>
-                            <th>UserType</th>
+                            <th>Message</th>
                             <th>Action</th>
                           </tr>
                         </thead>
                         <tfoot>
                           <tr>
-                            {/* <!-- <th>Id</th> --> */}
                             <th>Name</th>
+                            <th>Phone</th>
                             <th>Email</th>
-                            <th>UserType</th>
+                            <th>Message</th>
                             <th>Action</th>
                           </tr>
                         </tfoot>
@@ -304,17 +240,14 @@ const Users = () => {
                                 <td>
                                   {item.fname} {item.lname}
                                 </td>
+                                <td>{item.phone} </td>
                                 <td>{item.email}</td>
-                                {item?.isAdmin ? (
-                                  <td>Admin</td>
-                                ) : (
-                                  <td>{item.isClient ? "Client" : "User"}</td>
-                                )}
+                                <td>{item.message}</td>
                                 <td className="center">
                                   <a
                                     href="javascript:void(0)"
                                     className="btn btn-primary btn-sm"
-                                    onClick={() => handleFormEdit(item)}
+                                    // onClick={() => handleFormEdit(item)}
                                   >
                                     <i className="fa fa-edit"></i>
                                   </a>{" "}
@@ -324,7 +257,7 @@ const Users = () => {
                                     className="admin_remove btn btn-danger btn-sm"
                                     data-toggle="modal"
                                     data-target="#exampleModal"
-                                    onClick={() => handleItemDelete(item)}
+                                    // onClick={() => handleItemDelete(item)}
                                   >
                                     <i className="fa fa-trash"></i>
                                   </a>
@@ -348,4 +281,4 @@ const Users = () => {
   );
 };
 
-export default Users;
+export default ContactUs;

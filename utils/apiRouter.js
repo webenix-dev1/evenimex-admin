@@ -7,6 +7,7 @@ const apiRouter = {
   LOGIN: prefixRouteV1("adminSignIn"),
   // User
   VENDERS: prefixRouteV1("getAllVender"),
+  ALL_USERS: prefixRouteV1("getAllUser"),
   USER_UPDATE: prefixRouteV1("adminUpdateUser"),
   // Home Slider
   HERO_SLIDER_LIST: prefixRouteV1("heroSliderList"),
@@ -55,6 +56,10 @@ const apiRouter = {
 
   // Venue DEtails
   VENUE_LIST: prefixRouteV1("venueList"),
+  VENUE_UPDATE: prefixRouteV1("updateVenue"),
+
+  // Contact
+  CONTACTUS_LIST: prefixRouteV1("contactUsList"),
 
   //third party api to get city from lat lng
   GETCITYAPI: "https://nominatim.openstreetmap.org/reverse",

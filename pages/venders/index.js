@@ -7,7 +7,7 @@ import Sidebar from "../../components/Sidebar";
 import apiRouter from "../../utils/apiRouter";
 import { axiosGet, axiosPost } from "../../utils/axiosHelper";
 
-const Users = () => {
+const Venders = () => {
   // Const
   const { register, setValue, handleSubmit, watch, errors, reset } = useForm();
   // State
@@ -25,7 +25,7 @@ const Users = () => {
   const fetchVenueEntityList = async () => {
     try {
       setIsLoading(true);
-      const result = await axiosGet(apiRouter.ALL_USERS);
+      const result = await axiosGet(apiRouter.VENDERS);
       console.log("result ::", result);
       if (result.status) {
         setVenueEntityList(result?.data?.data);
@@ -67,7 +67,7 @@ const Users = () => {
     };
     if (password) {
       insertData.password = password;
-      insertData.isUser = true;
+      insertData.isClient = true;
       insertData.loginType = "email";
     }
     if (isEditId) {
@@ -256,7 +256,7 @@ const Users = () => {
               <div className="col-lg-12">
                 <div className="ibox">
                   <div className="ibox-title">
-                    <h5>Admin</h5>
+                    <h5>Venders</h5>
                     <div className="ibox-tools">
                       <a className="collapse-link">
                         <i className="fa fa-chevron-up"></i>
@@ -348,4 +348,4 @@ const Users = () => {
   );
 };
 
-export default Users;
+export default Venders;
