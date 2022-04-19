@@ -1,24 +1,25 @@
 // import { RNS3 } from 'react-native-aws3'
 import AWS from "aws-sdk";
-import { S3 } from "../Services/S3";
+import S3 from "../Services/S3";
 
 export const uploadImage = (file, folder) => {
   return new Promise((resolve) => {
-    const fileName = `${new Date().getTime().toString()}.png`;
+    const fileName = `${folder}/${new Date().getTime().toString()}_${
+      file.name
+    }`;
     AWS.config.update({
       accessKeyId: S3.accessKeyId,
       secretAccessKey: S3.secretAccessKey,
     });
     const s3 = new AWS.S3({
-      params: { Bucket: `meemint` },
-      region: "eu-south-1",
+      params: { Bucket: `evenimex` },
+      region: "eu-central-1",
     });
 
     const params = {
       // ACL: "public-read",
-      Bucket: "meemint",
-      dirName: folder,
-      Key: `${folder}/${fileName}`,
+      Bucket: "evenimex",
+      Key: fileName,
       Body: file,
       ContentType: "image/png",
     };
@@ -27,13 +28,12 @@ export const uploadImage = (file, folder) => {
       if (err) {
         // setIsLoading(false)
         console.log("ERR :: ", err);
-        resolve({ status: 401 });
+        resolve({ status: false });
       }
       if (data) {
-        console.log("data ::", data);
-        resolve({ status: 201, data: data });
+        resolve({ status: true, url: data.Location });
       } else {
-        resolve({ status: 401 });
+        resolve({ status: false });
       }
     });
   });
@@ -45,7 +45,7 @@ export const deleteImage = (key) => {
     secretAccessKey: S3.secretAccessKey,
   });
   const s3 = new AWS.S3({
-    params: { Bucket: "meemint" },
+    params: { Bucket: "" },
     region: "us-east-2",
   });
 

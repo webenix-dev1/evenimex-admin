@@ -57,6 +57,14 @@ const apiRouter = {
   // Venue DEtails
   VENUE_LIST: prefixRouteV1("venueList"),
   VENUE_UPDATE: prefixRouteV1("updateVenue"),
+  VENUE_CREATE: prefixRouteV1("addVenue"),
+  VENUE_REMOVE: prefixRouteV1("removeVenue"),
+
+  // Venue Place
+  VENUE_PLACE_CREATE: prefixRouteV1("addVenuePlace"),
+  VENUE_PLACE_UPDATE: prefixRouteV1("updateVenuePlace"),
+  VENUE_PLACE_REMOVE: prefixRouteV1("removeVenuePlace"),
+  VENUE_PLACE_LIST: prefixRouteV1("venuePlaceList"),
 
   // Contact
   CONTACTUS_LIST: prefixRouteV1("contactUsList"),

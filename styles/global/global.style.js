@@ -8563,6 +8563,66 @@ body.md-skin {
   }
 }
 
+ .fieldCombine{
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  width: 100%;
+  margin-top: 20px;
+  ${mediaQueries("md")`
+    flex-direction: column;
+  `}
+  > div {
+    width: 50%;
+    margin: 0 15px;
+    ${mediaQueries("lg")`
+      width: 100%;
+      margin: 10px 0 !important;
+    `}
+  }
+}
+.profilePicMain {
+  position: relative;
+  overflow: hidden;
+  max-width: 100%;
+  height: 184px;
+  width: 100%;
+  margin: 0px 15px !important;
+
+  background: lightgrey;
+  border-radius: 15px;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+ 
+
+  input[type="file"] {
+    font-size: 60px;
+    position: absolute;
+    left: 0;
+    top: 0;
+    opacity: 0;
+    bottom: 0;
+    overflow: hidden;
+    right: 0;
+  }
+  svg {
+    width: 40px;
+    height: 40px;
+  }
+  .fa {
+    font-size: 50px;
+  }
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 15px;
+  }
+}
+
+
 
 `;
 

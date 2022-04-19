@@ -64,3 +64,7 @@ export const imageBashUrl = "https://meemint.s3.eu-south-1.amazonaws.com/";
 export const staticImagesUrl = {
   postBgImg: "/images/postbg.png",
 };
+
+export const S3Bucket = {
+  venueImages: "venueImages",
+};

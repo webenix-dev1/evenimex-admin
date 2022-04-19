@@ -7,25 +7,14 @@ import Sidebar from "../../components/Sidebar";
 import apiRouter from "../../utils/apiRouter";
 import { axiosGet, axiosPost } from "../../utils/axiosHelper";
 import SelectBox from "../../components/SelectBox";
-import {
-  getVenueBeverageList,
-  getVenueDisabledFacilitiesList,
-  getVenueEquipmentList,
-  getVenueEventsList,
-  getVenueFacilitiesList,
-  getVenueLocationCityList,
-  getVenueLocationList,
-  getVenueLocationTypeList,
-  getVenueMenuList,
-  getVenueServiceList,
-} from "../../utils/helper";
 import { uploadImage } from "../../utils/s3";
 import { S3Bucket } from "../../utils/constant";
 import router from "../../utils/router";
-import Link from "next/link";
+import { useRouter } from "next/router";
 
-const VenueList = () => {
+const VenuePlaceList = () => {
   // Const
+  const Router = useRouter();
   const { control, register, setValue, handleSubmit, watch, errors, reset } =
     useForm();
   // State
@@ -36,17 +25,6 @@ const VenueList = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   const [errorMsg, setErrorMsg] = useState("");
-  const [venueBeverageList, setVenueBeverageList] = useState([]);
-  const [venueDisabledFacilitiesList, setVenueDisabledFacilitiesList] =
-    useState([]);
-  const [venueEquipmentList, setVenueEquipmentList] = useState([]);
-  const [venueEventsList, setVenueEventsList] = useState([]);
-  const [venueFacilitiesList, setVenueFacilitiesList] = useState([]);
-  const [venueLocationList, setVenueLocationList] = useState([]);
-  const [venueLocationCityList, setVenueLocationCityList] = useState([]);
-  const [venueLocationTypeList, setVenueLocationTypeList] = useState([]);
-  const [venueMenuList, setVenueMenuList] = useState([]);
-  const [venueServiceList, setVenueServiceList] = useState([]);
   const [isVenueId, setIsVenueId] = useState("");
   const [venueImages, setVenueImages] = useState({
     coverImage1: "",
@@ -56,13 +34,17 @@ const VenueList = () => {
     coverImage5: "",
   });
 
-  console.log("venueLocationCityList ::", venueLocationCityList);
-
   // Effects
   useEffect(() => {
-    fetchVenueEntity();
-    fetchVenueEntityList();
-    fetchVendersList();
+    const { venueId } = Router.query;
+    console.log("Venue Place Page::", venueId);
+
+    if (venueId) {
+      setIsVenueId(venueId);
+      fetchVenueEntityList(venueId);
+    } else {
+      return Router.push(router.VENUE_LIST);
+    }
   }, []);
 
   useEffect(() => {
@@ -77,76 +59,11 @@ const VenueList = () => {
   console.log("errors ::", errors);
 
   // Method
-  const optionFormatMake = (entity) => {
-    const option = [];
-    entity?.map((item) => {
-      option.push({
-        label: item?.name,
-        value: item?.name,
-      });
-    });
-    return option;
-  };
-  const fetchVendersList = async () => {
+
+  const fetchVenueEntityList = async (venueId) => {
     try {
       setIsLoading(true);
-      const result = await axiosGet(apiRouter.VENDERS);
-      console.log("result ::", result);
-      if (result.status) {
-        const option = [];
-        result?.data?.data?.map((item) => {
-          option.push({
-            label: item?.id,
-            value: item?.fname + item?.lname,
-          });
-        });
-        setVenderList(option);
-      }
-    } catch (error) {
-    } finally {
-      setIsLoading(false);
-    }
-  };
-  const fetchVenueEntity = async () => {
-    Promise.all([
-      getVenueBeverageList(),
-      getVenueDisabledFacilitiesList(),
-      getVenueEquipmentList(),
-      getVenueEventsList(),
-      getVenueFacilitiesList(),
-      getVenueLocationList(),
-      getVenueLocationCityList(),
-      getVenueLocationTypeList(),
-      getVenueMenuList(),
-      getVenueServiceList(),
-    ])
-      .then((values) => {
-        console.log("ALLL ::", values);
-
-        setVenueBeverageList(optionFormatMake(values[0]));
-        setVenueDisabledFacilitiesList(optionFormatMake(values[1]));
-        setVenueEquipmentList(optionFormatMake(values[2]));
-        setVenueEventsList(optionFormatMake(values[3]));
-        setVenueFacilitiesList(optionFormatMake(values[4]));
-        setVenueLocationList(optionFormatMake(values[5]));
-        setVenueLocationCityList(optionFormatMake(values[6]));
-        setVenueLocationTypeList(optionFormatMake(values[7]));
-        setVenueMenuList(optionFormatMake(values[8]));
-        setVenueServiceList(optionFormatMake(values[9]));
-
-        if (Router.query?.venueId)
-          setTimeout(() => {
-            fetchVenueDetails(Router.query?.venueId);
-          }, 300);
-      })
-      .catch((error) => {
-        console.error(error.message);
-      });
-  };
-  const fetchVenueEntityList = async () => {
-    try {
-      setIsLoading(true);
-      const result = await axiosGet(apiRouter.VENUE_LIST);
+      const result = await axiosGet(apiRouter.VENUE_PLACE_LIST + "/" + venueId);
       console.log("result ::", result);
       if (result.status) {
         setVenueEntityList(result?.data?.data);
@@ -166,6 +83,7 @@ const VenueList = () => {
 
   const handleFormEdit = async (data) => {
     const { id, isActive, isApprove } = data;
+    console.log("data ::", data);
     handleFormToggle(true);
 
     setIsEditId(id);
@@ -200,18 +118,8 @@ const VenueList = () => {
       });
       setValue("name", data?.name);
       setValue("discription", data?.discription);
-      setValue("address", data?.address);
-      setValue("participants", data?.participants);
-      setValue("city", data?.city);
-      setValue("location", data?.location);
-      setValue("locationType", data?.locationType);
-      setValue("beverage", data?.beverage);
-      setValue("events", data?.events);
-      setValue("equipment", data?.equipment);
-      setValue("menu", data?.menu);
-      setValue("service", data?.service);
-      setValue("disabledFacilities", data?.disabledFacilities);
-      setValue("facilities", data?.facilities);
+      setValue("price", data?.price);
+      setValue("capacity", data?.capacity);
 
       setValue("isApprove", isApprove);
       setValue("isActive", isActive);
@@ -233,26 +141,16 @@ const VenueList = () => {
   const handleFormSubmit = async (val) => {
     setErrorMsg("");
     const insertData = {
+      capacity: val.capacity,
       name: val.name,
+      price: val.price,
       discription: val.discription,
-      address: val.address,
-      participants: val.participants,
-      city: [val.city],
-      location: val.location,
-      locationType: val.locationType,
-      beverage: val.beverage,
-      events: val.events,
-      equipment: val.equipment,
-      menu: val.menu,
-      service: val.service,
-      disabledFacilities: val.disabledFacilities,
-      facilities: val.facilities,
     };
 
     if (isEditId) {
-      insertData.venueId = isEditId;
+      insertData.venuePlaceId = isEditId;
     } else {
-      insertData.userId = val.venderId;
+      insertData.venueId = isVenueId;
     }
 
     console.log("venueImages ::", venueImages);
@@ -274,14 +172,13 @@ const VenueList = () => {
     console.log("insertData ::", insertData);
     try {
       const result = await axiosPost(
-        isEditId ? apiRouter.VENUE_UPDATE : apiRouter.VENUE_CREATE,
+        isEditId ? apiRouter.VENUE_PLACE_UPDATE : apiRouter.VENUE_PLACE_CREATE,
         insertData
       );
       console.log("result ::", result);
       if (result.status) {
-        clearForm();
         handleFormToggle(false);
-        fetchVenueEntityList();
+        fetchVenueEntityList(isVenueId);
         toaster(
           "success",
           isEditId ? "Venue Successfully Updated!" : "Venue Successfully Added!"
@@ -297,15 +194,15 @@ const VenueList = () => {
   };
 
   const handleItemDelete = async (val) => {
-    const { id } = val;
+    const { id, name } = val;
 
-    const res = confirm(`Are you sure you want to remove the venue ${id}`);
+    const res = confirm(`Are you sure you want to remove the venue ${name}`);
     if (res) {
       try {
         setIsLoading(true);
-        const result = await axiosGet(apiRouter.VENUE_REMOVE + "/" + id);
+        const result = await axiosGet(apiRouter.VENUE_PLACE_REMOVE + "/" + id);
         if (result.status) {
-          fetchVenueEntityList();
+          fetchVenueEntityList(isVenueId);
           toaster("success", "Venue Delete Successfully");
         } else {
           toaster("error", "Venue not deleted");
@@ -399,138 +296,36 @@ const VenueList = () => {
                             </div>
                             <div className="form-group row">
                               <label className="col-sm-2 col-form-label">
-                                Address
+                                Price
                               </label>
                               <div className="col-sm-10">
                                 <input
                                   type="text"
                                   className="form-control"
-                                  name="address"
-                                  placeholder="Enter Address"
+                                  name="price"
+                                  placeholder="Enter Price"
                                   ref={register({
-                                    required: "Address is required",
+                                    required: "Price is required",
                                   })}
                                 />
                               </div>
                             </div>
                             <div className="form-group row">
                               <label className="col-sm-2 col-form-label">
-                                Participants
+                                Place Capacity
                               </label>
                               <div className="col-sm-10">
                                 <input
                                   type="text"
                                   className="form-control"
-                                  name="participants"
-                                  placeholder="Enter Participants"
+                                  name="capacity"
+                                  placeholder="Enter Place Capacity"
                                   ref={register({
-                                    required: "Participants is required",
+                                    required: "Place Capacity is required",
                                   })}
                                 />
                               </div>
                             </div>
-                            <div className="form-group row">
-                              <SelectBox
-                                name={"city"}
-                                placeholder={"City"}
-                                control={control}
-                                optionsList={venueLocationCityList}
-                                label="City"
-                              />
-                            </div>
-                            <div className="form-group row">
-                              <SelectBox
-                                name={"location"}
-                                placeholder={"Location"}
-                                control={control}
-                                optionsList={venueLocationList}
-                                label="Location"
-                              />
-                            </div>
-                            <div className="form-group row">
-                              <SelectBox
-                                name={"locationType"}
-                                placeholder={"Location Type"}
-                                control={control}
-                                optionsList={venueLocationTypeList}
-                                label="Location Type"
-                              />
-                            </div>
-                            <div className="form-group row">
-                              <SelectBox
-                                name={"beverage"}
-                                placeholder={"Beverage"}
-                                control={control}
-                                optionsList={venueBeverageList}
-                                label="Beverage"
-                              />
-                            </div>
-                            <div className="form-group row">
-                              <SelectBox
-                                name={"events"}
-                                placeholder={"Event"}
-                                control={control}
-                                optionsList={venueEventsList}
-                                label="Event"
-                              />
-                            </div>
-                            <div className="form-group row">
-                              <SelectBox
-                                name={"equipment"}
-                                placeholder={"Equipment"}
-                                control={control}
-                                optionsList={venueEquipmentList}
-                                label="Equipment"
-                              />
-                            </div>
-                            <div className="form-group row">
-                              <SelectBox
-                                name={"menu"}
-                                placeholder={"Menus"}
-                                control={control}
-                                optionsList={venueMenuList}
-                                label="Menus"
-                              />
-                            </div>
-                            <div className="form-group row">
-                              <SelectBox
-                                name={"service"}
-                                placeholder={"Service"}
-                                control={control}
-                                optionsList={venueServiceList}
-                                label="Service"
-                              />
-                            </div>
-                            <div className="form-group row">
-                              <SelectBox
-                                name={"disabledFacilities"}
-                                placeholder={"Disable Abilities"}
-                                control={control}
-                                optionsList={venueDisabledFacilitiesList}
-                                label="Disable Abilities"
-                              />
-                            </div>
-                            <div className="form-group row">
-                              <SelectBox
-                                name={"facilities"}
-                                placeholder={"Facilities"}
-                                control={control}
-                                optionsList={venueFacilitiesList}
-                                label="Facilities"
-                              />
-                            </div>
-                            {!isEditId && (
-                              <div class="form-group row">
-                                <SelectBox
-                                  name={"venderId"}
-                                  placeholder={"Vender"}
-                                  control={control}
-                                  optionsList={venderList}
-                                  label="Vender"
-                                />
-                              </div>
-                            )}
-
                             <div>
                               <label>
                                 {" "}
@@ -711,7 +506,7 @@ const VenueList = () => {
                           <tr>
                             {/* <!-- <th>Id</th> --> */}
                             <th>Name</th>
-                            <th>Address</th>
+                            <th>Description</th>
                             <th>Status</th>
                             <th>Approved</th>
                             <th>Action</th>
@@ -721,7 +516,7 @@ const VenueList = () => {
                           <tr>
                             {/* <!-- <th>Id</th> --> */}
                             <th>Name</th>
-                            <th>Address</th>
+                            <th>Description</th>
                             <th>Status</th>
                             <th>Approved</th>
                             <th>Action</th>
@@ -732,7 +527,7 @@ const VenueList = () => {
                             return (
                               <tr className="gradeX" key={index}>
                                 <td>{item.name}</td>
-                                <td>{item.address}</td>
+                                <td>{item.discription}</td>
                                 <td>{item.isActive ? "active" : "disabled"}</td>
                                 <td>{item.isApprove ? "Yes" : "No"}</td>
                                 <td className="center">
@@ -743,22 +538,6 @@ const VenueList = () => {
                                   >
                                     <i className="fa fa-edit"></i>
                                   </a>{" "}
-                                  <Link
-                                    href={{
-                                      pathname: router.VENUE_PLACE_LIST,
-                                      query: {
-                                        venueId: item?.id,
-                                      },
-                                    }}
-                                    as={router.VENUE_PLACE_LIST}
-                                  >
-                                    <a
-                                      href="javascript:void(0)"
-                                      className="btn btn-primary btn-sm"
-                                    >
-                                      <i className="fa fa-list"></i>
-                                    </a>
-                                  </Link>{" "}
                                   <a
                                     href="javascript:void(0)"
                                     id="data.id"
@@ -789,4 +568,4 @@ const VenueList = () => {
   );
 };
 
-export default VenueList;
+export default VenuePlaceList;
