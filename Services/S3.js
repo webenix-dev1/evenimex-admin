@@ -1,7 +1,9 @@
-console.log("Process ::", process.env.NEXT_AWS_ACCESS_KEY);
+import getConfig from "next/config";
+const { publicRuntimeConfig } = getConfig();
+
 const S3 = {
-  accessKeyId: process.env.NEXT_AWS_ACCESS_KEY,
-  secretAccessKey: process.env.NEXT_AWS_SECRET_KEY,
+  accessKeyId: publicRuntimeConfig.NEXT_AWS_ACCESS_KEY,
+  secretAccessKey: publicRuntimeConfig.NEXT_AWS_SECRET_KEY,
 };
 
 export default S3;
