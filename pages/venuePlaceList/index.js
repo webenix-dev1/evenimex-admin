@@ -433,11 +433,7 @@ const VenuePlaceList = () => {
                                     handleImages(e, "coverImage1")
                                   }
                                 />
-                                {venueImages?.coverImage1?.url ? (
-                                  <img src={venueImages?.coverImage1?.url} />
-                                ) : (
-                                  <i className="fa fa-plus"></i>
-                                )}
+                                <i className="fa fa-plus"></i>
                               </div>
                             </div>
 
