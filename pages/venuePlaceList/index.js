@@ -156,6 +156,7 @@ const VenuePlaceList = () => {
       name: val.name,
       price: val.price,
       discription: val.discription,
+      images: [],
     };
 
     if (isEditId) {
