@@ -78,6 +78,17 @@ const Sidebar = (props) => {
             </Link>
           </li>
           <li
+            className={Router.pathname === router.ADMINLIST ? "active" : ""}
+            onClick={cloaseForm}
+          >
+            <Link href={router.ADMINLIST}>
+              <a href={router.ADMINLIST}>
+                <i className="fa fa-diamond"></i>{" "}
+                <span className="nav-label">Admin</span>
+              </a>
+            </Link>
+          </li>
+          <li
             className={Router.pathname === router.USERS ? "active" : ""}
             onClick={cloaseForm}
           >

@@ -5,6 +5,12 @@ const prefixRouteV1 = (route) => {
 const apiRouter = {
   SIGNUP: prefixRouteV1("signup"),
   LOGIN: prefixRouteV1("adminSignIn"),
+  // Admin
+  ADMIN_SIGNUP: prefixRouteV1("adminSignup"),
+  GET_ALL_ADMIN: prefixRouteV1("getAllAdmin"),
+  ADMIN_UPDATE: prefixRouteV1("adminUpdate"),
+  ADMIN_REMOVE: prefixRouteV1("removeAdmin"),
+
   // User
   VENDERS: prefixRouteV1("getAllVender"),
   ALL_USERS: prefixRouteV1("getAllUser"),

@@ -12,6 +12,7 @@ const router = {
   HOME: "/",
   USERS: "/users",
   VENDERS: "/venders",
+  ADMINLIST: "/adminList",
   HERO_BANNER: "/heroBanner",
   VENUE: "/venue",
   VENUE_LIST: "/venueList",
