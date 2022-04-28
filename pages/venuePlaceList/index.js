@@ -26,6 +26,7 @@ const VenuePlaceList = () => {
 
   const [errorMsg, setErrorMsg] = useState("");
   const [isVenueId, setIsVenueId] = useState("");
+  const [venuePlaceImages, setVenuePlaceImages] = useState([]);
   const [venueImages, setVenueImages] = useState({
     coverImage1: "",
     coverImage2: "",
@@ -64,7 +65,7 @@ const VenuePlaceList = () => {
     try {
       setIsLoading(true);
       const result = await axiosGet(apiRouter.VENUE_PLACE_LIST + "/" + venueId);
-      console.log("result ::", result);
+      console.log("VENUE_PLACE_LIST ::", result);
       if (result.status) {
         setVenueEntityList(result?.data?.data);
       }
@@ -87,6 +88,15 @@ const VenuePlaceList = () => {
     handleFormToggle(true);
 
     setIsEditId(id);
+    const images = [];
+    data?.venueImages.map((item) => {
+      images.push({
+        ...item,
+        url: item.image,
+        isUpload: false,
+      });
+    });
+    setVenuePlaceImages(images);
     setTimeout(() => {
       setVenueImages({
         ...venueImages,
@@ -135,6 +145,7 @@ const VenuePlaceList = () => {
       coverImage5: "",
     });
     setErrorMsg("");
+    setVenuePlaceImages([]);
     reset();
   };
 
@@ -153,24 +164,38 @@ const VenuePlaceList = () => {
       insertData.venueId = isVenueId;
     }
 
-    console.log("venueImages ::", venueImages);
+    // console.log("venueImages ::", venueImages);
 
-    for (const iterator of Object.keys(venueImages)) {
-      if (venueImages[iterator]) {
-        if (venueImages[iterator]?.isUpload) {
-          const imageUrl = await uploadImage(
-            venueImages[iterator]?.image,
-            S3Bucket.venueImages
-          );
-          if (imageUrl.status) {
-            insertData[iterator] = imageUrl.url;
-          }
-        }
-      }
-    }
+    // for (const iterator of Object.keys(venueImages)) {
+    //   if (venueImages[iterator]) {
+    //     if (venueImages[iterator]?.isUpload) {
+    //       const imageUrl = await uploadImage(
+    //         venueImages[iterator]?.image,
+    //         S3Bucket.venueImages
+    //       );
+    //       if (imageUrl.status) {
+    //         insertData[iterator] = imageUrl.url;
+    //       }
+    //     }
+    //   }
+    // }
 
     console.log("insertData ::", insertData);
     try {
+      for (const item of venuePlaceImages) {
+        if (item) {
+          if (item?.isUpload) {
+            const imageUrl = await uploadImage(
+              item?.image,
+              S3Bucket.venueImages
+            );
+            if (imageUrl.status) {
+              insertData.images.push(imageUrl.url);
+            }
+          }
+        }
+      }
+
       const result = await axiosPost(
         isEditId ? apiRouter.VENUE_PLACE_UPDATE : apiRouter.VENUE_PLACE_CREATE,
         insertData
@@ -217,21 +242,56 @@ const VenuePlaceList = () => {
   };
 
   const handleImages = async (e, name) => {
-    console.log("Image ::", name, e.target.files[0]);
-    const image = e.target.files[0];
+    console.log("Image ::", name, e.target.files);
+    const files = e.target.files;
 
-    if (image) {
-      const url = URL.createObjectURL(image);
-      const coverImage = {
-        image,
-        url,
+    const tempImage = [...venuePlaceImages];
+    for (const img of files) {
+      const data = {
+        image: img,
+        url: URL.createObjectURL(img),
         isUpload: true,
       };
+      tempImage.push(data);
+    }
+    setVenuePlaceImages(tempImage);
 
-      setVenueImages({
-        ...venueImages,
-        [name]: coverImage,
-      });
+    // console.log("Image ::", name, e.target.files[0]);
+    // const image = e.target.files[0];
+
+    // if (image) {
+    //   const url = URL.createObjectURL(image);
+    //   const coverImage = {
+    //     image,
+    //     url,
+    //     isUpload: true,
+    //   };
+
+    //   setVenueImages({
+    //     ...venueImages,
+    //     [name]: coverImage,
+    //   });
+    // }
+  };
+
+  const removeImage = (image, index) => {
+    if (image.id) {
+      const res = confirm(`Are you sure you want to remove the venue Image`);
+      if (res) {
+        const result = axiosGet(
+          apiRouter.VENUE_PLACE_IMAGE_REMOVE + "/" + image.id
+        );
+        if (result.status) {
+          const tempImage = [...venuePlaceImages];
+          tempImage.splice(index, 1);
+          setVenuePlaceImages(tempImage);
+          toaster("success", "Venue Image Successfully Removed");
+        }
+      }
+    } else {
+      const tempImage = [...venuePlaceImages];
+      tempImage.splice(index, 1);
+      setVenuePlaceImages(tempImage);
     }
   };
 
@@ -378,66 +438,21 @@ const VenuePlaceList = () => {
                                   <i className="fa fa-plus"></i>
                                 )}
                               </div>
-                              <div className="profilePicMain">
-                                <input
-                                  type="file"
-                                  name="coverImage2"
-                                  ref={register()}
-                                  onChange={(e) =>
-                                    handleImages(e, "coverImage2")
-                                  }
-                                />
-                                {venueImages?.coverImage2?.url ? (
-                                  <img src={venueImages?.coverImage2?.url} />
-                                ) : (
-                                  <i className="fa fa-plus"></i>
-                                )}
-                              </div>
-                              <div className="profilePicMain">
-                                <input
-                                  type="file"
-                                  name="coverImage3"
-                                  ref={register()}
-                                  onChange={(e) =>
-                                    handleImages(e, "coverImage3")
-                                  }
-                                />
-                                {venueImages?.coverImage3?.url ? (
-                                  <img src={venueImages?.coverImage3?.url} />
-                                ) : (
-                                  <i className="fa fa-plus"></i>
-                                )}
-                              </div>
-                              <div className="profilePicMain">
-                                <input
-                                  type="file"
-                                  name="coverImage4"
-                                  ref={register()}
-                                  onChange={(e) =>
-                                    handleImages(e, "coverImage4")
-                                  }
-                                />
-                                {venueImages?.coverImage4?.url ? (
-                                  <img src={venueImages?.coverImage4?.url} />
-                                ) : (
-                                  <i className="fa fa-plus"></i>
-                                )}
-                              </div>
-                              <div className="profilePicMain">
-                                <input
-                                  type="file"
-                                  name="coverImage5"
-                                  ref={register()}
-                                  onChange={(e) =>
-                                    handleImages(e, "coverImage5")
-                                  }
-                                />
-                                {venueImages?.coverImage5?.url ? (
-                                  <img src={venueImages?.coverImage5?.url} />
-                                ) : (
-                                  <i className="fa fa-plus"></i>
-                                )}
-                              </div>
+                            </div>
+
+                            <div className="row">
+                              {venuePlaceImages?.map((item, index) => {
+                                return (
+                                  <div className="col-md-4">
+                                    <div
+                                      className="profilePicMain"
+                                      onClick={() => removeImage(item, index)}
+                                    >
+                                      <img src={item?.url} />
+                                    </div>
+                                  </div>
+                                );
+                              })}
                             </div>
 
                             {/* End Image */}

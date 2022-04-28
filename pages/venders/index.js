@@ -25,10 +25,10 @@ const Venders = () => {
   const fetchVenueEntityList = async () => {
     try {
       setIsLoading(true);
-      const result = await axiosGet(apiRouter.VENDERS);
+      const result = await axiosPost(apiRouter.VENDERS);
       console.log("result ::", result);
       if (result.status) {
-        setVenueEntityList(result?.data?.data);
+        setVenueEntityList(result?.data?.data?.dataList);
       }
     } catch (error) {
     } finally {

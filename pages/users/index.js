@@ -25,10 +25,10 @@ const Users = () => {
   const fetchVenueEntityList = async () => {
     try {
       setIsLoading(true);
-      const result = await axiosGet(apiRouter.ALL_USERS);
+      const result = await axiosPost(apiRouter.ALL_USERS);
       console.log("result ::", result);
       if (result.status) {
-        setVenueEntityList(result?.data?.data);
+        setVenueEntityList(result?.data?.data?.dataList);
       }
     } catch (error) {
     } finally {
