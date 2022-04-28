@@ -6,7 +6,8 @@ import { profileSelector, removeProfileData } from "../../redux/profileSlice";
 import { removeTokenFromLocal } from "../../utils/helper";
 import router from "../../utils/router";
 
-const Sidebar = () => {
+const Sidebar = (props) => {
+  const { cloaseForm } = props;
   const Router = useRouter();
   const { userData } = useSelector(profileSelector);
   console.log("userData ::", userData);
@@ -65,7 +66,10 @@ const Sidebar = () => {
             </div>
             <div className="logo-element">IN+</div>
           </li>
-          <li className={Router.pathname === router.HOME ? "active" : ""}>
+          <li
+            className={Router.pathname === router.HOME ? "active" : ""}
+            onClick={cloaseForm}
+          >
             <Link href={router.HOME}>
               <a href={router.HOME}>
                 <i className="fa fa-diamond"></i>{" "}
@@ -73,7 +77,10 @@ const Sidebar = () => {
               </a>
             </Link>
           </li>
-          <li className={Router.pathname === router.USERS ? "active" : ""}>
+          <li
+            className={Router.pathname === router.USERS ? "active" : ""}
+            onClick={cloaseForm}
+          >
             <Link href={router.USERS}>
               <a href={router.USERS}>
                 <i className="fa fa-diamond"></i>{" "}
@@ -81,7 +88,10 @@ const Sidebar = () => {
               </a>
             </Link>
           </li>
-          <li className={Router.pathname === router.VENDERS ? "active" : ""}>
+          <li
+            className={Router.pathname === router.VENDERS ? "active" : ""}
+            onClick={cloaseForm}
+          >
             <Link href={router.VENDERS}>
               <a href={router.VENDERS}>
                 <i className="fa fa-diamond"></i>{" "}
@@ -91,6 +101,7 @@ const Sidebar = () => {
           </li>
           <li
             className={Router.pathname === router.HERO_BANNER ? "active" : ""}
+            onClick={cloaseForm}
           >
             <Link href={router.HERO_BANNER}>
               <a href={router.HERO_BANNER}>
@@ -99,7 +110,10 @@ const Sidebar = () => {
               </a>
             </Link>
           </li>
-          <li className={Router.pathname === router.VENUE_LIST ? "active" : ""}>
+          <li
+            className={Router.pathname === router.VENUE_LIST ? "active" : ""}
+            onClick={cloaseForm}
+          >
             <Link href={router.VENUE_LIST}>
               <a href={router.VENUE_LIST}>
                 <i className="fa fa-diamond"></i>{" "}
@@ -107,7 +121,10 @@ const Sidebar = () => {
               </a>
             </Link>
           </li>
-          <li className={Router.pathname === router.CONTACTUS ? "active" : ""}>
+          <li
+            className={Router.pathname === router.CONTACTUS ? "active" : ""}
+            onClick={cloaseForm}
+          >
             <Link href={router.CONTACTUS}>
               <a href={router.CONTACTUS}>
                 <i className="fa fa-diamond"></i>{" "}
@@ -115,60 +132,63 @@ const Sidebar = () => {
               </a>
             </Link>
           </li>
-          <li className={Router.pathname === router.VENUE ? "active" : ""}>
+          <li
+            className={Router.pathname === router.VENUE ? "active" : ""}
+            onClick={cloaseForm}
+          >
             <a href="#">
               <i className="fa fa-th-large"></i>{" "}
               <span className="nav-label">Venue Entity</span>{" "}
               <span className="fa arrow"></span>
             </a>
             <ul className="nav nav-second-level">
-              <li>
+              <li onClick={cloaseForm}>
                 <Link href={router.VENUE_BEVERAGE}>
                   <a href="#">Venue Beverage</a>
                 </Link>
               </li>
-              <li>
+              <li onClick={cloaseForm}>
                 <Link href={router.VENUE_DISABLED}>
                   <a href="#">Venue Disabled Facility</a>
                 </Link>
               </li>
-              <li>
+              <li onClick={cloaseForm}>
                 <Link href={router.VENUE_EQUIPMENT}>
                   <a href="#">Venue Equipment</a>
                 </Link>
               </li>
-              <li>
+              <li onClick={cloaseForm}>
                 <Link href={router.VENUE_EVENT}>
                   <a href="#">Venue Events</a>
                 </Link>
               </li>
-              <li>
+              <li onClick={cloaseForm}>
                 <Link href={router.VENUE_FACILITY}>
                   <a href="#">Venue Facility</a>
                 </Link>
               </li>
-              <li>
+              <li onClick={cloaseForm}>
                 <Link href={router.VENUE_LOCATION}>
                   <a href="#">Venue Location</a>
                 </Link>
               </li>
-              <li>
+              <li onClick={cloaseForm}>
                 <Link href={router.VENUE_LOCATION_CITY}>
                   <a href="#">Venue Location City</a>
                 </Link>
               </li>
 
-              <li>
+              <li onClick={cloaseForm}>
                 <Link href={router.VENUE_LOCATION_TYPE}>
                   <a href="#">Venue Location Type</a>
                 </Link>
               </li>
-              <li>
+              <li onClick={cloaseForm}>
                 <Link href={router.VENUE_MENU}>
                   <a href="#">Venue Menu</a>
                 </Link>
               </li>
-              <li>
+              <li onClick={cloaseForm}>
                 <Link href={router.VENUE_SERVICE}>
                   <a href="#">Venue Services</a>
                 </Link>

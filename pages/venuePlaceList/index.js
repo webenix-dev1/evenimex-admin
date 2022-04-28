@@ -301,7 +301,7 @@ const VenuePlaceList = () => {
   return (
     <>
       <div id="wrapper">
-        <Sidebar />
+        <Sidebar cloaseForm={() => handleFormToggle(false)} />
 
         <div id="page-wrapper" className="gray-bg dashbard-1">
           {/* Header */}
