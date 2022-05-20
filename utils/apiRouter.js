@@ -60,17 +60,29 @@ const apiRouter = {
   ADD_VENUE_SERVICE: prefixRouteV1("addVenueService"),
   REMOVE_VENUE_SERVICE: prefixRouteV1("removeVenueService"),
 
+  // Amenities
+  VENUE_AMENITIES: prefixRouteV1("getAmenities"),
+
   // Venue DEtails
+  VENUE_CREATE: prefixRouteV1("addVenueMain"),
+  VENUE_UPDATE: prefixRouteV1("updateVenueMain"),
+  VENUE_REMOVE: prefixRouteV1("removeVenueMain"),
   VENUE_LIST: prefixRouteV1("venueList"),
-  VENUE_UPDATE: prefixRouteV1("updateVenue"),
-  VENUE_CREATE: prefixRouteV1("addVenue"),
-  VENUE_REMOVE: prefixRouteV1("removeVenue"),
+  // VENUE_LIST: prefixRouteV1("venueList"),
+  // VENUE_UPDATE: prefixRouteV1("updateVenue"),
+  // VENUE_CREATE: prefixRouteV1("addVenue"),
+  // VENUE_REMOVE: prefixRouteV1("removeVenue"),
 
   // Venue Place
-  VENUE_PLACE_CREATE: prefixRouteV1("addVenuePlace"),
-  VENUE_PLACE_UPDATE: prefixRouteV1("updateVenuePlace"),
-  VENUE_PLACE_REMOVE: prefixRouteV1("removeVenuePlace"),
-  VENUE_PLACE_LIST: prefixRouteV1("venuePlaceList"),
+  VENUE_PLACE_CREATE: prefixRouteV1("addVenueSpace"),
+  VENUE_PLACE_UPDATE: prefixRouteV1("updateVenueSpace"),
+  VENUE_PLACE_REMOVE: prefixRouteV1("removeVenueSpace"),
+  VENUE_PLACE_LIST: prefixRouteV1("venueSpaceList"),
+  VENUE_PLACE_DETAIL: prefixRouteV1("venueSpaceDetail"),
+  // VENUE_PLACE_CREATE: prefixRouteV1("addVenuePlace"),
+  // VENUE_PLACE_UPDATE: prefixRouteV1("updateVenuePlace"),
+  // VENUE_PLACE_REMOVE: prefixRouteV1("removeVenuePlace"),
+  // VENUE_PLACE_LIST: prefixRouteV1("venuePlaceList"),
 
   // Contact
   CONTACTUS_LIST: prefixRouteV1("contactUsList"),

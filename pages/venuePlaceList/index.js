@@ -11,6 +11,8 @@ import { uploadImage } from "../../utils/s3";
 import { S3Bucket } from "../../utils/constant";
 import router from "../../utils/router";
 import { useRouter } from "next/router";
+import SelectAndCreateBox from "../../components/SelectAndCreateBox";
+import MyStatefulEditor from "../../components/Editor";
 
 const VenuePlaceList = () => {
   // Const
@@ -35,6 +37,21 @@ const VenuePlaceList = () => {
     coverImage5: "",
   });
 
+  const [venueBeverageList, setVenueBeverageList] = useState([]);
+  const [venueDisabledFacilitiesList, setVenueDisabledFacilitiesList] =
+    useState([]);
+  const [venueEquipmentList, setVenueEquipmentList] = useState([]);
+  const [venueEventsList, setVenueEventsList] = useState([]);
+  const [venueFacilitiesList, setVenueFacilitiesList] = useState([]);
+  const [venueLocationList, setVenueLocationList] = useState([]);
+  const [venueLocationCityList, setVenueLocationCityList] = useState([]);
+  const [venueLocationTypeList, setVenueLocationTypeList] = useState([]);
+  const [venueMenuList, setVenueMenuList] = useState([]);
+  const [venueServiceList, setVenueServiceList] = useState([]);
+
+  const [venueDescription, setVenueDescription] = useState("");
+  const [venuePlaceDetails, setVenuePlaceDetails] = useState("");
+
   // Effects
   useEffect(() => {
     const { venueId } = Router.query;
@@ -43,6 +60,7 @@ const VenuePlaceList = () => {
     if (venueId) {
       setIsVenueId(venueId);
       fetchVenueEntityList(venueId);
+      fetchVenueAmenities();
     } else {
       return Router.push(router.VENUE_LIST);
     }
@@ -74,6 +92,207 @@ const VenuePlaceList = () => {
       setIsLoading(false);
     }
   };
+
+  const fetchVenueAmenities = async (venuePlaceId) => {
+    try {
+      setIsLoading(true);
+      const result = await axiosGet(apiRouter.VENUE_AMENITIES);
+      console.log("VENUE_AMENITIES ::", result);
+      if (result.status) {
+        const data = result.data?.data;
+
+        const venueMenuListTemp = [];
+        const venueBeverageListTemp = [];
+        const venueLocationListTemp = [];
+        const venueLocationTypeListTemp = [];
+        const venueEquipmentListTemp = [];
+        const venueServiceListTemp = [];
+        const venueDisabledFacilitiesListTemp = [];
+        const venueFacilitiesListTemp = [];
+        const venueEventsListTemp = [];
+
+        data.map((item) => {
+          const option = {
+            label: item?.name,
+            value: item?.id,
+            id: item?.id,
+            categoryId: item?.categoryId,
+          };
+          switch (item.categoryId) {
+            case 1:
+              venueMenuListTemp.push(option);
+              break;
+            case 2:
+              venueBeverageListTemp.push(option);
+              break;
+            case 3:
+              venueLocationListTemp.push(option);
+              break;
+            case 4:
+              venueLocationTypeListTemp.push(option);
+              break;
+            case 5:
+              venueEquipmentListTemp.push(option);
+              break;
+            case 6:
+              venueServiceListTemp.push(option);
+              break;
+            case 7:
+              venueDisabledFacilitiesListTemp.push(option);
+              break;
+            case 8:
+              venueFacilitiesListTemp.push(option);
+              break;
+            case 9:
+              venueEventsListTemp.push(option);
+              break;
+            default:
+              break;
+          }
+        });
+        setVenueMenuList(venueMenuListTemp);
+        setVenueBeverageList(venueBeverageListTemp);
+        setVenueEquipmentList(venueEquipmentListTemp);
+        setVenueFacilitiesList(venueFacilitiesListTemp);
+        setVenueLocationList(venueLocationListTemp);
+        setVenueLocationTypeList(venueLocationTypeListTemp);
+        setVenueDisabledFacilitiesList(venueDisabledFacilitiesListTemp);
+        setVenueServiceList(venueServiceListTemp);
+        setVenueEventsList(venueEventsListTemp);
+      }
+    } catch (error) {
+      console.log("error ::", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const fetchVenueDetail = async (venuePlaceId) => {
+    try {
+      setIsLoading(true);
+      const result = await axiosGet(
+        apiRouter.VENUE_PLACE_DETAIL + "/" + venuePlaceId
+      );
+      console.log("VENUE_PLACE_DETAIL ::", result);
+
+      return result?.data?.data || "";
+
+      if (result.status) {
+        const data = result.data?.data;
+        setVenuePlaceDetails(data);
+        const images = [];
+        data?.images.map((item) => {
+          images.push({
+            ...item,
+            url: item.image,
+            isUpload: false,
+          });
+        });
+        setVenuePlaceImages(images);
+        setVenueImages({
+          ...venueImages,
+          coverImage1: {
+            url: data?.coverImage1 || "",
+            isUpload: false,
+            image: "",
+          },
+          coverImage2: {
+            url: data?.coverImage2 || "",
+            isUpload: false,
+            image: "",
+          },
+          coverImage3: {
+            url: data?.coverImage3 || "",
+            isUpload: false,
+            image: "",
+          },
+          coverImage4: {
+            url: data?.coverImage4 || "",
+            isUpload: false,
+            image: "",
+          },
+          coverImage5: {
+            url: data?.coverImage5 || "",
+            isUpload: false,
+            image: "",
+          },
+        });
+
+        const venueMenuListTemp = [];
+        const venueBeverageListTemp = [];
+        const venueLocationListTemp = [];
+        const venueLocationTypeListTemp = [];
+        const venueEquipmentListTemp = [];
+        const venueServiceListTemp = [];
+        const venueDisabledFacilitiesListTemp = [];
+        const venueFacilitiesListTemp = [];
+        const venueEventsListTemp = [];
+
+        data?.amenities.map(({ amenity }) => {
+          const option = {
+            label: amenity?.name,
+            value: amenity?.id,
+            id: amenity?.id,
+            categoryId: amenity?.categoryId,
+            isAdded: true,
+          };
+          switch (amenity.categoryId) {
+            case 1:
+              venueMenuListTemp.push(option);
+              break;
+            case 2:
+              venueBeverageListTemp.push(option);
+              break;
+            case 3:
+              venueLocationListTemp.push(option);
+              break;
+            case 4:
+              venueLocationTypeListTemp.push(option);
+              break;
+            case 5:
+              venueEquipmentListTemp.push(option);
+              break;
+            case 6:
+              venueServiceListTemp.push(option);
+              break;
+            case 7:
+              venueDisabledFacilitiesListTemp.push(option);
+              break;
+            case 8:
+              venueFacilitiesListTemp.push(option);
+              break;
+            case 9:
+              venueEventsListTemp.push(option);
+              break;
+            default:
+              break;
+          }
+        });
+
+        setTimeout(() => {
+          setValue("name", data?.name);
+          setVenueDescription(JSON.parse(data?.discription));
+          setValue("price", data?.price);
+          setValue("seats", data?.seats);
+          setValue("days", data?.days);
+          setValue("standing", data?.standing);
+          setValue("menu", venueMenuListTemp);
+          setValue("beverage", venueBeverageListTemp);
+          setValue("location", venueLocationListTemp);
+          setValue("locationType", venueLocationTypeListTemp);
+          setValue("equipment", venueEquipmentListTemp);
+          setValue("service", venueServiceListTemp);
+          setValue("disabledFacilities", venueDisabledFacilitiesListTemp);
+          setValue("facilities", venueFacilitiesListTemp);
+          setValue("events", venueEventsListTemp);
+        }, 300);
+      }
+    } catch (error) {
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const handleFormToggle = (val) => {
     if (val === false) {
       clearForm();
@@ -85,6 +304,13 @@ const VenuePlaceList = () => {
   const handleFormEdit = async (data) => {
     const { id, isActive, isApprove } = data;
     console.log("data ::", data);
+
+    const result = await fetchVenueDetail(id);
+
+    setVenuePlaceDetails(result);
+
+    console.log("result ::", result);
+
     handleFormToggle(true);
 
     setIsEditId(id);
@@ -97,39 +323,74 @@ const VenuePlaceList = () => {
       });
     });
     setVenuePlaceImages(images);
+
+    const venueMenuListTemp = [];
+    const venueBeverageListTemp = [];
+    const venueLocationListTemp = [];
+    const venueLocationTypeListTemp = [];
+    const venueEquipmentListTemp = [];
+    const venueServiceListTemp = [];
+    const venueDisabledFacilitiesListTemp = [];
+    const venueFacilitiesListTemp = [];
+    const venueEventsListTemp = [];
+
+    result?.amenities?.map(({ amenity }) => {
+      const option = {
+        label: amenity?.name,
+        value: amenity?.id,
+        id: amenity?.id,
+        categoryId: amenity?.categoryId,
+        isAdded: true,
+      };
+      switch (amenity.categoryId) {
+        case 1:
+          venueMenuListTemp.push(option);
+          break;
+        case 2:
+          venueBeverageListTemp.push(option);
+          break;
+        case 3:
+          venueLocationListTemp.push(option);
+          break;
+        case 4:
+          venueLocationTypeListTemp.push(option);
+          break;
+        case 5:
+          venueEquipmentListTemp.push(option);
+          break;
+        case 6:
+          venueServiceListTemp.push(option);
+          break;
+        case 7:
+          venueDisabledFacilitiesListTemp.push(option);
+          break;
+        case 8:
+          venueFacilitiesListTemp.push(option);
+          break;
+        case 9:
+          venueEventsListTemp.push(option);
+          break;
+        default:
+          break;
+      }
+    });
+
     setTimeout(() => {
-      setVenueImages({
-        ...venueImages,
-        coverImage1: {
-          url: data?.coverImage1 || "",
-          isUpload: false,
-          image: "",
-        },
-        coverImage2: {
-          url: data?.coverImage2 || "",
-          isUpload: false,
-          image: "",
-        },
-        coverImage3: {
-          url: data?.coverImage3 || "",
-          isUpload: false,
-          image: "",
-        },
-        coverImage4: {
-          url: data?.coverImage4 || "",
-          isUpload: false,
-          image: "",
-        },
-        coverImage5: {
-          url: data?.coverImage5 || "",
-          isUpload: false,
-          image: "",
-        },
-      });
       setValue("name", data?.name);
-      setValue("discription", data?.discription);
+      setVenueDescription(JSON.parse(data?.discription));
       setValue("price", data?.price);
-      setValue("capacity", data?.capacity);
+      setValue("seats", data?.seats);
+      setValue("days", data?.days);
+      setValue("standing", data?.standing);
+      setValue("menu", venueMenuListTemp);
+      setValue("beverage", venueBeverageListTemp);
+      setValue("location", venueLocationListTemp);
+      setValue("locationType", venueLocationTypeListTemp);
+      setValue("equipment", venueEquipmentListTemp);
+      setValue("service", venueServiceListTemp);
+      setValue("disabledFacilities", venueDisabledFacilitiesListTemp);
+      setValue("facilities", venueFacilitiesListTemp);
+      setValue("events", venueEventsListTemp);
 
       setValue("isApprove", isApprove);
       setValue("isActive", isActive);
@@ -149,18 +410,59 @@ const VenuePlaceList = () => {
     reset();
   };
 
+  const optionFormatMake = (entity) => {
+    const option = [];
+    entity?.map((item) => {
+      option.push({
+        categoryId: item?.categoryId,
+        id: item?.id || "",
+        label: item.label,
+        isUpload: item.id ? false : true,
+      });
+    });
+    return option;
+  };
   const handleFormSubmit = async (val) => {
+    setIsLoading(true);
+
     setErrorMsg("");
     const insertData = {
-      capacity: val.capacity,
+      seats: val.seats,
+      standing: val.standing,
+      days: val.days,
       name: val.name,
       price: val.price,
-      discription: val.discription,
+      discription: JSON.stringify(venueDescription),
       images: [],
     };
 
+    let amenities = [
+      ...optionFormatMake(val?.location || []),
+      ...optionFormatMake(val?.locationType || []),
+      ...optionFormatMake(val?.beverage || []),
+      ...optionFormatMake(val?.events || []),
+      ...optionFormatMake(val?.equipment || []),
+      ...optionFormatMake(val?.menu || []),
+      ...optionFormatMake(val?.service || []),
+      ...optionFormatMake(val?.disabledFacilities || []),
+      ...optionFormatMake(val?.facilities || []),
+    ];
+
+    insertData.amenities = amenities;
+
     if (isEditId) {
-      insertData.venuePlaceId = isEditId;
+      insertData.venueSpaceId = isEditId;
+
+      const removeAmenities = [];
+      venuePlaceDetails?.amenities?.map(({ amenity }) => {
+        const doesExist = insertData.amenities?.some(function (ele) {
+          return ele.id === amenity.id;
+        });
+        if (!doesExist) {
+          removeAmenities.push(amenity);
+        }
+      });
+      insertData.removeAmenities = removeAmenities;
     } else {
       insertData.venueId = isVenueId;
     }
@@ -181,7 +483,6 @@ const VenuePlaceList = () => {
     //   }
     // }
 
-    console.log("insertData ::", insertData);
     try {
       for (const item of venuePlaceImages) {
         if (item) {
@@ -196,6 +497,8 @@ const VenuePlaceList = () => {
           }
         }
       }
+
+      console.log("insertData ::", insertData);
 
       const result = await axiosPost(
         isEditId ? apiRouter.VENUE_PLACE_UPDATE : apiRouter.VENUE_PLACE_CREATE,
@@ -255,6 +558,7 @@ const VenuePlaceList = () => {
       };
       tempImage.push(data);
     }
+    console.log("Temp image: ", tempImage);
     setVenuePlaceImages(tempImage);
 
     // console.log("Image ::", name, e.target.files[0]);
@@ -341,51 +645,155 @@ const VenuePlaceList = () => {
                             </div>
                             <div className="form-group row">
                               <label className="col-sm-2 col-form-label">
-                                Description
-                              </label>
-                              <div className="col-sm-10">
-                                <input
-                                  type="text"
-                                  className="form-control"
-                                  name="discription"
-                                  placeholder="Enter Description"
-                                  ref={register({
-                                    required: "Description is required",
-                                  })}
-                                />
-                              </div>
-                            </div>
-                            <div className="form-group row">
-                              <label className="col-sm-2 col-form-label">
-                                Price
+                                Place Price
                               </label>
                               <div className="col-sm-10">
                                 <input
                                   type="text"
                                   className="form-control"
                                   name="price"
-                                  placeholder="Enter Price"
+                                  placeholder="Enter Place Price"
                                   ref={register({
-                                    required: "Price is required",
+                                    required: "Venue is required",
                                   })}
                                 />
                               </div>
                             </div>
                             <div className="form-group row">
                               <label className="col-sm-2 col-form-label">
-                                Place Capacity
+                                Description
+                              </label>
+                              <div className="col-sm-10">
+                                <MyStatefulEditor
+                                  value={venueDescription}
+                                  onChange={(val) => {
+                                    setVenueDescription(val);
+                                    console.log("contentState ::", val);
+                                  }}
+                                />
+                              </div>
+                            </div>
+                            <div className="form-group row">
+                              <label className="col-sm-2 col-form-label">
+                                Place Seats
                               </label>
                               <div className="col-sm-10">
                                 <input
                                   type="text"
                                   className="form-control"
-                                  name="capacity"
-                                  placeholder="Enter Place Capacity"
+                                  name="seats"
+                                  placeholder="Enter Seats"
                                   ref={register({
-                                    required: "Place Capacity is required",
+                                    required: "Seats is required",
                                   })}
                                 />
                               </div>
+                            </div>
+                            <div className="form-group row">
+                              <label className="col-sm-2 col-form-label">
+                                Place Standing
+                              </label>
+                              <div className="col-sm-10">
+                                <input
+                                  type="text"
+                                  className="form-control"
+                                  name="standing"
+                                  placeholder="Enter Place Standing"
+                                  ref={register({
+                                    required: "Place Standing is required",
+                                  })}
+                                />
+                              </div>
+                            </div>
+                            <div className="form-group row">
+                              <SelectAndCreateBox
+                                name={"location"}
+                                placeholder={"Location"}
+                                control={control}
+                                optionsList={venueLocationList}
+                                label="Location"
+                                categoryId={3}
+                              />
+                            </div>
+                            <div className="form-group row">
+                              <SelectAndCreateBox
+                                name={"locationType"}
+                                placeholder={"Location Type"}
+                                control={control}
+                                optionsList={venueLocationTypeList}
+                                label="Location Type"
+                                categoryId={4}
+                              />
+                            </div>
+                            <div className="form-group row">
+                              <SelectAndCreateBox
+                                name={"beverage"}
+                                placeholder={"Beverage"}
+                                control={control}
+                                optionsList={venueBeverageList}
+                                label="Beverage"
+                                categoryId={2}
+                              />
+                            </div>
+                            <div className="form-group row">
+                              <SelectAndCreateBox
+                                name={"events"}
+                                placeholder={"Event"}
+                                control={control}
+                                optionsList={venueEventsList}
+                                label="Event"
+                                categoryId={9}
+                              />
+                            </div>
+                            <div className="form-group row">
+                              <SelectAndCreateBox
+                                name={"equipment"}
+                                placeholder={"Equipment"}
+                                control={control}
+                                optionsList={venueEquipmentList}
+                                label="Equipment"
+                                categoryId={5}
+                              />
+                            </div>
+                            <div className="form-group row">
+                              <SelectAndCreateBox
+                                name={"menu"}
+                                placeholder={"Menus"}
+                                control={control}
+                                optionsList={venueMenuList}
+                                label="Menus"
+                                categoryId={1}
+                              />
+                            </div>
+                            <div className="form-group row">
+                              <SelectAndCreateBox
+                                name={"service"}
+                                placeholder={"Service"}
+                                control={control}
+                                optionsList={venueServiceList}
+                                label="Service"
+                                categoryId={6}
+                              />
+                            </div>
+                            <div className="form-group row">
+                              <SelectAndCreateBox
+                                name={"disabledFacilities"}
+                                placeholder={"Disable Abilities"}
+                                control={control}
+                                optionsList={venueDisabledFacilitiesList}
+                                label="Disable Abilities"
+                                categoryId={7}
+                              />
+                            </div>
+                            <div className="form-group row">
+                              <SelectAndCreateBox
+                                name={"facilities"}
+                                placeholder={"Facilities"}
+                                control={control}
+                                optionsList={venueFacilitiesList}
+                                label="Facilities"
+                                categoryId={8}
+                              />
                             </div>
                             <div>
                               <label>
@@ -425,9 +833,10 @@ const VenuePlaceList = () => {
                                   type="file"
                                   name="coverImage1"
                                   ref={register({
-                                    required: venueImages?.coverImage1?.url
-                                      ? false
-                                      : "Image is required",
+                                    required:
+                                      venuePlaceImages?.length > 0
+                                        ? false
+                                        : "Image is required",
                                   })}
                                   onChange={(e) =>
                                     handleImages(e, "coverImage1")

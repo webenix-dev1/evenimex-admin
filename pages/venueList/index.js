@@ -23,6 +23,7 @@ import { uploadImage } from "../../utils/s3";
 import { S3Bucket } from "../../utils/constant";
 import router from "../../utils/router";
 import Link from "next/link";
+import MyStatefulEditor from "../../components/Editor";
 
 const VenueList = () => {
   // Const
@@ -36,17 +37,7 @@ const VenueList = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   const [errorMsg, setErrorMsg] = useState("");
-  const [venueBeverageList, setVenueBeverageList] = useState([]);
-  const [venueDisabledFacilitiesList, setVenueDisabledFacilitiesList] =
-    useState([]);
-  const [venueEquipmentList, setVenueEquipmentList] = useState([]);
-  const [venueEventsList, setVenueEventsList] = useState([]);
-  const [venueFacilitiesList, setVenueFacilitiesList] = useState([]);
-  const [venueLocationList, setVenueLocationList] = useState([]);
   const [venueLocationCityList, setVenueLocationCityList] = useState([]);
-  const [venueLocationTypeList, setVenueLocationTypeList] = useState([]);
-  const [venueMenuList, setVenueMenuList] = useState([]);
-  const [venueServiceList, setVenueServiceList] = useState([]);
   const [isVenueId, setIsVenueId] = useState("");
   const [venueImages, setVenueImages] = useState({
     coverImage1: "",
@@ -55,6 +46,7 @@ const VenueList = () => {
     coverImage4: "",
     coverImage5: "",
   });
+  const [venueDescription, setVenueDescription] = useState("");
 
   console.log("venueLocationCityList ::", venueLocationCityList);
 
@@ -109,30 +101,31 @@ const VenueList = () => {
   };
   const fetchVenueEntity = async () => {
     Promise.all([
-      getVenueBeverageList(),
-      getVenueDisabledFacilitiesList(),
-      getVenueEquipmentList(),
-      getVenueEventsList(),
-      getVenueFacilitiesList(),
-      getVenueLocationList(),
+      // getVenueBeverageList(),
+      // getVenueDisabledFacilitiesList(),
+      // getVenueEquipmentList(),
+      // getVenueEventsList(),
+      // getVenueFacilitiesList(),
+      // getVenueLocationList(),
       getVenueLocationCityList(),
-      getVenueLocationTypeList(),
-      getVenueMenuList(),
-      getVenueServiceList(),
+      // getVenueLocationTypeList(),
+      // getVenueMenuList(),
+      // getVenueServiceList(),
     ])
       .then((values) => {
         console.log("ALLL ::", values);
+        setVenueLocationCityList(optionFormatMake(values[0]));
 
-        setVenueBeverageList(optionFormatMake(values[0]));
-        setVenueDisabledFacilitiesList(optionFormatMake(values[1]));
-        setVenueEquipmentList(optionFormatMake(values[2]));
-        setVenueEventsList(optionFormatMake(values[3]));
-        setVenueFacilitiesList(optionFormatMake(values[4]));
-        setVenueLocationList(optionFormatMake(values[5]));
-        setVenueLocationCityList(optionFormatMake(values[6]));
-        setVenueLocationTypeList(optionFormatMake(values[7]));
-        setVenueMenuList(optionFormatMake(values[8]));
-        setVenueServiceList(optionFormatMake(values[9]));
+        // setVenueBeverageList(optionFormatMake(values[0]));
+        // setVenueDisabledFacilitiesList(optionFormatMake(values[1]));
+        // setVenueEquipmentList(optionFormatMake(values[2]));
+        // setVenueEventsList(optionFormatMake(values[3]));
+        // setVenueFacilitiesList(optionFormatMake(values[4]));
+        // setVenueLocationList(optionFormatMake(values[5]));
+        // setVenueLocationCityList(optionFormatMake(values[6]));
+        // setVenueLocationTypeList(optionFormatMake(values[7]));
+        // setVenueMenuList(optionFormatMake(values[8]));
+        // setVenueServiceList(optionFormatMake(values[9]));
 
         if (Router.query?.venueId)
           setTimeout(() => {
@@ -199,19 +192,15 @@ const VenueList = () => {
         },
       });
       setValue("name", data?.name);
-      setValue("discription", data?.discription);
+      setVenueDescription(JSON.parse(data?.discription));
       setValue("address", data?.address);
       setValue("participants", data?.participants);
       setValue("city", data?.city);
-      setValue("location", data?.location);
-      setValue("locationType", data?.locationType);
-      setValue("beverage", data?.beverage);
-      setValue("events", data?.events);
-      setValue("equipment", data?.equipment);
-      setValue("menu", data?.menu);
-      setValue("service", data?.service);
-      setValue("disabledFacilities", data?.disabledFacilities);
-      setValue("facilities", data?.facilities);
+      setValue("streetNumber", data?.streetNumber);
+      setValue("route", data?.route);
+      setValue("locality", data?.locality);
+      setValue("state", data?.state);
+      setValue("country", data?.country);
 
       setValue("isApprove", isApprove);
       setValue("isActive", isActive);
@@ -234,23 +223,19 @@ const VenueList = () => {
     setErrorMsg("");
     const insertData = {
       name: val.name,
-      discription: val.discription,
+      discription: JSON.stringify(venueDescription),
       address: val.address,
       participants: val.participants,
-      city: [val.city],
-      location: val.location,
-      locationType: val.locationType,
-      beverage: val.beverage,
-      events: val.events,
-      equipment: val.equipment,
-      menu: val.menu,
-      service: val.service,
-      disabledFacilities: val.disabledFacilities,
-      facilities: val.facilities,
+      city: val.city,
+      streetNumber: val.streetNumber,
+      route: val.route,
+      locality: val.locality,
+      state: val.state,
+      country: val.country,
     };
 
     if (isEditId) {
-      insertData.venueId = isEditId;
+      insertData.venueMainId = isEditId;
     } else {
       insertData.userId = val.venderId;
     }
@@ -386,14 +371,12 @@ const VenueList = () => {
                                 Description
                               </label>
                               <div className="col-sm-10">
-                                <input
-                                  type="text"
-                                  className="form-control"
-                                  name="discription"
-                                  placeholder="Enter Description"
-                                  ref={register({
-                                    required: "Description is required",
-                                  })}
+                                <MyStatefulEditor
+                                  value={venueDescription}
+                                  onChange={(val) => {
+                                    setVenueDescription(val);
+                                    console.log("contentState ::", val);
+                                  }}
                                 />
                               </div>
                             </div>
@@ -430,6 +413,54 @@ const VenueList = () => {
                               </div>
                             </div>
                             <div className="form-group row">
+                              <label className="col-sm-2 col-form-label">
+                                Street Number
+                              </label>
+                              <div className="col-sm-10">
+                                <input
+                                  type="text"
+                                  className="form-control"
+                                  name="streetNumber"
+                                  placeholder="Enter Street Number"
+                                  ref={register({
+                                    required: "Street Number is required",
+                                  })}
+                                />
+                              </div>
+                            </div>
+                            <div className="form-group row">
+                              <label className="col-sm-2 col-form-label">
+                                Route
+                              </label>
+                              <div className="col-sm-10">
+                                <input
+                                  type="text"
+                                  className="form-control"
+                                  name="route"
+                                  placeholder="Enter Route"
+                                  ref={register({
+                                    required: "Route is required",
+                                  })}
+                                />
+                              </div>
+                            </div>
+                            <div className="form-group row">
+                              <label className="col-sm-2 col-form-label">
+                                Locality
+                              </label>
+                              <div className="col-sm-10">
+                                <input
+                                  type="text"
+                                  className="form-control"
+                                  name="locality"
+                                  placeholder="Enter Locality"
+                                  ref={register({
+                                    required: "Locality is required",
+                                  })}
+                                />
+                              </div>
+                            </div>
+                            <div className="form-group row">
                               <SelectBox
                                 name={"city"}
                                 placeholder={"City"}
@@ -439,85 +470,36 @@ const VenueList = () => {
                               />
                             </div>
                             <div className="form-group row">
-                              <SelectBox
-                                name={"location"}
-                                placeholder={"Location"}
-                                control={control}
-                                optionsList={venueLocationList}
-                                label="Location"
-                              />
+                              <label className="col-sm-2 col-form-label">
+                                State
+                              </label>
+                              <div className="col-sm-10">
+                                <input
+                                  type="text"
+                                  className="form-control"
+                                  name="state"
+                                  placeholder="Enter State"
+                                  ref={register({
+                                    required: "State is required",
+                                  })}
+                                />
+                              </div>
                             </div>
                             <div className="form-group row">
-                              <SelectBox
-                                name={"locationType"}
-                                placeholder={"Location Type"}
-                                control={control}
-                                optionsList={venueLocationTypeList}
-                                label="Location Type"
-                              />
-                            </div>
-                            <div className="form-group row">
-                              <SelectBox
-                                name={"beverage"}
-                                placeholder={"Beverage"}
-                                control={control}
-                                optionsList={venueBeverageList}
-                                label="Beverage"
-                              />
-                            </div>
-                            <div className="form-group row">
-                              <SelectBox
-                                name={"events"}
-                                placeholder={"Event"}
-                                control={control}
-                                optionsList={venueEventsList}
-                                label="Event"
-                              />
-                            </div>
-                            <div className="form-group row">
-                              <SelectBox
-                                name={"equipment"}
-                                placeholder={"Equipment"}
-                                control={control}
-                                optionsList={venueEquipmentList}
-                                label="Equipment"
-                              />
-                            </div>
-                            <div className="form-group row">
-                              <SelectBox
-                                name={"menu"}
-                                placeholder={"Menus"}
-                                control={control}
-                                optionsList={venueMenuList}
-                                label="Menus"
-                              />
-                            </div>
-                            <div className="form-group row">
-                              <SelectBox
-                                name={"service"}
-                                placeholder={"Service"}
-                                control={control}
-                                optionsList={venueServiceList}
-                                label="Service"
-                              />
-                            </div>
-                            <div className="form-group row">
-                              <SelectBox
-                                name={"disabledFacilities"}
-                                placeholder={"Disable Abilities"}
-                                control={control}
-                                optionsList={venueDisabledFacilitiesList}
-                                label="Disable Abilities"
-                              />
-                            </div>
-                            <div className="form-group row">
-                              <SelectBox
-                                name={"facilities"}
-                                placeholder={"Facilities"}
-                                control={control}
-                                optionsList={venueFacilitiesList}
-                                label="Facilities"
-                              />
+                              <label className="col-sm-2 col-form-label">
+                                Country
+                              </label>
+                              <div className="col-sm-10">
+                                <input
+                                  type="text"
+                                  className="form-control"
+                                  name="country"
+                                  placeholder="Enter Country"
+                                  ref={register({
+                                    required: "Country is required",
+                                  })}
+                                />
+                              </div>
                             </div>
                             {!isEditId && (
                               <div class="form-group row">

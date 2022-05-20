@@ -8622,6 +8622,10 @@ body.md-skin {
   }
 }
 
+.editor-class{
+  border: 1px solid #f2f3f3;
+}
+
 
 
 `;
