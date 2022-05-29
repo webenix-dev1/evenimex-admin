@@ -25,7 +25,9 @@ const VenueBeverage = () => {
   const fetchVenueEntityList = async () => {
     try {
       setIsLoading(true);
-      const result = await axiosGet(apiRouter.VENUE_BEVERAGE_LIST);
+      const result = await axiosPost(apiRouter.VENUE_AMENITIES_LIST, {
+        categoryId: 2,
+      });
       if (result.status) {
         setVenueEntityList(result?.data?.data);
       }
@@ -58,6 +60,7 @@ const VenueBeverage = () => {
     const insertData = {
       name,
       isActive,
+      categoryId: 2,
     };
     console.log("insertData ::", insertData, isActive);
     if (isEditId) {
@@ -66,7 +69,7 @@ const VenueBeverage = () => {
 
     try {
       setIsLoading(true);
-      const result = await axiosPost(apiRouter.ADD_VENUE_BEVERAGE, insertData);
+      const result = await axiosPost(apiRouter.ADD_VENUE_AMENITIES, insertData);
       if (result.status) {
         setIsEditId("");
         handleFormToggle(false);
@@ -85,7 +88,9 @@ const VenueBeverage = () => {
     try {
       setIsLoading(true);
 
-      const result = await axiosGet(apiRouter.REMOVE_VENUE_BEVERAGE + "/" + id);
+      const result = await axiosGet(
+        apiRouter.VENUE_AMENITIES_REMOVE + "/" + id
+      );
       if (result.status) {
         fetchVenueEntityList();
         handleFormToggle(false);
@@ -126,7 +131,7 @@ const VenueBeverage = () => {
                           <form onSubmit={handleSubmit(handleFormSubmit)}>
                             <div className="form-group row">
                               <label className="col-sm-2 col-form-label">
-                                Beverage
+                                Beverage*
                               </label>
                               <div className="col-sm-10">
                                 <input
@@ -135,7 +140,7 @@ const VenueBeverage = () => {
                                   name="name"
                                   placeholder="Enter Beverage"
                                   ref={register({
-                                    required: false,
+                                    required: "Amenity name is required",
                                   })}
                                 />
                               </div>
@@ -158,6 +163,7 @@ const VenueBeverage = () => {
                             </div>
 
                             <div className="hr-line-dashed"></div>
+                            {errors?.name && <p>{errors?.name?.message}</p>}
                             <div className="form-group row">
                               <div className="col-sm-4 col-sm-offset-2">
                                 <a

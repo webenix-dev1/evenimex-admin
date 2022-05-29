@@ -131,7 +131,7 @@ const Venders = () => {
                   <div className="ibox ">
                     <div className="ibox-title">
                       <h5>
-                        Venue Beverage <small>Create</small>
+                        Venders <small>Create</small>
                       </h5>
                     </div>
                     <div className="ibox-content">

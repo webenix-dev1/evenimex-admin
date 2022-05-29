@@ -25,7 +25,9 @@ const VenueDisableFacility = () => {
   const fetchVenueEntityList = async () => {
     try {
       setIsLoading(true);
-      const result = await axiosGet(apiRouter.VENUE_DISABLE_LIST);
+      const result = await axiosPost(apiRouter.VENUE_AMENITIES_LIST, {
+        categoryId: 7,
+      });
       if (result.status) {
         setVenueEntityList(result?.data?.data);
       }
@@ -58,6 +60,7 @@ const VenueDisableFacility = () => {
     const insertData = {
       name,
       isActive,
+      categoryId: 7,
     };
     console.log("insertData ::", insertData, isActive);
     if (isEditId) {
@@ -66,7 +69,8 @@ const VenueDisableFacility = () => {
 
     try {
       setIsLoading(true);
-      const result = await axiosPost(apiRouter.ADD_VENUE_DISABLE, insertData);
+      const result = await axiosPost(apiRouter.ADD_VENUE_AMENITIES, insertData);
+
       if (result.status) {
         setIsEditId("");
         handleFormToggle(false);
@@ -85,7 +89,9 @@ const VenueDisableFacility = () => {
     try {
       setIsLoading(true);
 
-      const result = await axiosGet(apiRouter.REMOVE_VENUE_DISABLE + "/" + id);
+      const result = await axiosGet(
+        apiRouter.VENUE_AMENITIES_REMOVE + "/" + id
+      );
       if (result.status) {
         fetchVenueEntityList();
         handleFormToggle(false);
@@ -133,7 +139,7 @@ const VenueDisableFacility = () => {
                                   name="name"
                                   placeholder="Enter Disable Facilities"
                                   ref={register({
-                                    required: false,
+                                    required: "Amenity is required",
                                   })}
                                 />
                               </div>
@@ -156,6 +162,8 @@ const VenueDisableFacility = () => {
                             </div>
 
                             <div className="hr-line-dashed"></div>
+                            {errors?.name && <p>{errors?.name?.message}</p>}
+
                             <div className="form-group row">
                               <div className="col-sm-4 col-sm-offset-2">
                                 <a

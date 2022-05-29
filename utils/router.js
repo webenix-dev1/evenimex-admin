@@ -8,6 +8,7 @@ const router = {
   FORGOTPASSWORD: "/forgot-password",
   HOWITWORK: "/howitwork",
   CONTACTUS: "/contactus",
+  ENQUIRY: "/enquiry",
   PROFILE: "/profile",
   HOME: "/",
   USERS: "/users",

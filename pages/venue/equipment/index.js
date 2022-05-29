@@ -25,7 +25,9 @@ const VenueEquipment = () => {
   const fetchVenueEntityList = async () => {
     try {
       setIsLoading(true);
-      const result = await axiosGet(apiRouter.VENUE_EDUIPMENT_LIST);
+      const result = await axiosPost(apiRouter.VENUE_AMENITIES_LIST, {
+        categoryId: 5,
+      });
       if (result.status) {
         setVenueEntityList(result?.data?.data);
       }
@@ -58,6 +60,7 @@ const VenueEquipment = () => {
     const insertData = {
       name,
       isActive,
+      categoryId: 5,
     };
     console.log("insertData ::", insertData, isActive);
     if (isEditId) {
@@ -66,7 +69,7 @@ const VenueEquipment = () => {
 
     try {
       setIsLoading(true);
-      const result = await axiosPost(apiRouter.ADD_VENUE_EDUIPMENT, insertData);
+      const result = await axiosPost(apiRouter.ADD_VENUE_AMENITIES, insertData);
       if (result.status) {
         setIsEditId("");
         handleFormToggle(false);
@@ -86,7 +89,7 @@ const VenueEquipment = () => {
       setIsLoading(true);
 
       const result = await axiosGet(
-        apiRouter.REMOVE_VENUE_EDUIPMENT + "/" + id
+        apiRouter.VENUE_AMENITIES_REMOVE + "/" + id
       );
       if (result.status) {
         fetchVenueEntityList();
@@ -137,7 +140,7 @@ const VenueEquipment = () => {
                                   name="name"
                                   placeholder="Enter Equipment"
                                   ref={register({
-                                    required: false,
+                                    required: "Amenity name is required",
                                   })}
                                 />
                               </div>
@@ -160,6 +163,7 @@ const VenueEquipment = () => {
                             </div>
 
                             <div className="hr-line-dashed"></div>
+                            {errors?.name && <p>{errors?.name?.message}</p>}
                             <div className="form-group row">
                               <div className="col-sm-4 col-sm-offset-2">
                                 <a

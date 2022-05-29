@@ -25,7 +25,9 @@ const VenueMenu = () => {
   const fetchVenueEntityList = async () => {
     try {
       setIsLoading(true);
-      const result = await axiosGet(apiRouter.VENUE_MENU_LIST);
+      const result = await axiosPost(apiRouter.VENUE_AMENITIES_LIST, {
+        categoryId: 1,
+      });
       if (result.status) {
         setVenueEntityList(result?.data?.data);
       }
@@ -58,6 +60,7 @@ const VenueMenu = () => {
     const insertData = {
       name,
       isActive,
+      categoryId: 1,
     };
     console.log("insertData ::", insertData, isActive);
     if (isEditId) {
@@ -66,7 +69,7 @@ const VenueMenu = () => {
 
     try {
       setIsLoading(true);
-      const result = await axiosPost(apiRouter.ADD_VENUE_MENU, insertData);
+      const result = await axiosPost(apiRouter.ADD_VENUE_AMENITIES, insertData);
       if (result.status) {
         setIsEditId("");
         handleFormToggle(false);
@@ -85,7 +88,9 @@ const VenueMenu = () => {
     try {
       setIsLoading(true);
 
-      const result = await axiosGet(apiRouter.REMOVE_VENUE_MENU + "/" + id);
+      const result = await axiosGet(
+        apiRouter.VENUE_AMENITIES_REMOVE + "/" + id
+      );
       if (result.status) {
         fetchVenueEntityList();
         handleFormToggle(false);
@@ -135,7 +140,7 @@ const VenueMenu = () => {
                                   name="name"
                                   placeholder="Enter Menu"
                                   ref={register({
-                                    required: false,
+                                    required: "Amenity name is required",
                                   })}
                                 />
                               </div>
@@ -158,6 +163,7 @@ const VenueMenu = () => {
                             </div>
 
                             <div className="hr-line-dashed"></div>
+                            {errors?.name && <p>{errors?.name?.message}</p>}
                             <div className="form-group row">
                               <div className="col-sm-4 col-sm-offset-2">
                                 <a

@@ -44,8 +44,10 @@ const SelectBox = (props) => {
                   }
                 }}
                 onBlur={onBlur}
-                value={optionsList.filter((option) =>
-                  value?.includes(option.value)
+                value={optionsList.filter(
+                  (option) =>
+                    // value?.includes(option.value)
+                    option.id == value
                 )}
                 theme={(theme) => ({
                   ...theme,

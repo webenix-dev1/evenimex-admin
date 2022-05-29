@@ -82,14 +82,15 @@ const VenueList = () => {
   const fetchVendersList = async () => {
     try {
       setIsLoading(true);
-      const result = await axiosPost(apiRouter.VENDERS);
+      const result = await axiosPost(apiRouter.VENDERS_SELECT_LIST);
       console.log("result ::", result);
       if (result.status) {
         const option = [];
-        result?.data?.data?.map((item) => {
+        result?.data?.data?.dataList?.map((item) => {
           option.push({
-            label: item?.id,
-            value: item?.fname + item?.lname,
+            ...item,
+            value: item?.id,
+            label: item?.fname + item?.lname,
           });
         });
         setVenderList(option);
@@ -343,7 +344,7 @@ const VenueList = () => {
                   <div className="ibox ">
                     <div className="ibox-title">
                       <h5>
-                        Venue Beverage <small>Create</small>
+                        Venue <small>Create</small>
                       </h5>
                     </div>
                     <div className="ibox-content">
@@ -631,7 +632,6 @@ const VenueList = () => {
 
                             <div className="hr-line-dashed"></div>
                             {errorMsg && <p>{errorMsg}</p>}
-
                             <div className="form-group row">
                               <div className="col-sm-4 col-sm-offset-2">
                                 <a

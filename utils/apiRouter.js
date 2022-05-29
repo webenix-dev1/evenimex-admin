@@ -13,12 +13,19 @@ const apiRouter = {
 
   // User
   VENDERS: prefixRouteV1("getAllVender"),
+  VENDERS_SELECT_LIST: prefixRouteV1("getAllVenderList"),
   ALL_USERS: prefixRouteV1("getAllUser"),
   USER_UPDATE: prefixRouteV1("adminUpdateUser"),
   // Home Slider
+  DASHBOARD_DETAILS: prefixRouteV1("getDashboardDetail"),
   HERO_SLIDER_LIST: prefixRouteV1("heroSliderList"),
   ADD_UPDATE_HERO_SLIDER_LIST: prefixRouteV1("addHeroSlider"),
   REMOVE_HERO_SLIDER_LIST: prefixRouteV1("removeHeroSlider"),
+
+  // Venue Amenities
+  ADD_VENUE_AMENITIES: prefixRouteV1("addAmenities"),
+  VENUE_AMENITIES_LIST: prefixRouteV1("getAmenities"),
+  VENUE_AMENITIES_REMOVE: prefixRouteV1("removeAmenities"),
   // Venue Beverage Route
   VENUE_BEVERAGE_LIST: prefixRouteV1("getVenueBeverageList"),
   ADD_VENUE_BEVERAGE: prefixRouteV1("addVenueBeverage"),
@@ -83,6 +90,10 @@ const apiRouter = {
   // VENUE_PLACE_UPDATE: prefixRouteV1("updateVenuePlace"),
   // VENUE_PLACE_REMOVE: prefixRouteV1("removeVenuePlace"),
   // VENUE_PLACE_LIST: prefixRouteV1("venuePlaceList"),
+
+  // Venue Enquiry
+  VENUE_PLACE_ENQUIRY: prefixRouteV1("getClientVenueEnquiryList"),
+  VENUE_ENQUIRY_REMOVE: prefixRouteV1("removeVenueEnquiry"),
 
   // Contact
   CONTACTUS_LIST: prefixRouteV1("contactUsList"),

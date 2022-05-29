@@ -620,7 +620,7 @@ const VenuePlaceList = () => {
                   <div className="ibox ">
                     <div className="ibox-title">
                       <h5>
-                        Venue Beverage <small>Create</small>
+                        Venue Place <small>Create</small>
                       </h5>
                     </div>
                     <div className="ibox-content">
@@ -831,6 +831,7 @@ const VenuePlaceList = () => {
                               <div className="profilePicMain">
                                 <input
                                   type="file"
+                                  multiple
                                   name="coverImage1"
                                   ref={register({
                                     required:

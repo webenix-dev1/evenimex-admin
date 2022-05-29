@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
-import React from "react";
+import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { profileSelector, removeProfileData } from "../../redux/profileSlice";
 import { removeTokenFromLocal } from "../../utils/helper";
@@ -10,9 +10,9 @@ const Sidebar = (props) => {
   const { cloaseForm } = props;
   const Router = useRouter();
   const { userData } = useSelector(profileSelector);
-  console.log("userData ::", userData);
   const dispatch = useDispatch();
 
+  const [isVenueEntity, setIsVenueEntity] = useState(false);
   // Method
   const logout = () => {
     dispatch(removeProfileData);
@@ -43,12 +43,12 @@ const Sidebar = (props) => {
                       {userData?.user?.fname} {userData?.user?.lname}
                     </strong>
                   </span>{" "}
-                  <span className="text-muted text-xs block">
+                  {/* <span className="text-muted text-xs block">
                     Art Director <b className="caret"></b>
-                  </span>{" "}
+                  </span>{" "} */}
                 </span>{" "}
               </a>
-              <ul className="dropdown-menu animated fadeInRight m-t-xs">
+              {/* <ul className="dropdown-menu animated fadeInRight m-t-xs">
                 <li>
                   <a href="profile.html">Profile</a>
                 </li>
@@ -62,7 +62,7 @@ const Sidebar = (props) => {
                 <li onClick={logout}>
                   <a href="#">Logout</a>
                 </li>
-              </ul>
+              </ul> */}
             </div>
             <div className="logo-element">IN+</div>
           </li>
@@ -144,62 +144,131 @@ const Sidebar = (props) => {
             </Link>
           </li>
           <li
-            className={Router.pathname === router.VENUE ? "active" : ""}
+            className={Router.pathname === router.ENQUIRY ? "active" : ""}
             onClick={cloaseForm}
+          >
+            <Link href={router.ENQUIRY}>
+              <a href={router.ENQUIRY}>
+                <i className="fa fa-diamond"></i>{" "}
+                <span className="nav-label">Enquiry List</span>
+              </a>
+            </Link>
+          </li>
+          <li
+            className={Router.pathname.includes(router.VENUE) ? "active" : ""}
+            onClick={() => {
+              setIsVenueEntity(!isVenueEntity);
+            }}
           >
             <a href="#">
               <i className="fa fa-th-large"></i>{" "}
               <span className="nav-label">Venue Entity</span>{" "}
               <span className="fa arrow"></span>
             </a>
-            <ul className="nav nav-second-level">
-              <li onClick={cloaseForm}>
+            <ul
+              className="nav nav-second-level collapse"
+              style={{
+                height: isVenueEntity ? "auto" : 0,
+                display: isVenueEntity ? "block" : "none",
+              }}
+            >
+              <li
+                onClick={cloaseForm}
+                className={
+                  Router.pathname === router.VENUE_BEVERAGE ? "active" : ""
+                }
+              >
                 <Link href={router.VENUE_BEVERAGE}>
                   <a href="#">Venue Beverage</a>
                 </Link>
               </li>
-              <li onClick={cloaseForm}>
+              <li
+                onClick={cloaseForm}
+                className={
+                  Router.pathname === router.VENUE_DISABLED ? "active" : ""
+                }
+              >
                 <Link href={router.VENUE_DISABLED}>
                   <a href="#">Venue Disabled Facility</a>
                 </Link>
               </li>
-              <li onClick={cloaseForm}>
+              <li
+                onClick={cloaseForm}
+                className={
+                  Router.pathname === router.VENUE_EQUIPMENT ? "active" : ""
+                }
+              >
                 <Link href={router.VENUE_EQUIPMENT}>
                   <a href="#">Venue Equipment</a>
                 </Link>
               </li>
-              <li onClick={cloaseForm}>
+              <li
+                onClick={cloaseForm}
+                className={
+                  Router.pathname === router.VENUE_EVENT ? "active" : ""
+                }
+              >
                 <Link href={router.VENUE_EVENT}>
                   <a href="#">Venue Events</a>
                 </Link>
               </li>
-              <li onClick={cloaseForm}>
+              <li
+                onClick={cloaseForm}
+                className={
+                  Router.pathname === router.VENUE_FACILITY ? "active" : ""
+                }
+              >
                 <Link href={router.VENUE_FACILITY}>
                   <a href="#">Venue Facility</a>
                 </Link>
               </li>
-              <li onClick={cloaseForm}>
+              <li
+                onClick={cloaseForm}
+                className={
+                  Router.pathname === router.VENUE_LOCATION ? "active" : ""
+                }
+              >
                 <Link href={router.VENUE_LOCATION}>
                   <a href="#">Venue Location</a>
                 </Link>
               </li>
-              <li onClick={cloaseForm}>
+              <li
+                onClick={cloaseForm}
+                className={
+                  Router.pathname === router.VENUE_LOCATION_CITY ? "active" : ""
+                }
+              >
                 <Link href={router.VENUE_LOCATION_CITY}>
                   <a href="#">Venue Location City</a>
                 </Link>
               </li>
 
-              <li onClick={cloaseForm}>
+              <li
+                onClick={cloaseForm}
+                className={
+                  Router.pathname === router.VENUE_LOCATION_TYPE ? "active" : ""
+                }
+              >
                 <Link href={router.VENUE_LOCATION_TYPE}>
                   <a href="#">Venue Location Type</a>
                 </Link>
               </li>
-              <li onClick={cloaseForm}>
+              <li
+                onClick={cloaseForm}
+                className={
+                  Router.pathname === router.VENUE_MENU ? "active" : ""
+                }
+              >
                 <Link href={router.VENUE_MENU}>
                   <a href="#">Venue Menu</a>
                 </Link>
               </li>
-              <li onClick={cloaseForm}>
+              <li
+                onClick={cloaseForm}
+                className={
+                  Router.pathname === router.VENUE_SERVICE ? "active" : ""
+                }
+              >
                 <Link href={router.VENUE_SERVICE}>
                   <a href="#">Venue Services</a>
                 </Link>
