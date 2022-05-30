@@ -8626,6 +8626,9 @@ body.md-skin {
   border: 1px solid #f2f3f3;
 }
 
+.form-control__menu .form-control__menu-list {
+  height: 150px;
+}
 
 
 `;

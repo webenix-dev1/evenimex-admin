@@ -13,6 +13,8 @@ import router from "../../utils/router";
 import { useRouter } from "next/router";
 import SelectAndCreateBox from "../../components/SelectAndCreateBox";
 import MyStatefulEditor from "../../components/Editor";
+import convert from "htmr";
+import draftToHtml from "draftjs-to-html";
 
 const VenuePlaceList = () => {
   // Const
@@ -594,9 +596,12 @@ const VenuePlaceList = () => {
         }
       }
     } else {
-      const tempImage = [...venuePlaceImages];
-      tempImage.splice(index, 1);
-      setVenuePlaceImages(tempImage);
+      const res = confirm(`Are you sure you want to remove the venue Image`);
+      if (res) {
+        const tempImage = [...venuePlaceImages];
+        tempImage.splice(index, 1);
+        setVenuePlaceImages(tempImage);
+      }
     }
   };
 
@@ -629,7 +634,7 @@ const VenuePlaceList = () => {
                           <form onSubmit={handleSubmit(handleFormSubmit)}>
                             <div className="form-group row">
                               <label className="col-sm-2 col-form-label">
-                                Venue Name
+                                Venue Name*
                               </label>
                               <div className="col-sm-10">
                                 <input
@@ -645,7 +650,7 @@ const VenuePlaceList = () => {
                             </div>
                             <div className="form-group row">
                               <label className="col-sm-2 col-form-label">
-                                Place Price
+                                Place Price*
                               </label>
                               <div className="col-sm-10">
                                 <input
@@ -661,7 +666,7 @@ const VenuePlaceList = () => {
                             </div>
                             <div className="form-group row">
                               <label className="col-sm-2 col-form-label">
-                                Description
+                                Description*
                               </label>
                               <div className="col-sm-10">
                                 <MyStatefulEditor
@@ -675,7 +680,7 @@ const VenuePlaceList = () => {
                             </div>
                             <div className="form-group row">
                               <label className="col-sm-2 col-form-label">
-                                Place Seats
+                                Place Seats*
                               </label>
                               <div className="col-sm-10">
                                 <input
@@ -691,7 +696,7 @@ const VenuePlaceList = () => {
                             </div>
                             <div className="form-group row">
                               <label className="col-sm-2 col-form-label">
-                                Place Standing
+                                Place Standing*
                               </label>
                               <div className="col-sm-10">
                                 <input
@@ -827,7 +832,7 @@ const VenuePlaceList = () => {
                             </div>
 
                             {/* Image */}
-                            <div className="fieldCombine">
+                            <div className="form-group row">
                               <div className="profilePicMain">
                                 <input
                                   type="file"
@@ -847,19 +852,21 @@ const VenuePlaceList = () => {
                               </div>
                             </div>
 
-                            <div className="row">
-                              {venuePlaceImages?.map((item, index) => {
-                                return (
-                                  <div className="col-md-4">
-                                    <div
-                                      className="profilePicMain"
-                                      onClick={() => removeImage(item, index)}
-                                    >
-                                      <img src={item?.url} />
+                            <div className="form-group row">
+                              <div className="row">
+                                {venuePlaceImages?.map((item, index) => {
+                                  return (
+                                    <div className="col-md-4">
+                                      <div
+                                        className="profilePicMain"
+                                        onClick={() => removeImage(item, index)}
+                                      >
+                                        <img src={item?.url} />
+                                      </div>
                                     </div>
-                                  </div>
-                                );
-                              })}
+                                  );
+                                })}
+                              </div>
                             </div>
 
                             {/* End Image */}
@@ -949,7 +956,11 @@ const VenuePlaceList = () => {
                             return (
                               <tr className="gradeX" key={index}>
                                 <td>{item.name}</td>
-                                <td>{item.discription}</td>
+                                <td>
+                                  {convert(
+                                    draftToHtml(JSON.parse(item?.discription))
+                                  )}
+                                </td>
                                 <td>{item.isActive ? "active" : "disabled"}</td>
                                 <td>{item.isApprove ? "Yes" : "No"}</td>
                                 <td className="center">

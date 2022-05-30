@@ -18,6 +18,8 @@
     "babel-plugin-styled-components": "^1.12.0",
     "crypto-js": "^4.0.0",
     "draft-js": "^0.11.7",
+    "draftjs-to-html": "^0.9.1",
+    "htmr": "^1.0.1",
     "icheck": "^1.0.2",
     "js-cookie": "^2.2.1",
     "moment": "^2.29.1",

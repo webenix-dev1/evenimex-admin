@@ -47,7 +47,7 @@ const SelectBox = (props) => {
                 value={optionsList.filter(
                   (option) =>
                     // value?.includes(option.value)
-                    option.id == value
+                    option.value == value
                 )}
                 theme={(theme) => ({
                   ...theme,

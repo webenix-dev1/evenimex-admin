@@ -7,6 +7,7 @@ import Sidebar from "../../components/Sidebar";
 import apiRouter from "../../utils/apiRouter";
 import { axiosGet, axiosPost } from "../../utils/axiosHelper";
 import SelectBox from "../../components/SelectBox";
+import moment from "moment";
 
 const VenueEnquiry = () => {
   // Const
@@ -198,6 +199,7 @@ const VenueEnquiry = () => {
                         <thead>
                           <tr>
                             <th>Name</th>
+                            <th>Date</th>
                             <th>Enquiry</th>
                             <th>Contact</th>
                             <th>Action</th>
@@ -206,6 +208,7 @@ const VenueEnquiry = () => {
                         <tfoot>
                           <tr>
                             <th>Name</th>
+                            <th>Date</th>
                             <th>Enquiry</th>
                             <th>Contact</th>
                             <th>Action</th>
@@ -219,6 +222,9 @@ const VenueEnquiry = () => {
                                   {item.fname} {item.lname}
                                 </td>
                                 <td>{item.message}</td>
+                                <td>
+                                  {moment(item.date).format("DD.MM.YYYY")}
+                                </td>
                                 <td>{item.phone || item.email}</td>
                                 <td className="center">
                                   {/* <a

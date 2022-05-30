@@ -51,7 +51,7 @@ const SelectAndCreateBox = (props) => {
 
   return (
     <>
-      <Form.Label>{label}</Form.Label>
+      <Form.Label>{label}*</Form.Label>
       <Controller
         name={name}
         control={control}
