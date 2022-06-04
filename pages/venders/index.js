@@ -6,6 +6,7 @@ import LoaderComponent from "../../components/LoaderComponent";
 import Sidebar from "../../components/Sidebar";
 import apiRouter from "../../utils/apiRouter";
 import { axiosGet, axiosPost } from "../../utils/axiosHelper";
+import Pagination from "react-responsive-pagination";
 
 const Venders = () => {
   // Const
@@ -15,6 +16,11 @@ const Venders = () => {
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [isEditId, setIsEditId] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [pagination, setPagination] = useState({
+    page: 0,
+    size: 20,
+    totalPages: 0,
+  });
 
   // Effects
   useEffect(() => {
@@ -22,13 +28,22 @@ const Venders = () => {
   }, []);
 
   // Method
-  const fetchVenueEntityList = async () => {
+  const fetchVenueEntityList = async (page = 1) => {
     try {
       setIsLoading(true);
-      const result = await axiosPost(apiRouter.VENDERS);
+      const result = await axiosPost(apiRouter.VENDERS, {
+        // ...filter,
+        page: page - 1,
+        size: pagination.size,
+      });
       console.log("result ::", result);
       if (result.status) {
         setVenueEntityList(result?.data?.data?.dataList);
+        setPagination({
+          ...pagination,
+          page: page,
+          totalPages: result.data?.data?.totalPages,
+        });
       }
     } catch (error) {
     } finally {
@@ -111,6 +126,9 @@ const Venders = () => {
     }
   };
 
+  const handlePagination = (event) => {
+    fetchVenueEntityList(event);
+  };
   // Render
 
   return (
@@ -334,6 +352,11 @@ const Venders = () => {
                           })}
                         </tbody>
                       </table>
+                      <Pagination
+                        current={pagination.page}
+                        total={pagination.totalPages}
+                        onPageChange={handlePagination}
+                      />
                     </div>
                   </div>
                 </div>

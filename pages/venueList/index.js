@@ -24,6 +24,7 @@ import { S3Bucket } from "../../utils/constant";
 import router from "../../utils/router";
 import Link from "next/link";
 import MyStatefulEditor from "../../components/Editor";
+import Pagination from "react-responsive-pagination";
 
 const VenueList = () => {
   // Const
@@ -47,6 +48,11 @@ const VenueList = () => {
     coverImage5: "",
   });
   const [venueDescription, setVenueDescription] = useState("");
+  const [pagination, setPagination] = useState({
+    page: 0,
+    size: 20,
+    totalPages: 0,
+  });
 
   console.log("venueLocationCityList ::", venueLocationCityList);
 
@@ -137,13 +143,22 @@ const VenueList = () => {
         console.error(error.message);
       });
   };
-  const fetchVenueEntityList = async () => {
+  const fetchVenueEntityList = async (page = 1, venueFilter) => {
     try {
       setIsLoading(true);
-      const result = await axiosGet(apiRouter.VENUE_LIST);
+      const result = await axiosPost(apiRouter.VENUE_LIST, {
+        // ...filter,
+        page: page - 1,
+        size: pagination.size,
+      });
       console.log("result ::", result);
       if (result.status) {
         setVenueEntityList(result?.data?.data?.dataList);
+        setPagination({
+          ...pagination,
+          page: page,
+          totalPages: result.data?.data?.totalPages,
+        });
       }
     } catch (error) {
     } finally {
@@ -322,6 +337,10 @@ const VenueList = () => {
         [name]: coverImage,
       });
     }
+  };
+
+  const handlePagination = (event) => {
+    fetchVenueEntityList(event);
   };
 
   // Render
@@ -757,6 +776,11 @@ const VenueList = () => {
                           })}
                         </tbody>
                       </table>
+                      <Pagination
+                        current={pagination.page}
+                        total={pagination.totalPages}
+                        onPageChange={handlePagination}
+                      />
                     </div>
                   </div>
                 </div>

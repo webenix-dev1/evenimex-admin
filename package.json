@@ -35,6 +35,7 @@
     "react-loader-spinner": "^4.0.0",
     "react-redux": "^7.2.2",
     "react-responsive-modal": "^6.0.1",
+    "react-responsive-pagination": "^1.4.1",
     "react-select": "^4.1.0",
     "react-styled-flexboxgrid": "^3.2.1",
     "react-toastify": "^7.0.3",
