@@ -208,7 +208,13 @@ const VenueList = () => {
         },
       });
       setValue("name", data?.name);
-      setVenueDescription(JSON.parse(data?.discription));
+      let des = "";
+      try {
+        des = JSON.parse(data?.discription);
+      } catch (e) {
+        des = "";
+      }
+      setVenueDescription(des);
       setValue("address", data?.address);
       setValue("participants", data?.participants);
       setValue("city", data?.city);
