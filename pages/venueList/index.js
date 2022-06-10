@@ -25,11 +25,15 @@ import router from "../../utils/router";
 import Link from "next/link";
 import MyStatefulEditor from "../../components/Editor";
 import Pagination from "react-responsive-pagination";
+import { useRouter } from "next/router";
+import VenderFilter from "../../components/VenderFilter";
 
 const VenueList = () => {
   // Const
   const { control, register, setValue, handleSubmit, watch, errors, reset } =
     useForm();
+  const Router = useRouter();
+  const venderId = Router?.query?.venderId || "";
   // State
   const [venueEntityList, setVenueEntityList] = useState([]);
   const [venderList, setVenderList] = useState([]);
@@ -90,16 +94,25 @@ const VenueList = () => {
       setIsLoading(true);
       const result = await axiosPost(apiRouter.VENDERS_SELECT_LIST);
       console.log("result ::", result);
+      let id = "";
       if (result.status) {
         const option = [];
         result?.data?.data?.dataList?.map((item) => {
           option.push({
             ...item,
             value: item?.id,
-            label: item?.fname + item?.lname,
+            label: item?.fname + " " + item?.lname,
           });
+          if (venderId == item.id) {
+            id = venderId;
+          }
         });
         setVenderList(option);
+        if (id) {
+          fetchVenueEntityList(1, { venderId: id });
+        } else {
+          fetchVenueEntityList(1, { venderId: null });
+        }
       }
     } catch (error) {
     } finally {
@@ -146,11 +159,16 @@ const VenueList = () => {
   const fetchVenueEntityList = async (page = 1, venueFilter) => {
     try {
       setIsLoading(true);
-      const result = await axiosPost(apiRouter.VENUE_LIST, {
-        // ...filter,
+      const { venderId } = venueFilter;
+      const filter = {
         page: page - 1,
         size: pagination.size,
-      });
+      };
+      if (venderId) {
+        filter.venderId = venderId;
+      }
+
+      const result = await axiosPost(apiRouter.VENUE_LIST, filter);
       console.log("result ::", result);
       if (result.status) {
         setVenueEntityList(result?.data?.data?.dataList);
@@ -175,6 +193,7 @@ const VenueList = () => {
 
   const handleFormEdit = async (data) => {
     const { id, isActive, isApprove } = data;
+    console.log("Data::", data);
     handleFormToggle(true);
 
     setIsEditId(id);
@@ -223,6 +242,7 @@ const VenueList = () => {
       setValue("locality", data?.locality);
       setValue("state", data?.state);
       setValue("country", data?.country);
+      setValue("venderId", data?.userId);
 
       setValue("isApprove", isApprove);
       setValue("isActive", isActive);
@@ -254,12 +274,14 @@ const VenueList = () => {
       locality: val.locality,
       state: val.state,
       country: val.country,
+      // Admin can change vender for current space
+      userId: val.venderId,
     };
 
     if (isEditId) {
       insertData.venueMainId = isEditId;
     } else {
-      insertData.userId = val.venderId;
+      // insertData.userId = val.venderId;
     }
 
     console.log("venueImages ::", venueImages);
@@ -349,6 +371,10 @@ const VenueList = () => {
     fetchVenueEntityList(event);
   };
 
+  const handleVenderFilter = async (val) => {
+    const filter = { venderId: val === "all" ? null : val };
+    fetchVenueEntityList(1, filter);
+  };
   // Render
 
   return (
@@ -360,6 +386,11 @@ const VenueList = () => {
           {/* Header */}
           <Header />
           {/* End Header */}
+          <VenderFilter
+            venderList={venderList}
+            handleVenderFilter={handleVenderFilter}
+            venderId={venderId}
+          />
 
           {/* Banner Form */}
           {isFormOpen && (
@@ -492,7 +523,7 @@ const VenueList = () => {
                                 placeholder={"City"}
                                 control={control}
                                 optionsList={venueLocationCityList}
-                                label="City"
+                                label="City*"
                               />
                             </div>
                             <div className="form-group row">
@@ -527,17 +558,17 @@ const VenueList = () => {
                                 />
                               </div>
                             </div>
-                            {!isEditId && (
-                              <div class="form-group row">
-                                <SelectBox
-                                  name={"venderId"}
-                                  placeholder={"Vender"}
-                                  control={control}
-                                  optionsList={venderList}
-                                  label="Vender"
-                                />
-                              </div>
-                            )}
+                            {/* {!isEditId && ( */}
+                            <div class="form-group row">
+                              <SelectBox
+                                name={"venderId"}
+                                placeholder={"Vender"}
+                                control={control}
+                                optionsList={venderList}
+                                label="Vender*"
+                              />
+                            </div>
+                            {/* )} */}
 
                             <div>
                               <label>
@@ -638,7 +669,7 @@ const VenueList = () => {
                               </div>
                               <div className="profilePicMain">
                                 <input
-                                  type="file*"
+                                  type="file"
                                   name="coverImage5"
                                   ref={register()}
                                   onChange={(e) =>
@@ -700,6 +731,11 @@ const VenueList = () => {
                         href="javascript:void(0)"
                         onClick={() => {
                           handleFormToggle(true);
+                          if (venderId) {
+                            setTimeout(() => {
+                              setValue("venderId", venderId);
+                            }, 200);
+                          }
                         }}
                       >
                         <i className="fa fa-plus"></i>
@@ -750,22 +786,29 @@ const VenueList = () => {
                                   >
                                     <i className="fa fa-edit"></i>
                                   </a>{" "}
-                                  <Link
+                                  {/* <Link
                                     href={{
                                       pathname: router.VENUE_PLACE_LIST,
                                       query: {
                                         venueId: item?.id,
                                       },
                                     }}
-                                    as={router.VENUE_PLACE_LIST}
+                                    // as={`${router.VENUE_PLACE_LIST}`}
+                                    as={`${router.VENUE_PLACE_LIST}/${item?.id}`}
+                                  > */}
+                                  <a
+                                    href="javascript:void(0)"
+                                    className="btn btn-primary btn-sm"
+                                    onClick={() => {
+                                      Router?.push({
+                                        pathname: `${router.VENUE_PLACE_LIST}/${item?.id}`,
+                                        // query: { venueid: item?.id },
+                                      });
+                                    }}
                                   >
-                                    <a
-                                      href="javascript:void(0)"
-                                      className="btn btn-primary btn-sm"
-                                    >
-                                      <i className="fa fa-list"></i>
-                                    </a>
-                                  </Link>{" "}
+                                    <i className="fa fa-list"></i>
+                                  </a>{" "}
+                                  {/* </Link>{" "} */}
                                   <a
                                     href="javascript:void(0)"
                                     id="data.id"

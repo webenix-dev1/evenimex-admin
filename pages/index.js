@@ -15,6 +15,7 @@ const Home = () => {
     user: 0,
     venders: 0,
     venue: 0,
+    enquiry: 0,
   });
 
   // Effects
@@ -104,7 +105,7 @@ const Home = () => {
                   <h5>Inquiries</h5>
                 </div>
                 <div class="ibox-content">
-                  <h1 class="no-margins">80,600</h1>
+                  <h1 class="no-margins">{dashboardData.enquiry}</h1>
                   <div class="stat-percent font-bold text-danger">
                     {/* 38% <i class="fa fa-level-down"></i> */}
                   </div>

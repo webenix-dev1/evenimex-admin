@@ -15,11 +15,21 @@ const Users = () => {
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [isEditId, setIsEditId] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [errorMsg, setErrorMsg] = useState("");
 
   // Effects
   useEffect(() => {
     fetchVenueEntityList();
   }, []);
+
+  useEffect(() => {
+    for (const error of Object.keys(errors)) {
+      const msg = errors[error]?.message;
+      if (msg) {
+        return setErrorMsg(msg || "");
+      }
+    }
+  }, [errors]);
 
   // Method
   const fetchVenueEntityList = async () => {
@@ -39,6 +49,7 @@ const Users = () => {
     if (val === false) {
       reset();
       setIsEditId(false);
+      setErrorMsg("");
     }
     setIsFormOpen(val);
   };
@@ -52,17 +63,20 @@ const Users = () => {
       setValue("fname", fname);
       setValue("lname", lname);
       setValue("email", email);
+      setValue("mobile", mobile);
       setValue("isActive", isActive);
     }, 300);
   };
 
   const handleFormSubmit = async (val) => {
+    setErrorMsg("");
     console.log("val ::", val);
-    const { fname, lname, email, password, isActive } = val;
+    const { fname, lname, email, mobile, password, isActive } = val;
     const insertData = {
       fname,
       lname,
       email,
+      mobile,
       isActive,
     };
     if (password) {
@@ -149,7 +163,7 @@ const Users = () => {
                                   name="fname"
                                   placeholder="Enter First Name"
                                   ref={register({
-                                    required: false,
+                                    required: "Name is required",
                                   })}
                                 />
                               </div>
@@ -165,7 +179,7 @@ const Users = () => {
                                   name="lname"
                                   placeholder="Enter Last Name"
                                   ref={register({
-                                    required: false,
+                                    required: "Last name is required",
                                   })}
                                 />
                               </div>
@@ -180,6 +194,22 @@ const Users = () => {
                                   className="form-control"
                                   name="email"
                                   placeholder="Enter email"
+                                  ref={register({
+                                    required: "Email is required",
+                                  })}
+                                />
+                              </div>
+                            </div>
+                            <div className="form-group row">
+                              <label className="col-sm-2 col-form-label">
+                                Mobile
+                              </label>
+                              <div className="col-sm-10">
+                                <input
+                                  type="email"
+                                  className="form-control"
+                                  name="mobile"
+                                  placeholder="Enter mobile"
                                   ref={register({
                                     required: false,
                                   })}
@@ -198,7 +228,7 @@ const Users = () => {
                                     name="password"
                                     placeholder="Enter Password"
                                     ref={register({
-                                      required: false,
+                                      required: "Password is required",
                                     })}
                                   />
                                 </div>
@@ -222,6 +252,7 @@ const Users = () => {
                             </div>
 
                             <div className="hr-line-dashed"></div>
+                            {errorMsg && <p>{errorMsg}</p>}
                             <div className="form-group row">
                               <div className="col-sm-4 col-sm-offset-2">
                                 <a

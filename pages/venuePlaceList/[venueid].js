@@ -15,8 +15,10 @@ import SelectAndCreateBox from "../../components/SelectAndCreateBox";
 import MyStatefulEditor from "../../components/Editor";
 import convert from "htmr";
 import draftToHtml from "draftjs-to-html";
+import Link from "next/link";
 
-const VenuePlaceList = () => {
+const VenuePlaceList = ({ venueid }) => {
+  console.log("venueid ::", venueid);
   // Const
   const Router = useRouter();
   const { control, register, setValue, handleSubmit, watch, errors, reset } =
@@ -56,7 +58,8 @@ const VenuePlaceList = () => {
 
   // Effects
   useEffect(() => {
-    const { venueId } = Router.query;
+    // const { venueId } = Router.query;
+    const venueId = venueid || "";
     console.log("Venue Place Page::", venueId);
 
     if (venueId) {
@@ -64,7 +67,7 @@ const VenuePlaceList = () => {
       fetchVenueEntityList(venueId);
       fetchVenueAmenities();
     } else {
-      return Router.push(router.VENUE_LIST);
+      // return Router.push(router.VENUE_LIST);
     }
   }, []);
 
@@ -77,7 +80,7 @@ const VenuePlaceList = () => {
     }
   }, [errors]);
 
-  console.log("errors ::", errors);
+  // console.log("errors ::", errors);
 
   // Method
 
@@ -178,117 +181,6 @@ const VenuePlaceList = () => {
       console.log("VENUE_PLACE_DETAIL ::", result);
 
       return result?.data?.data || "";
-
-      if (result.status) {
-        const data = result.data?.data;
-        setVenuePlaceDetails(data);
-        const images = [];
-        data?.images.map((item) => {
-          images.push({
-            ...item,
-            url: item.image,
-            isUpload: false,
-          });
-        });
-        setVenuePlaceImages(images);
-        setVenueImages({
-          ...venueImages,
-          coverImage1: {
-            url: data?.coverImage1 || "",
-            isUpload: false,
-            image: "",
-          },
-          coverImage2: {
-            url: data?.coverImage2 || "",
-            isUpload: false,
-            image: "",
-          },
-          coverImage3: {
-            url: data?.coverImage3 || "",
-            isUpload: false,
-            image: "",
-          },
-          coverImage4: {
-            url: data?.coverImage4 || "",
-            isUpload: false,
-            image: "",
-          },
-          coverImage5: {
-            url: data?.coverImage5 || "",
-            isUpload: false,
-            image: "",
-          },
-        });
-
-        const venueMenuListTemp = [];
-        const venueBeverageListTemp = [];
-        const venueLocationListTemp = [];
-        const venueLocationTypeListTemp = [];
-        const venueEquipmentListTemp = [];
-        const venueServiceListTemp = [];
-        const venueDisabledFacilitiesListTemp = [];
-        const venueFacilitiesListTemp = [];
-        const venueEventsListTemp = [];
-
-        data?.amenities.map(({ amenity }) => {
-          const option = {
-            label: amenity?.name,
-            value: amenity?.id,
-            id: amenity?.id,
-            categoryId: amenity?.categoryId,
-            isAdded: true,
-          };
-          switch (amenity.categoryId) {
-            case 1:
-              venueMenuListTemp.push(option);
-              break;
-            case 2:
-              venueBeverageListTemp.push(option);
-              break;
-            case 3:
-              venueLocationListTemp.push(option);
-              break;
-            case 4:
-              venueLocationTypeListTemp.push(option);
-              break;
-            case 5:
-              venueEquipmentListTemp.push(option);
-              break;
-            case 6:
-              venueServiceListTemp.push(option);
-              break;
-            case 7:
-              venueDisabledFacilitiesListTemp.push(option);
-              break;
-            case 8:
-              venueFacilitiesListTemp.push(option);
-              break;
-            case 9:
-              venueEventsListTemp.push(option);
-              break;
-            default:
-              break;
-          }
-        });
-
-        setTimeout(() => {
-          setValue("name", data?.name);
-          setVenueDescription(JSON.parse(data?.discription));
-          setValue("price", data?.price);
-          setValue("seats", data?.seats);
-          setValue("days", data?.days);
-          setValue("standing", data?.standing);
-          setValue("menu", venueMenuListTemp);
-          setValue("beverage", venueBeverageListTemp);
-          setValue("location", venueLocationListTemp);
-          setValue("locationType", venueLocationTypeListTemp);
-          setValue("equipment", venueEquipmentListTemp);
-          setValue("service", venueServiceListTemp);
-          setValue("disabledFacilities", venueDisabledFacilitiesListTemp);
-          setValue("facilities", venueFacilitiesListTemp);
-          setValue("events", venueEventsListTemp);
-        }, 300);
-      }
     } catch (error) {
     } finally {
       setIsLoading(false);
@@ -614,7 +506,6 @@ const VenuePlaceList = () => {
 
         <div id="page-wrapper" className="gray-bg dashbard-1">
           {/* Header */}
-          <Header />
           {/* End Header */}
 
           {/* Banner Form */}
@@ -857,11 +748,16 @@ const VenuePlaceList = () => {
                                 {venuePlaceImages?.map((item, index) => {
                                   return (
                                     <div className="col-md-4">
-                                      <div
-                                        className="profilePicMain"
-                                        onClick={() => removeImage(item, index)}
-                                      >
+                                      <div className="profilePicMain">
                                         <img src={item?.url} />
+                                        <div
+                                          className="venuimgdelete"
+                                          onClick={() =>
+                                            removeImage(item, index)
+                                          }
+                                        >
+                                          <i className="fa fa-trash"></i>
+                                        </div>
                                       </div>
                                     </div>
                                   );
@@ -971,6 +867,26 @@ const VenuePlaceList = () => {
                                   >
                                     <i className="fa fa-edit"></i>
                                   </a>{" "}
+                                  <Link
+                                    href={{
+                                      pathname: router.EVENT_BOOK,
+                                      query: {
+                                        venueId: item?.id,
+                                      },
+                                    }}
+                                    as={router.EVENT_BOOK}
+                                  >
+                                    <a
+                                      href="javascript:void(0)"
+                                      id="data.id"
+                                      className="admin_remove btn btn-warning btn-sm"
+                                      data-toggle="modal"
+                                      data-target="#exampleModal"
+                                      // onClick={() => handleItemDelete(item)}
+                                    >
+                                      <i className="fa fa-envelope-o"></i>
+                                    </a>
+                                  </Link>{" "}
                                   <a
                                     href="javascript:void(0)"
                                     id="data.id"
@@ -999,6 +915,16 @@ const VenuePlaceList = () => {
       </div>
     </>
   );
+};
+
+export const getServerSideProps = async ({ params, req }) => {
+  const { venueid } = params;
+
+  return {
+    props: {
+      venueid: venueid,
+    },
+  };
 };
 
 export default VenuePlaceList;

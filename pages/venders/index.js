@@ -7,15 +7,19 @@ import Sidebar from "../../components/Sidebar";
 import apiRouter from "../../utils/apiRouter";
 import { axiosGet, axiosPost } from "../../utils/axiosHelper";
 import Pagination from "react-responsive-pagination";
+import router from "../../utils/router";
+import { useRouter } from "next/router";
 
 const Venders = () => {
   // Const
   const { register, setValue, handleSubmit, watch, errors, reset } = useForm();
+  const Router = useRouter();
   // State
   const [venueEntityList, setVenueEntityList] = useState([]);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [isEditId, setIsEditId] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [errorMsg, setErrorMsg] = useState("");
   const [pagination, setPagination] = useState({
     page: 0,
     size: 20,
@@ -26,6 +30,15 @@ const Venders = () => {
   useEffect(() => {
     fetchVenueEntityList();
   }, []);
+
+  useEffect(() => {
+    for (const error of Object.keys(errors)) {
+      const msg = errors[error]?.message;
+      if (msg) {
+        return setErrorMsg(msg || "");
+      }
+    }
+  }, [errors]);
 
   // Method
   const fetchVenueEntityList = async (page = 1) => {
@@ -54,6 +67,7 @@ const Venders = () => {
     if (val === false) {
       reset();
       setIsEditId(false);
+      setErrorMsg("");
     }
     setIsFormOpen(val);
   };
@@ -67,18 +81,22 @@ const Venders = () => {
       setValue("fname", fname);
       setValue("lname", lname);
       setValue("email", email);
+      setValue("mobile", mobile);
       setValue("isActive", isActive);
     }, 300);
   };
 
   const handleFormSubmit = async (val) => {
+    setErrorMsg("");
+
     console.log("val ::", val);
-    const { fname, lname, email, password, isActive } = val;
+    const { fname, lname, email, mobile, password, isActive } = val;
     const insertData = {
       fname,
       lname,
       email,
       isActive,
+      mobile,
     };
     if (password) {
       insertData.password = password;
@@ -129,6 +147,17 @@ const Venders = () => {
   const handlePagination = (event) => {
     fetchVenueEntityList(event);
   };
+
+  const handleRedirect = (item, path) => {
+    console.log("Item ::", item);
+    Router?.push(
+      {
+        pathname: path,
+        query: { venderId: item?.id },
+      },
+      path
+    );
+  };
   // Render
 
   return (
@@ -167,7 +196,7 @@ const Venders = () => {
                                   name="fname"
                                   placeholder="Enter First Name"
                                   ref={register({
-                                    required: false,
+                                    required: "Name is required",
                                   })}
                                 />
                               </div>
@@ -183,7 +212,7 @@ const Venders = () => {
                                   name="lname"
                                   placeholder="Enter Last Name"
                                   ref={register({
-                                    required: false,
+                                    required: "Last name is required",
                                   })}
                                 />
                               </div>
@@ -198,6 +227,22 @@ const Venders = () => {
                                   className="form-control"
                                   name="email"
                                   placeholder="Enter email"
+                                  ref={register({
+                                    required: "Email is required",
+                                  })}
+                                />
+                              </div>
+                            </div>
+                            <div className="form-group row">
+                              <label className="col-sm-2 col-form-label">
+                                Mobile
+                              </label>
+                              <div className="col-sm-10">
+                                <input
+                                  type="tel"
+                                  className="form-control"
+                                  name="mobile"
+                                  placeholder="Enter mobile"
                                   ref={register({
                                     required: false,
                                   })}
@@ -216,7 +261,7 @@ const Venders = () => {
                                     name="password"
                                     placeholder="Enter Password"
                                     ref={register({
-                                      required: false,
+                                      required: "Password is required",
                                     })}
                                   />
                                 </div>
@@ -240,6 +285,7 @@ const Venders = () => {
                             </div>
 
                             <div className="hr-line-dashed"></div>
+                            {errorMsg && <p>{errorMsg}</p>}
                             <div className="form-group row">
                               <div className="col-sm-4 col-sm-offset-2">
                                 <a
@@ -329,6 +375,24 @@ const Venders = () => {
                                   <td>{item.isClient ? "Client" : "User"}</td>
                                 )}
                                 <td className="center">
+                                  <a
+                                    href="javascript:void(0)"
+                                    className="btn btn-primary btn-sm"
+                                    onClick={() =>
+                                      handleRedirect(item, router.VENUE_LIST)
+                                    }
+                                  >
+                                    <i className="fa fa-plus-square-o"></i>
+                                  </a>{" "}
+                                  <a
+                                    href="javascript:void(0)"
+                                    className="btn btn-primary btn-sm"
+                                    onClick={() =>
+                                      handleRedirect(item, router.ENQUIRY)
+                                    }
+                                  >
+                                    <i className="fa fa-envelope-o"></i>
+                                  </a>{" "}
                                   <a
                                     href="javascript:void(0)"
                                     className="btn btn-primary btn-sm"

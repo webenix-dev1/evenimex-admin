@@ -8630,7 +8630,19 @@ body.md-skin {
   height: 150px;
 }
 
-
+.venuimgdelete{
+  position: absolute;
+    right: 0px;
+    top: 0;
+    background: #1eb293;
+    padding: 10px;
+    border-radius: 6px;
+    cursor:pointer;
+}
+.venuimgdelete .fa{
+  font-size: 22px;
+    color: red;
+}
 `;
 
 // export default GlobalStyle;

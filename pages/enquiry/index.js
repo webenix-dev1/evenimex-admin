@@ -8,22 +8,35 @@ import apiRouter from "../../utils/apiRouter";
 import { axiosGet, axiosPost } from "../../utils/axiosHelper";
 import SelectBox from "../../components/SelectBox";
 import moment from "moment";
+import { useRouter } from "next/router";
 
 const VenueEnquiry = () => {
   // Const
   const { control, register, setValue, handleSubmit, watch, errors, reset } =
     useForm();
+  const Router = useRouter();
+  const venderId = Router?.query?.venderId || "";
+
   // State
   const [venderList, setVenderList] = useState([]);
   const [venueEnquiryList, setVenueEnquiryList] = useState([]);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [isEditId, setIsEditId] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [venderData, setVenderData] = useState(venderId || "");
 
   // Effects
   useEffect(() => {
     fetchVendersList();
   }, []);
+
+  useEffect(() => {
+    if (Router?.query?.venderId) {
+      console.log("Router ::", Router);
+      setValue("venderId", Router?.query?.venderId);
+      fetchVenueEnquiryList(Router?.query?.venderId);
+    }
+  }, [Router]);
 
   // Method
   const fetchVendersList = async () => {
@@ -31,6 +44,7 @@ const VenueEnquiry = () => {
       setIsLoading(true);
       const result = await axiosPost(apiRouter.VENDERS_SELECT_LIST);
       console.log("result ::", result);
+      let id = "";
       if (result.status) {
         const option = [];
         result?.data?.data?.dataList?.map((item) => {
@@ -39,9 +53,19 @@ const VenueEnquiry = () => {
             value: item?.id,
             label: item?.fname + item?.lname,
           });
+          if (venderId == item.id) {
+            id = venderId;
+          }
         });
         console.log("option ::", option);
         setVenderList(option);
+        console.log("venderId ::", venderId);
+
+        console.log("ID ::", id);
+        if (id) {
+          setValue("venderId", id);
+          fetchVenueEnquiryList(id);
+        }
       }
     } catch (error) {
     } finally {
@@ -84,6 +108,7 @@ const VenueEnquiry = () => {
   const handleFormSubmit = async (val) => {
     const { venderId } = val;
 
+    setVenderData(venderId);
     fetchVenueEnquiryList(venderId);
     console.log("insertData ::", val);
   };
@@ -101,7 +126,7 @@ const VenueEnquiry = () => {
           apiRouter.VENUE_ENQUIRY_REMOVE + "/" + id
         );
         if (result.status) {
-          fetchVenueEnquiryList();
+          fetchVenueEnquiryList(venderData);
           handleFormToggle(false);
         }
       } catch (error) {
@@ -131,7 +156,7 @@ const VenueEnquiry = () => {
                 <div className="ibox ">
                   <div className="ibox-title">
                     <h5>
-                      Venue Enquiry <small>Create</small>
+                      Venue Enquiry <small></small>
                     </h5>
                   </div>
                   <div className="ibox-content">
@@ -199,7 +224,8 @@ const VenueEnquiry = () => {
                         <thead>
                           <tr>
                             <th>Name</th>
-                            <th>Date</th>
+                            <th>Start Date</th>
+                            <th>End Date</th>
                             <th>Enquiry</th>
                             <th>Contact</th>
                             <th>Action</th>
@@ -208,7 +234,8 @@ const VenueEnquiry = () => {
                         <tfoot>
                           <tr>
                             <th>Name</th>
-                            <th>Date</th>
+                            <th>Start Date</th>
+                            <th>End Date</th>
                             <th>Enquiry</th>
                             <th>Contact</th>
                             <th>Action</th>
@@ -224,6 +251,9 @@ const VenueEnquiry = () => {
                                 <td>{item.message}</td>
                                 <td>
                                   {moment(item.date).format("DD.MM.YYYY")}
+                                </td>
+                                <td>
+                                  {moment(item``.endDate).format("DD.MM.YYYY")}
                                 </td>
                                 <td>{item.phone || item.email}</td>
                                 <td className="center">

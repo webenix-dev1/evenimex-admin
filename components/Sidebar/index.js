@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { profileSelector, removeProfileData } from "../../redux/profileSlice";
 import { removeTokenFromLocal } from "../../utils/helper";
 import router from "../../utils/router";
+import { Avatar } from "@agney/react-avatar";
 
 const Sidebar = (props) => {
   const { cloaseForm } = props;
@@ -28,10 +29,17 @@ const Sidebar = (props) => {
             <div className="dropdown profile-element">
               {" "}
               <span>
-                <img
+                {/* <img
                   alt="image"
                   className="img-circle"
-                  src="img/profile_small.jpg"
+                  src="/img/profile_small.jpg"
+                /> */}
+                <Avatar
+                  backgrounds={["#1ab394"]}
+                  text={`${userData?.user?.fname.charAt(
+                    0
+                  )}${userData?.user?.lname.charAt(0)}`}
+                  htmlWidth="50px"
                 />
               </span>
               <a data-toggle="dropdown" className="dropdown-toggle" href="#">
@@ -155,7 +163,7 @@ const Sidebar = (props) => {
             </Link>
           </li>
           <li
-            className={Router.pathname.includes(router.VENUE) ? "active" : ""}
+            className={Router.pathname.includes("venue/") ? "active" : ""}
             onClick={() => {
               setIsVenueEntity(!isVenueEntity);
             }}
