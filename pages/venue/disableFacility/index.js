@@ -198,7 +198,7 @@ const VenueDisableFacility = () => {
               <div className="col-lg-12">
                 <div className="ibox">
                   <div className="ibox-title">
-                    <h5>Admin</h5>
+                    <h5>Disable Facilities</h5>
                     <div className="ibox-tools">
                       <a className="collapse-link">
                         <i className="fa fa-chevron-up"></i>
