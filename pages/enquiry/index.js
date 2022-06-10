@@ -253,7 +253,7 @@ const VenueEnquiry = () => {
                                   {moment(item.date).format("DD.MM.YYYY")}
                                 </td>
                                 <td>
-                                  {moment(item``.endDate).format("DD.MM.YYYY")}
+                                  {moment(item.endDate).format("DD.MM.YYYY")}
                                 </td>
                                 <td>{item.phone || item.email}</td>
                                 <td className="center">
