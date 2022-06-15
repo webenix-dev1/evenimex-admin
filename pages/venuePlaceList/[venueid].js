@@ -358,7 +358,7 @@ const VenuePlaceList = ({ venueid }) => {
       });
       insertData.removeAmenities = removeAmenities;
     } else {
-      insertData.venueId = isVenueId;
+      insertData.venueMainId = isVenueId;
     }
 
     // console.log("venueImages ::", venueImages);

@@ -95,6 +95,10 @@ const apiRouter = {
   VENUE_PLACE_ENQUIRY: prefixRouteV1("getClientVenueEnquiryList"),
   VENUE_ENQUIRY_REMOVE: prefixRouteV1("removeVenueEnquiry"),
 
+  // Venue Event Book
+  VENUE_PLACE_EVENTBOOK: prefixRouteV1("getClientEventbook"),
+  VENUE_EVENTBOOK_REMOVE: prefixRouteV1("removeVenueEnquiry"),
+
   // Contact
   CONTACTUS_LIST: prefixRouteV1("contactUsList"),
 

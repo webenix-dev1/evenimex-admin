@@ -163,6 +163,17 @@ const Sidebar = (props) => {
             </Link>
           </li>
           <li
+            className={Router.pathname === router.EVENT_BOOK ? "active" : ""}
+            onClick={cloaseForm}
+          >
+            <Link href={router.EVENT_BOOK}>
+              <a href={router.EVENT_BOOK}>
+                <i className="fa fa-diamond"></i>{" "}
+                <span className="nav-label">EventBook List</span>
+              </a>
+            </Link>
+          </li>
+          <li
             className={Router.pathname.includes("venue/") ? "active" : ""}
             onClick={() => {
               setIsVenueEntity(!isVenueEntity);

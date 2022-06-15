@@ -18,6 +18,7 @@ const router = {
   VENUE: "/venue",
   VENUE_LIST: "/venueList",
   VENUE_PLACE_LIST: "/venuePlaceList",
+  EVENT_BOOK: "/eventbooking",
   VENUE_PLACE: "/venuePlace",
   VENUE_BEVERAGE: "/venue/beverage",
   VENUE_DISABLED: "/venue/disableFacility",
