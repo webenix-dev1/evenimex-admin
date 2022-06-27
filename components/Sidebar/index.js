@@ -173,6 +173,7 @@ const Sidebar = (props) => {
               </a>
             </Link>
           </li>
+
           <li
             className={Router.pathname.includes("venue/") ? "active" : ""}
             onClick={() => {
@@ -293,6 +294,17 @@ const Sidebar = (props) => {
                 </Link>
               </li>
             </ul>
+          </li>
+          <li
+            className={Router.pathname === router.NEWSLETTER ? "active" : ""}
+            onClick={cloaseForm}
+          >
+            <Link href={router.NEWSLETTER}>
+              <a href={router.NEWSLETTER}>
+                <i className="fa fa-diamond"></i>{" "}
+                <span className="nav-label">Newsletter</span>
+              </a>
+            </Link>
           </li>
         </ul>
       </div>

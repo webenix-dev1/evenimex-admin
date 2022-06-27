@@ -85,20 +85,24 @@ const VenueEvent = () => {
   const handleItemDelete = async (val) => {
     const { id } = val;
 
-    try {
-      setIsLoading(true);
+    const res = confirm(`Are you sure you want to remove this event`);
 
-      const result = await axiosGet(
-        apiRouter.VENUE_AMENITIES_REMOVE + "/" + id
-      );
-      if (result.status) {
-        fetchVenueEntityList();
-        handleFormToggle(false);
+    if (res) {
+      try {
+        setIsLoading(true);
+
+        const result = await axiosGet(
+          apiRouter.VENUE_AMENITIES_REMOVE + "/" + id
+        );
+        if (result.status) {
+          fetchVenueEntityList();
+          handleFormToggle(false);
+        }
+      } catch (error) {
+        console.log("Error ::", error);
+      } finally {
+        setIsLoading(false);
       }
-    } catch (error) {
-      console.log("Error ::", error);
-    } finally {
-      setIsLoading(false);
     }
   };
 

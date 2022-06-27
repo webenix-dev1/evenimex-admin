@@ -6,6 +6,7 @@ import LoaderComponent from "../../components/LoaderComponent";
 import Sidebar from "../../components/Sidebar";
 import apiRouter from "../../utils/apiRouter";
 import { axiosGet, axiosPost } from "../../utils/axiosHelper";
+import toaster from "../../utils/toaster";
 
 const Users = () => {
   // Const
@@ -55,7 +56,7 @@ const Users = () => {
   };
 
   const handleFormEdit = async (data) => {
-    const { fname, lname, email, id, isActive } = data;
+    const { fname, lname, email, id, isActive, mobile } = data;
     handleFormToggle(true);
 
     setIsEditId(id);
@@ -95,10 +96,14 @@ const Users = () => {
         isEditId ? apiRouter.USER_UPDATE : apiRouter.SIGNUP,
         insertData
       );
+      console.log("Result ::", result);
       if (result.status) {
         setIsEditId("");
         handleFormToggle(false);
         fetchVenueEntityList();
+        toaster("success", "User Create Successfully");
+      } else {
+        toaster("error", result.message);
       }
     } catch (error) {
       console.log("Error ::", error);
@@ -110,18 +115,30 @@ const Users = () => {
   const handleItemDelete = async (val) => {
     const { id } = val;
 
-    try {
-      setIsLoading(true);
+    console.log("ID ::", id);
 
-      const result = await axiosGet(apiRouter.REMOVE_VENUE_BEVERAGE + "/" + id);
-      if (result.status) {
-        fetchVenueEntityList();
-        handleFormToggle(false);
+    const res = confirm(`Are you sure you want to remove this user`);
+    if (res) {
+      try {
+        setIsLoading(true);
+
+        const result = await axiosPost(
+          apiRouter.USER_REMOVE_BY_ADMIN + "/" + id
+        );
+
+        console.log("Result ::", result);
+        if (result.status) {
+          fetchVenueEntityList();
+          handleFormToggle(false);
+          toaster("success", "User Remove Successfully");
+        } else {
+          toaster("error", result.message || "User not removed");
+        }
+      } catch (error) {
+        console.log("Error ::", error);
+      } finally {
+        setIsLoading(false);
       }
-    } catch (error) {
-      console.log("Error ::", error);
-    } finally {
-      setIsLoading(false);
     }
   };
 
@@ -298,7 +315,7 @@ const Users = () => {
                           handleFormToggle(true);
                         }}
                       >
-                        <i className="fa fa-plus"></i>
+                        <i className="fa fa-plus" title="Add User"></i>
                       </a>
                     </div>
                   </div>
@@ -347,7 +364,10 @@ const Users = () => {
                                     className="btn btn-primary btn-sm"
                                     onClick={() => handleFormEdit(item)}
                                   >
-                                    <i className="fa fa-edit"></i>
+                                    <i
+                                      className="fa fa-edit"
+                                      title="Edit User"
+                                    ></i>
                                   </a>{" "}
                                   <a
                                     href="javascript:void(0)"
@@ -357,7 +377,10 @@ const Users = () => {
                                     data-target="#exampleModal"
                                     onClick={() => handleItemDelete(item)}
                                   >
-                                    <i className="fa fa-trash"></i>
+                                    <i
+                                      className="fa fa-trash"
+                                      title="Remove User"
+                                    ></i>
                                   </a>
                                 </td>
                               </tr>

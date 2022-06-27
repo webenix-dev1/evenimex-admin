@@ -2,7 +2,13 @@ import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import SelectBox from "../SelectBox";
 
-const VenderFilter = ({ venderList, venderId, handleVenderFilter }) => {
+const VenderFilter = ({
+  venderList,
+  venderId,
+  handleVenderFilter,
+  isReset,
+  isSearch,
+}) => {
   const { control, register, setValue, handleSubmit, watch, errors, reset } =
     useForm();
 
@@ -10,11 +16,21 @@ const VenderFilter = ({ venderList, venderId, handleVenderFilter }) => {
     setValue("venderId", venderId);
   }, [venderId]);
 
+  useEffect(() => {
+    handleClearForm();
+    console.log("isReset", isReset);
+  }, [isReset]);
+
   const handleFormSubmit = async (val) => {
-    const { venderId } = val;
     console.log("insertData ::", val);
-    handleVenderFilter(venderId);
+    handleVenderFilter(val);
   };
+
+  const handleClearForm = () => {
+    console.log("c;ear");
+    reset();
+  };
+
   return (
     <div>
       {/* Banner Form */}
@@ -31,6 +47,24 @@ const VenderFilter = ({ venderList, venderId, handleVenderFilter }) => {
                 <div className="row">
                   <div className="col-sm-12">
                     <form onSubmit={handleSubmit(handleFormSubmit)}>
+                      {isSearch && (
+                        <div className="form-group row">
+                          <label className="col-sm-2 col-form-label">
+                            Venue Name
+                          </label>
+                          <div className="col-sm-10">
+                            <input
+                              type="text"
+                              className="form-control"
+                              name="name"
+                              placeholder="Enter Venue Name"
+                              ref={register({
+                                required: false,
+                              })}
+                            />
+                          </div>
+                        </div>
+                      )}
                       <div class="form-group row">
                         <SelectBox
                           name="venderId"
@@ -44,6 +78,7 @@ const VenderFilter = ({ venderList, venderId, handleVenderFilter }) => {
                             ...venderList,
                           ]}
                           label="Vender"
+                          isRequired={false}
                         />
                       </div>
 

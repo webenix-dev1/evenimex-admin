@@ -31,10 +31,14 @@ const VenueEnquiry = () => {
   }, []);
 
   useEffect(() => {
-    if (Router?.query?.venderId) {
+    if (Router?.query?.venderId || Router?.query?.venueSpaceId) {
       console.log("Router ::", Router);
       setValue("venderId", Router?.query?.venderId);
-      fetchVenueEnquiryList(Router?.query?.venderId);
+
+      fetchVenueEnquiryList({
+        venderId: Router?.query?.venderId,
+        venueSpaceId: Router?.query?.venueSpaceId,
+      });
     }
   }, [Router]);
 
@@ -64,7 +68,7 @@ const VenueEnquiry = () => {
         console.log("ID ::", id);
         if (id) {
           setValue("venderId", id);
-          fetchVenueEnquiryList(id);
+          fetchVenueEnquiryList({ venderId: id });
         }
       }
     } catch (error) {
@@ -72,12 +76,16 @@ const VenueEnquiry = () => {
       setIsLoading(false);
     }
   };
-  const fetchVenueEnquiryList = async (userId) => {
+  const fetchVenueEnquiryList = async ({ venderId, venueSpaceId, search }) => {
     try {
       setIsLoading(true);
-      const result = await axiosPost(apiRouter.VENUE_PLACE_ENQUIRY, {
-        userId: userId,
-      });
+      const filter = {
+        userId: venderId || "",
+        venueSpaceId: venueSpaceId || "",
+        search: search || "",
+      };
+
+      const result = await axiosPost(apiRouter.VENUE_PLACE_ENQUIRY, filter);
       if (result.status) {
         setVenueEnquiryList(result?.data?.data);
       }
@@ -109,7 +117,7 @@ const VenueEnquiry = () => {
     const { venderId } = val;
 
     setVenderData(venderId);
-    fetchVenueEnquiryList(venderId);
+    fetchVenueEnquiryList({ venderId });
     console.log("insertData ::", val);
   };
 
@@ -126,7 +134,7 @@ const VenueEnquiry = () => {
           apiRouter.VENUE_ENQUIRY_REMOVE + "/" + id
         );
         if (result.status) {
-          fetchVenueEnquiryList(venderData);
+          fetchVenueEnquiryList({ venderData });
           handleFormToggle(false);
         }
       } catch (error) {
@@ -272,7 +280,10 @@ const VenueEnquiry = () => {
                                     data-target="#exampleModal"
                                     onClick={() => handleItemDelete(item)}
                                   >
-                                    <i className="fa fa-trash"></i>
+                                    <i
+                                      className="fa fa-trash"
+                                      title="Remove Enquiry"
+                                    ></i>
                                   </a>
                                 </td>
                               </tr>

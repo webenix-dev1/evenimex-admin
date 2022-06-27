@@ -26,7 +26,7 @@ const VenueFacility = () => {
     try {
       setIsLoading(true);
       const result = await axiosPost(apiRouter.VENUE_AMENITIES_LIST, {
-        categoryId: 8,
+        categoryId: 1,
       });
       if (result.status) {
         setVenueEntityList(result?.data?.data);
@@ -60,7 +60,7 @@ const VenueFacility = () => {
     const insertData = {
       name,
       isActive,
-      categoryId: 8,
+      categoryId: 1,
     };
     console.log("insertData ::", insertData, isActive);
     if (isEditId) {
@@ -84,21 +84,24 @@ const VenueFacility = () => {
 
   const handleItemDelete = async (val) => {
     const { id } = val;
+    const res = confirm(`Are you sure you want to remove this facility`);
 
-    try {
-      setIsLoading(true);
+    if (res) {
+      try {
+        setIsLoading(true);
 
-      const result = await axiosGet(
-        apiRouter.VENUE_AMENITIES_REMOVE + "/" + id
-      );
-      if (result.status) {
-        fetchVenueEntityList();
-        handleFormToggle(false);
+        const result = await axiosGet(
+          apiRouter.VENUE_AMENITIES_REMOVE + "/" + id
+        );
+        if (result.status) {
+          fetchVenueEntityList();
+          handleFormToggle(false);
+        }
+      } catch (error) {
+        console.log("Error ::", error);
+      } finally {
+        setIsLoading(false);
       }
-    } catch (error) {
-      console.log("Error ::", error);
-    } finally {
-      setIsLoading(false);
     }
   };
 

@@ -8,11 +8,6 @@ import apiRouter from "../../utils/apiRouter";
 import { axiosGet, axiosPost } from "../../utils/axiosHelper";
 import SelectBox from "../../components/SelectBox";
 import {
-  getVenueBeverageList,
-  getVenueDisabledFacilitiesList,
-  getVenueEquipmentList,
-  getVenueEventsList,
-  getVenueFacilitiesList,
   getVenueLocationCityList,
   getVenueLocationList,
   getVenueLocationTypeList,
@@ -27,6 +22,8 @@ import MyStatefulEditor from "../../components/Editor";
 import Pagination from "react-responsive-pagination";
 import { useRouter } from "next/router";
 import VenderFilter from "../../components/VenderFilter";
+import MCEEditor from "../../components/Editor2";
+import { useRef } from "react";
 
 const VenueList = () => {
   // Const
@@ -34,6 +31,7 @@ const VenueList = () => {
     useForm();
   const Router = useRouter();
   const venderId = Router?.query?.venderId || "";
+  const formEditRef = useRef(null);
   // State
   const [venueEntityList, setVenueEntityList] = useState([]);
   const [venderList, setVenderList] = useState([]);
@@ -43,7 +41,6 @@ const VenueList = () => {
 
   const [errorMsg, setErrorMsg] = useState("");
   const [venueLocationCityList, setVenueLocationCityList] = useState([]);
-  const [isVenueId, setIsVenueId] = useState("");
   const [venueImages, setVenueImages] = useState({
     coverImage1: "",
     coverImage2: "",
@@ -57,6 +54,8 @@ const VenueList = () => {
     size: 20,
     totalPages: 0,
   });
+  const [isReset, setIsReset] = useState("");
+  const [filterData, setFilterData] = useState("");
 
   console.log("venueLocationCityList ::", venueLocationCityList);
 
@@ -159,13 +158,16 @@ const VenueList = () => {
   const fetchVenueEntityList = async (page = 1, venueFilter) => {
     try {
       setIsLoading(true);
-      const { venderId } = venueFilter;
+      const { venderId, searchVenueName } = venueFilter;
       const filter = {
         page: page - 1,
         size: pagination.size,
       };
       if (venderId) {
         filter.venderId = venderId;
+      }
+      if (searchVenueName) {
+        filter.searchVenueName = searchVenueName;
       }
 
       const result = await axiosPost(apiRouter.VENUE_LIST, filter);
@@ -189,6 +191,11 @@ const VenueList = () => {
       setIsEditId(false);
     }
     setIsFormOpen(val);
+  };
+
+  const executeScroll = (ref) => {
+    if (ref?.current)
+      ref.current.scrollIntoView({ behavior: "smooth", block: "start" });
   };
 
   const handleFormEdit = async (data) => {
@@ -229,7 +236,8 @@ const VenueList = () => {
       setValue("name", data?.name);
       let des = "";
       try {
-        des = JSON.parse(data?.discription);
+        des = data?.discription;
+        // des = JSON.parse(data?.discription);
       } catch (e) {
         des = "";
       }
@@ -246,6 +254,8 @@ const VenueList = () => {
 
       setValue("isApprove", isApprove);
       setValue("isActive", isActive);
+
+      executeScroll(formEditRef);
     }, 300);
   };
 
@@ -265,7 +275,8 @@ const VenueList = () => {
     setErrorMsg("");
     const insertData = {
       name: val.name,
-      discription: JSON.stringify(venueDescription),
+      discription: venueDescription,
+      // discription: JSON.stringify(venueDescription),
       address: val.address,
       participants: val.participants,
       city: val.city,
@@ -368,19 +379,36 @@ const VenueList = () => {
   };
 
   const handlePagination = (event) => {
-    fetchVenueEntityList(event);
+    const filter = filterData;
+    fetchVenueEntityList(event, filter);
   };
 
   const handleVenderFilter = async (val) => {
-    const filter = { venderId: val === "all" ? null : val };
+    const filter = {
+      venderId: val.venderId === "all" ? null : val.venderId,
+      searchVenueName: val.name || "",
+    };
+    setFilterData(filter);
     fetchVenueEntityList(1, filter);
+  };
+
+  const handleReset = (val) => {
+    if (val === false) {
+      setFilterData("");
+    }
+    setIsReset(val);
   };
   // Render
 
   return (
     <>
       <div id="wrapper">
-        <Sidebar cloaseForm={() => handleFormToggle(false)} />
+        <Sidebar
+          cloaseForm={() => {
+            handleFormToggle(false);
+            handleReset(!isReset);
+          }}
+        />
 
         <div id="page-wrapper" className="gray-bg dashbard-1">
           {/* Header */}
@@ -390,11 +418,16 @@ const VenueList = () => {
             venderList={venderList}
             handleVenderFilter={handleVenderFilter}
             venderId={venderId}
+            isReset={isReset}
+            isSearch={true}
           />
 
           {/* Banner Form */}
           {isFormOpen && (
-            <div className="wrapper wrapper-content animated fadeInRight">
+            <div
+              className="wrapper wrapper-content animated fadeInRight"
+              ref={formEditRef}
+            >
               <div className="row">
                 <div className="col-lg-12">
                   <div className="ibox ">
@@ -428,7 +461,14 @@ const VenueList = () => {
                                 Description*
                               </label>
                               <div className="col-sm-10">
-                                <MyStatefulEditor
+                                {/* <MyStatefulEditor
+                                  value={venueDescription}
+                                  onChange={(val) => {
+                                    setVenueDescription(val);
+                                    console.log("contentState ::", val);
+                                  }}
+                                /> */}
+                                <MCEEditor
                                   value={venueDescription}
                                   onChange={(val) => {
                                     setVenueDescription(val);
@@ -784,7 +824,10 @@ const VenueList = () => {
                                     className="btn btn-primary btn-sm"
                                     onClick={() => handleFormEdit(item)}
                                   >
-                                    <i className="fa fa-edit"></i>
+                                    <i
+                                      className="fa fa-edit"
+                                      title="Venue Edit"
+                                    ></i>
                                   </a>{" "}
                                   {/* <Link
                                     href={{
@@ -806,7 +849,10 @@ const VenueList = () => {
                                       });
                                     }}
                                   >
-                                    <i className="fa fa-list"></i>
+                                    <i
+                                      className="fa fa-list"
+                                      title="VenueSpace List"
+                                    ></i>
                                   </a>{" "}
                                   {/* </Link>{" "} */}
                                   <a
@@ -817,7 +863,10 @@ const VenueList = () => {
                                     data-target="#exampleModal"
                                     onClick={() => handleItemDelete(item)}
                                   >
-                                    <i className="fa fa-trash"></i>
+                                    <i
+                                      className="fa fa-trash"
+                                      title="Remove Venue"
+                                    ></i>
                                   </a>
                                 </td>
                               </tr>

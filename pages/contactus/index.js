@@ -84,18 +84,22 @@ const ContactUs = () => {
   const handleItemDelete = async (val) => {
     const { id } = val;
 
-    try {
-      setIsLoading(true);
+    const res = confirm(`Are you sure you want to remove this contact`);
 
-      const result = await axiosGet(apiRouter.REMOVE_VENUE_BEVERAGE + "/" + id);
-      if (result.status) {
-        fetchVenueEntityList();
-        handleFormToggle(false);
+    if (res) {
+      try {
+        setIsLoading(true);
+
+        const result = await axiosGet(apiRouter.REMOVE_CONTACTUS + "/" + id);
+        if (result.status) {
+          fetchVenueEntityList();
+          handleFormToggle(false);
+        }
+      } catch (error) {
+        console.log("Error ::", error);
+      } finally {
+        setIsLoading(false);
       }
-    } catch (error) {
-      console.log("Error ::", error);
-    } finally {
-      setIsLoading(false);
     }
   };
 
@@ -203,7 +207,7 @@ const ContactUs = () => {
                           // handleFormToggle(true);
                         }}
                       >
-                        <i className="fa fa-plus"></i>
+                        <i className="fa fa-plus" title="Add Contact"></i>
                       </a>
                     </div>
                   </div>
@@ -244,22 +248,25 @@ const ContactUs = () => {
                                 <td>{item.email}</td>
                                 <td>{item.message}</td>
                                 <td className="center">
-                                  <a
+                                  {/* <a
                                     href="javascript:void(0)"
                                     className="btn btn-primary btn-sm"
                                     // onClick={() => handleFormEdit(item)}
                                   >
                                     <i className="fa fa-edit"></i>
-                                  </a>{" "}
+                                  </a>{" "} */}
                                   <a
                                     href="javascript:void(0)"
                                     id="data.id"
                                     className="admin_remove btn btn-danger btn-sm"
                                     data-toggle="modal"
                                     data-target="#exampleModal"
-                                    // onClick={() => handleItemDelete(item)}
+                                    onClick={() => handleItemDelete(item)}
                                   >
-                                    <i className="fa fa-trash"></i>
+                                    <i
+                                      className="fa fa-trash"
+                                      title="Remove Contact"
+                                    ></i>
                                   </a>
                                 </td>
                               </tr>

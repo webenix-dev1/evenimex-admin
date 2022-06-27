@@ -9,6 +9,7 @@ import { axiosGet, axiosPost } from "../../utils/axiosHelper";
 import Pagination from "react-responsive-pagination";
 import router from "../../utils/router";
 import { useRouter } from "next/router";
+import toaster from "../../utils/toaster";
 
 const Venders = () => {
   // Const
@@ -118,6 +119,9 @@ const Venders = () => {
         setIsEditId("");
         handleFormToggle(false);
         fetchVenueEntityList();
+        toaster("success", "User Create Successfully");
+      } else {
+        toaster("error", result.message);
       }
     } catch (error) {
       console.log("Error ::", error);
@@ -129,18 +133,26 @@ const Venders = () => {
   const handleItemDelete = async (val) => {
     const { id } = val;
 
-    try {
-      setIsLoading(true);
+    const res = confirm(`Are you sure you want to remove this vender`);
+    if (res) {
+      try {
+        setIsLoading(true);
 
-      const result = await axiosGet(apiRouter.REMOVE_VENUE_BEVERAGE + "/" + id);
-      if (result.status) {
-        fetchVenueEntityList();
-        handleFormToggle(false);
+        const result = await axiosPost(
+          apiRouter.USER_REMOVE_BY_ADMIN + "/" + id
+        );
+        if (result.status) {
+          fetchVenueEntityList();
+          handleFormToggle(false);
+          toaster("success", "Vender Remove Successfully");
+        } else {
+          toaster("error", result.message || "Vender not removed");
+        }
+      } catch (error) {
+        console.log("Error ::", error);
+      } finally {
+        setIsLoading(false);
       }
-    } catch (error) {
-      console.log("Error ::", error);
-    } finally {
-      setIsLoading(false);
     }
   };
 
@@ -331,7 +343,7 @@ const Venders = () => {
                           handleFormToggle(true);
                         }}
                       >
-                        <i className="fa fa-plus"></i>
+                        <i className="fa fa-plus" title="Add Vender"></i>
                       </a>
                     </div>
                   </div>
@@ -348,7 +360,7 @@ const Venders = () => {
                             {/* <!-- <th>Id</th> --> */}
                             <th>Name</th>
                             <th>Email</th>
-                            <th>UserType</th>
+                            <th>IsActive</th>
                             <th>Action</th>
                           </tr>
                         </thead>
@@ -357,7 +369,7 @@ const Venders = () => {
                             {/* <!-- <th>Id</th> --> */}
                             <th>Name</th>
                             <th>Email</th>
-                            <th>UserType</th>
+                            <th>IsActive</th>
                             <th>Action</th>
                           </tr>
                         </tfoot>
@@ -369,11 +381,7 @@ const Venders = () => {
                                   {item.fname} {item.lname}
                                 </td>
                                 <td>{item.email}</td>
-                                {item?.isAdmin ? (
-                                  <td>Admin</td>
-                                ) : (
-                                  <td>{item.isClient ? "Client" : "User"}</td>
-                                )}
+                                <td>{item.enabled ? "Active" : "De-Active"}</td>
                                 <td className="center">
                                   <a
                                     href="javascript:void(0)"
@@ -382,7 +390,10 @@ const Venders = () => {
                                       handleRedirect(item, router.VENUE_LIST)
                                     }
                                   >
-                                    <i className="fa fa-plus-square-o"></i>
+                                    <i
+                                      className="fa fa-plus-square-o"
+                                      title="Add Venue"
+                                    ></i>
                                   </a>{" "}
                                   <a
                                     href="javascript:void(0)"
@@ -391,14 +402,20 @@ const Venders = () => {
                                       handleRedirect(item, router.ENQUIRY)
                                     }
                                   >
-                                    <i className="fa fa-envelope-o"></i>
+                                    <i
+                                      className="fa fa-envelope-o"
+                                      title="Venue Enquiry"
+                                    ></i>
                                   </a>{" "}
                                   <a
                                     href="javascript:void(0)"
                                     className="btn btn-primary btn-sm"
                                     onClick={() => handleFormEdit(item)}
                                   >
-                                    <i className="fa fa-edit"></i>
+                                    <i
+                                      className="fa fa-edit"
+                                      title="Venue Edit"
+                                    ></i>
                                   </a>{" "}
                                   <a
                                     href="javascript:void(0)"
@@ -408,7 +425,10 @@ const Venders = () => {
                                     data-target="#exampleModal"
                                     onClick={() => handleItemDelete(item)}
                                   >
-                                    <i className="fa fa-trash"></i>
+                                    <i
+                                      className="fa fa-trash"
+                                      title="Venue Remove"
+                                    ></i>
                                   </a>
                                 </td>
                               </tr>

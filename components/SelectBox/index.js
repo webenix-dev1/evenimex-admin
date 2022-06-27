@@ -3,7 +3,14 @@ import { Controller } from "react-hook-form";
 import Select from "react-select";
 
 const SelectBox = (props) => {
-  const { label, name, control, optionsList, placeholder } = props;
+  const {
+    label,
+    name,
+    control,
+    optionsList,
+    placeholder,
+    isRequired = true,
+  } = props;
   const brandColor = "#999999";
   const customStyles = {
     control: (base, state) => ({
@@ -23,7 +30,7 @@ const SelectBox = (props) => {
           name={name}
           control={control}
           rules={{
-            required: `${label} is required`,
+            required: isRequired ? `${label} is required` : false,
           }}
           // defaultValue={options.filter((option) =>
           //   options?.includes(option.value)

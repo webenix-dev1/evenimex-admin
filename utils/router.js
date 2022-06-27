@@ -30,5 +30,6 @@ const router = {
   VENUE_LOCATION_TYPE: "/venue/locationType",
   VENUE_MENU: "/venue/menu",
   VENUE_SERVICE: "/venue/service",
+  NEWSLETTER: "/newsletter",
 };
 export default router;

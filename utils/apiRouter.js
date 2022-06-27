@@ -16,6 +16,7 @@ const apiRouter = {
   VENDERS_SELECT_LIST: prefixRouteV1("getAllVenderList"),
   ALL_USERS: prefixRouteV1("getAllUser"),
   USER_UPDATE: prefixRouteV1("adminUpdateUser"),
+  USER_REMOVE_BY_ADMIN: prefixRouteV1("adminRemoveUser"),
   // Home Slider
   DASHBOARD_DETAILS: prefixRouteV1("getDashboardDetail"),
   HERO_SLIDER_LIST: prefixRouteV1("heroSliderList"),
@@ -101,6 +102,11 @@ const apiRouter = {
 
   // Contact
   CONTACTUS_LIST: prefixRouteV1("contactUsList"),
+  REMOVE_CONTACTUS: prefixRouteV1("removeContact"),
+
+  // Contact
+  NEWSLETTERLIST_LIST: prefixRouteV1("getNewslettereList"),
+  REMOVE_CONTACTUS: prefixRouteV1("removeContact"),
 
   //third party api to get city from lat lng
   GETCITYAPI: "https://nominatim.openstreetmap.org/reverse",

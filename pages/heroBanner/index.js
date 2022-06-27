@@ -5,6 +5,8 @@ import LoaderComponent from "../../components/LoaderComponent";
 import Sidebar from "../../components/Sidebar";
 import apiRouter from "../../utils/apiRouter";
 import { axiosGet, axiosPost } from "../../utils/axiosHelper";
+import { S3Bucket } from "../../utils/constant";
+import { uploadImage } from "../../utils/s3";
 
 const HeroBanner = () => {
   // Const
@@ -14,6 +16,7 @@ const HeroBanner = () => {
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [isEditId, setIsEditId] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [bannerData, setBannerData] = useState({});
   // const [editData, setEditData] = useState({
   //   title: "",
   //   description: "",
@@ -42,21 +45,26 @@ const HeroBanner = () => {
   const handleFormToggle = (val) => {
     if (val === false) {
       reset();
+      setBannerData({});
     }
     setIsFormOpen(val);
   };
 
-  const handleFormChange = (event) => {
-    const { value, files, name } = event.target;
-    if (files) {
-      setEditData({
-        ...editData,
-        image: files[0],
-      });
-    } else {
-      setEditData({
-        ...editData,
-        [name]: value,
+  const handleImages = async (e, name) => {
+    console.log("Image ::", name, e.target.files[0]);
+    const image = e.target.files[0];
+
+    if (image) {
+      const url = URL.createObjectURL(image);
+      const coverImage = {
+        image,
+        url,
+        isUpload: true,
+      };
+
+      setBannerData({
+        ...bannerData,
+        image: coverImage,
       });
     }
   };
@@ -64,6 +72,15 @@ const HeroBanner = () => {
   const handleFormEdit = async (data) => {
     const { title, description, id, isActive } = data;
     handleFormToggle(true);
+
+    setBannerData({
+      ...data,
+      image: {
+        url: data?.image || "",
+        isUpload: false,
+        image: "",
+      },
+    });
 
     setIsEditId(id);
     setTimeout(() => {
@@ -79,8 +96,10 @@ const HeroBanner = () => {
       title,
       description,
       isActive,
-      image: "/images/home-slide-01.jpg",
+      image: bannerData.image.image,
     };
+
+    // return console.log("Insert ::", insertData);
 
     if (isEditId) {
       insertData.id = isEditId;
@@ -88,6 +107,15 @@ const HeroBanner = () => {
 
     try {
       setIsLoading(true);
+
+      const imageUrl = await uploadImage(
+        insertData?.image,
+        S3Bucket.HOME_SLIDER
+      );
+      if (imageUrl.status) {
+        insertData.image = imageUrl.url;
+      }
+
       const result = await axiosPost(
         apiRouter.ADD_UPDATE_HERO_SLIDER_LIST,
         insertData
@@ -106,20 +134,23 @@ const HeroBanner = () => {
   const handleItemDelete = async (val) => {
     const { id } = val;
 
-    try {
-      setIsLoading(true);
+    const res = confirm(`Are you sure you want to remove the banner`);
+    if (res) {
+      try {
+        setIsLoading(true);
 
-      const result = await axiosGet(
-        apiRouter.REMOVE_HERO_SLIDER_LIST + "/" + id
-      );
-      if (result.status) {
-        fetchHeroSliderList();
-        handleFormToggle(false);
+        const result = await axiosGet(
+          apiRouter.REMOVE_HERO_SLIDER_LIST + "/" + id
+        );
+        if (result.status) {
+          fetchHeroSliderList();
+          handleFormToggle(false);
+        }
+      } catch (error) {
+        console.log("Error ::", error);
+      } finally {
+        setIsLoading(false);
       }
-    } catch (error) {
-      console.log("Error ::", error);
-    } finally {
-      setIsLoading(false);
     }
   };
 
@@ -186,14 +217,28 @@ const HeroBanner = () => {
                               Image
                             </label>
                             <div className="col-sm-10">
-                              <input
-                                type="file"
-                                className="form-control"
-                                name="image"
-                                ref={register({
-                                  required: "Image is required",
-                                })}
-                              />
+                              <div className="profilePicMain">
+                                <input
+                                  type="file"
+                                  name="image"
+                                  ref={register({
+                                    required: bannerData?.image?.url
+                                      ? false
+                                      : "Image is required",
+                                  })}
+                                  onChange={(e) => handleImages(e, "image")}
+                                />
+                                {bannerData?.image?.url ? (
+                                  <img
+                                    src={bannerData?.image?.url}
+                                    style={{
+                                      objectFit: "contain",
+                                    }}
+                                  />
+                                ) : (
+                                  <i className="fa fa-plus"></i>
+                                )}
+                              </div>
                               {errors?.image && (
                                 <p className="m-t text-danger">
                                   {errors?.image?.message}
@@ -263,7 +308,7 @@ const HeroBanner = () => {
                         handleFormToggle(true);
                       }}
                     >
-                      <i className="fa fa-plus"></i>
+                      <i className="fa fa-plus" title="Add Home Banner"></i>
                     </a>
                   </div>
                 </div>
@@ -309,7 +354,10 @@ const HeroBanner = () => {
                                   className="btn btn-primary btn-sm"
                                   onClick={() => handleFormEdit(item)}
                                 >
-                                  <i className="fa fa-edit"></i>
+                                  <i
+                                    className="fa fa-edit"
+                                    title="Edit Banner"
+                                  ></i>
                                 </a>{" "}
                                 <a
                                   href="javascript:void(0)"
@@ -317,7 +365,10 @@ const HeroBanner = () => {
                                   className="admin_remove btn btn-danger btn-sm"
                                   onClick={() => handleItemDelete(item)}
                                 >
-                                  <i className="fa fa-trash"></i>
+                                  <i
+                                    className="fa fa-trash"
+                                    title="Remove Home Banner"
+                                  ></i>
                                 </a>
                               </td>
                             </tr>

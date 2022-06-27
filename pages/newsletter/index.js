@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { Head } from "next/document";
 import { useForm } from "react-hook-form";
-import Header from "../../../components/Header";
-import LoaderComponent from "../../../components/LoaderComponent";
-import Sidebar from "../../../components/Sidebar";
-import apiRouter from "../../../utils/apiRouter";
-import { axiosGet, axiosPost } from "../../../utils/axiosHelper";
+import Header from "../../components/Header";
+import LoaderComponent from "../../components/LoaderComponent";
+import Sidebar from "../../components/Sidebar";
+import apiRouter from "../../utils/apiRouter";
+import { axiosGet, axiosPost } from "../../utils/axiosHelper";
 
-const VenueEquipment = () => {
+const Newsletter = () => {
   // Const
   const { register, setValue, handleSubmit, watch, errors, reset } = useForm();
   // State
@@ -25,9 +25,8 @@ const VenueEquipment = () => {
   const fetchVenueEntityList = async () => {
     try {
       setIsLoading(true);
-      const result = await axiosPost(apiRouter.VENUE_AMENITIES_LIST, {
-        categoryId: 3,
-      });
+      const result = await axiosGet(apiRouter.NEWSLETTERLIST_LIST);
+      console.log("result ::", result);
       if (result.status) {
         setVenueEntityList(result?.data?.data);
       }
@@ -45,31 +44,31 @@ const VenueEquipment = () => {
   };
 
   const handleFormEdit = async (data) => {
-    const { name, description, id, isActive } = data;
+    const { id, isActive, isApprove } = data;
     handleFormToggle(true);
 
     setIsEditId(id);
     setTimeout(() => {
-      setValue("name", name);
+      setValue("isApprove", isApprove);
       setValue("isActive", isActive);
     }, 300);
   };
 
   const handleFormSubmit = async (val) => {
-    const { name, isActive } = val;
+    console.log("val ::", val);
+    const { isActive, isApprove } = val;
     const insertData = {
-      name,
       isActive,
-      categoryId: 3,
+      isApprove,
     };
-    console.log("insertData ::", insertData, isActive);
     if (isEditId) {
-      insertData.id = isEditId;
+      insertData.venueId = isEditId;
     }
+    console.log("insertData ::", insertData, isActive);
 
     try {
       setIsLoading(true);
-      const result = await axiosPost(apiRouter.ADD_VENUE_AMENITIES, insertData);
+      const result = await axiosPost(apiRouter.VENUE_UPDATE, insertData);
       if (result.status) {
         setIsEditId("");
         handleFormToggle(false);
@@ -84,15 +83,14 @@ const VenueEquipment = () => {
 
   const handleItemDelete = async (val) => {
     const { id } = val;
-    const res = confirm(`Are you sure you want to remove this equipment`);
+
+    const res = confirm(`Are you sure you want to remove this contact`);
 
     if (res) {
       try {
         setIsLoading(true);
 
-        const result = await axiosGet(
-          apiRouter.VENUE_AMENITIES_REMOVE + "/" + id
-        );
+        const result = await axiosGet(apiRouter.REMOVE_CONTACTUS + "/" + id);
         if (result.status) {
           fetchVenueEntityList();
           handleFormToggle(false);
@@ -125,30 +123,28 @@ const VenueEquipment = () => {
                   <div className="ibox ">
                     <div className="ibox-title">
                       <h5>
-                        Venue Equipment <small>Create</small>
+                        Newsletter <small>Create</small>
                       </h5>
                     </div>
                     <div className="ibox-content">
                       <div className="row">
                         <div className="col-sm-12">
                           <form onSubmit={handleSubmit(handleFormSubmit)}>
-                            <div className="form-group row">
-                              <label className="col-sm-2 col-form-label">
-                                Equipment
-                              </label>
-                              <div className="col-sm-10">
+                            <div>
+                              <label>
+                                {" "}
                                 <input
-                                  type="text"
-                                  className="form-control"
-                                  name="name"
-                                  placeholder="Enter Equipment"
+                                  type="checkbox"
+                                  name="isApprove"
+                                  defaultChecked={true}
                                   ref={register({
-                                    required: "Amenity name is required",
+                                    required: true,
                                   })}
-                                />
-                              </div>
+                                  class="i-checks"
+                                />{" "}
+                                Approve Venue{" "}
+                              </label>
                             </div>
-
                             <div>
                               <label>
                                 {" "}
@@ -161,12 +157,11 @@ const VenueEquipment = () => {
                                   })}
                                   class="i-checks"
                                 />{" "}
-                                Is Active{" "}
+                                Venue Is Active{" "}
                               </label>
                             </div>
 
                             <div className="hr-line-dashed"></div>
-                            {errors?.name && <p>{errors?.name?.message}</p>}
                             <div className="form-group row">
                               <div className="col-sm-4 col-sm-offset-2">
                                 <a
@@ -201,19 +196,19 @@ const VenueEquipment = () => {
               <div className="col-lg-12">
                 <div className="ibox">
                   <div className="ibox-title">
-                    <h5>Equipment</h5>
+                    <h5>Newsletter List</h5>
                     <div className="ibox-tools">
                       <a className="collapse-link">
                         <i className="fa fa-chevron-up"></i>
                       </a>
-                      <a
+                      {/* <a
                         href="javascript:void(0)"
                         onClick={() => {
-                          handleFormToggle(true);
+                          // handleFormToggle(true);
                         }}
                       >
                         <i className="fa fa-plus"></i>
-                      </a>
+                      </a> */}
                     </div>
                   </div>
 
@@ -226,34 +221,26 @@ const VenueEquipment = () => {
                       >
                         <thead>
                           <tr>
-                            {/* <!-- <th>Id</th> --> */}
-                            <th>Equipment</th>
-                            <th>Status</th>
-                            <th>Action</th>
+                            <th>Email</th>
+                            <th>Date</th>
+                            <th>IP</th>
                           </tr>
                         </thead>
                         <tfoot>
                           <tr>
-                            {/* <!-- <th>Id</th> --> */}
-                            <th>Equipment</th>
-                            <th>Status</th>
-                            <th>Action</th>
+                            <th>Email</th>
+                            <th>Date</th>
+                            <th>IP</th>
                           </tr>
                         </tfoot>
                         <tbody>
                           {venueEntityList?.map((item, index) => {
                             return (
                               <tr className="gradeX" key={index}>
-                                <td>{item.name}</td>
-                                <td>{item.isActive ? "active" : "disabled"}</td>
-                                <td className="center">
-                                  <a
-                                    href="javascript:void(0)"
-                                    className="btn btn-primary btn-sm"
-                                    onClick={() => handleFormEdit(item)}
-                                  >
-                                    <i className="fa fa-edit"></i>
-                                  </a>{" "}
+                                <td>{item.email}</td>
+                                <td>{item.updatedAt} </td>
+                                <td>{item.ip}</td>
+                                {/* <td className="center">
                                   <a
                                     href="javascript:void(0)"
                                     id="data.id"
@@ -262,9 +249,12 @@ const VenueEquipment = () => {
                                     data-target="#exampleModal"
                                     onClick={() => handleItemDelete(item)}
                                   >
-                                    <i className="fa fa-trash"></i>
+                                    <i
+                                      className="fa fa-trash"
+                                      title="Remove Email"
+                                    ></i>
                                   </a>
-                                </td>
+                                </td> */}
                               </tr>
                             );
                           })}
@@ -284,4 +274,4 @@ const VenueEquipment = () => {
   );
 };
 
-export default VenueEquipment;
+export default Newsletter;

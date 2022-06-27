@@ -125,28 +125,28 @@ const VenuePlaceList = ({ venueid }) => {
           };
           switch (item.categoryId) {
             case 1:
-              venueMenuListTemp.push(option);
+              venueFacilitiesListTemp.push(option);
               break;
             case 2:
-              venueBeverageListTemp.push(option);
-              break;
-            case 3:
-              venueLocationListTemp.push(option);
-              break;
-            case 4:
               venueLocationTypeListTemp.push(option);
               break;
-            case 5:
+            case 3:
               venueEquipmentListTemp.push(option);
               break;
-            case 6:
+            case 4:
               venueServiceListTemp.push(option);
               break;
-            case 7:
+            case 5:
               venueDisabledFacilitiesListTemp.push(option);
               break;
+            case 6:
+              venueMenuListTemp.push(option);
+              break;
+            case 7:
+              venueBeverageListTemp.push(option);
+              break;
             case 8:
-              venueFacilitiesListTemp.push(option);
+              venueLocationListTemp.push(option);
               break;
             case 9:
               venueEventsListTemp.push(option);
@@ -238,28 +238,28 @@ const VenuePlaceList = ({ venueid }) => {
       };
       switch (amenity.categoryId) {
         case 1:
-          venueMenuListTemp.push(option);
+          venueFacilitiesListTemp.push(option);
           break;
         case 2:
-          venueBeverageListTemp.push(option);
-          break;
-        case 3:
-          venueLocationListTemp.push(option);
-          break;
-        case 4:
           venueLocationTypeListTemp.push(option);
           break;
-        case 5:
+        case 3:
           venueEquipmentListTemp.push(option);
           break;
-        case 6:
+        case 4:
           venueServiceListTemp.push(option);
           break;
-        case 7:
+        case 5:
           venueDisabledFacilitiesListTemp.push(option);
           break;
+        case 6:
+          venueMenuListTemp.push(option);
+          break;
+        case 7:
+          venueBeverageListTemp.push(option);
+          break;
         case 8:
-          venueFacilitiesListTemp.push(option);
+          venueLocationListTemp.push(option);
           break;
         case 9:
           venueEventsListTemp.push(option);
@@ -271,7 +271,14 @@ const VenuePlaceList = ({ venueid }) => {
 
     setTimeout(() => {
       setValue("name", data?.name);
-      setVenueDescription(JSON.parse(data?.discription));
+      let des = "";
+      try {
+        des = data?.discription;
+        // des = JSON.parse(data?.discription);
+      } catch (e) {
+        des = "";
+      }
+      setVenueDescription(des);
       setValue("price", data?.price);
       setValue("seats", data?.seats);
       setValue("days", data?.days);
@@ -326,7 +333,8 @@ const VenuePlaceList = ({ venueid }) => {
       days: val.days,
       name: val.name,
       price: val.price,
-      discription: JSON.stringify(venueDescription),
+      discription: venueDescription,
+      // discription: JSON.stringify(venueDescription),
       images: [],
     };
 
@@ -497,6 +505,17 @@ const VenuePlaceList = ({ venueid }) => {
     }
   };
 
+  const handleRedirect = (item, path) => {
+    console.log("Item ::", item);
+    Router?.push(
+      {
+        pathname: path,
+        query: { venueSpaceId: item?.id },
+      },
+      path
+    );
+  };
+
   // Render
 
   return (
@@ -608,7 +627,7 @@ const VenuePlaceList = ({ venueid }) => {
                                 control={control}
                                 optionsList={venueLocationList}
                                 label="Location"
-                                categoryId={3}
+                                categoryId={8}
                               />
                             </div>
                             <div className="form-group row">
@@ -618,7 +637,7 @@ const VenuePlaceList = ({ venueid }) => {
                                 control={control}
                                 optionsList={venueLocationTypeList}
                                 label="Location Type"
-                                categoryId={4}
+                                categoryId={2}
                               />
                             </div>
                             <div className="form-group row">
@@ -628,7 +647,7 @@ const VenuePlaceList = ({ venueid }) => {
                                 control={control}
                                 optionsList={venueBeverageList}
                                 label="Beverage"
-                                categoryId={2}
+                                categoryId={7}
                               />
                             </div>
                             <div className="form-group row">
@@ -648,7 +667,7 @@ const VenuePlaceList = ({ venueid }) => {
                                 control={control}
                                 optionsList={venueEquipmentList}
                                 label="Equipment"
-                                categoryId={5}
+                                categoryId={3}
                               />
                             </div>
                             <div className="form-group row">
@@ -658,7 +677,7 @@ const VenuePlaceList = ({ venueid }) => {
                                 control={control}
                                 optionsList={venueMenuList}
                                 label="Menus"
-                                categoryId={1}
+                                categoryId={6}
                               />
                             </div>
                             <div className="form-group row">
@@ -668,7 +687,7 @@ const VenuePlaceList = ({ venueid }) => {
                                 control={control}
                                 optionsList={venueServiceList}
                                 label="Service"
-                                categoryId={6}
+                                categoryId={4}
                               />
                             </div>
                             <div className="form-group row">
@@ -678,7 +697,7 @@ const VenuePlaceList = ({ venueid }) => {
                                 control={control}
                                 optionsList={venueDisabledFacilitiesList}
                                 label="Disable Abilities"
-                                categoryId={7}
+                                categoryId={5}
                               />
                             </div>
                             <div className="form-group row">
@@ -688,7 +707,7 @@ const VenuePlaceList = ({ venueid }) => {
                                 control={control}
                                 optionsList={venueFacilitiesList}
                                 label="Facilities"
-                                categoryId={8}
+                                categoryId={1}
                               />
                             </div>
                             <div>
@@ -831,7 +850,10 @@ const VenuePlaceList = ({ venueid }) => {
                           <tr>
                             {/* <!-- <th>Id</th> --> */}
                             <th>Name</th>
-                            <th>Description</th>
+                            <th>Venue ID</th>
+                            <th>Publish Date</th>
+                            <th>Addition Date</th>
+                            <th>First Page</th>
                             <th>Status</th>
                             <th>Approved</th>
                             <th>Action</th>
@@ -841,7 +863,10 @@ const VenuePlaceList = ({ venueid }) => {
                           <tr>
                             {/* <!-- <th>Id</th> --> */}
                             <th>Name</th>
-                            <th>Description</th>
+                            <th>Venue ID</th>
+                            <th>Publish Date</th>
+                            <th>Addition Date</th>
+                            <th>First Page</th>
                             <th>Status</th>
                             <th>Approved</th>
                             <th>Action</th>
@@ -852,11 +877,10 @@ const VenuePlaceList = ({ venueid }) => {
                             return (
                               <tr className="gradeX" key={index}>
                                 <td>{item.name}</td>
-                                <td>
-                                  {convert(
-                                    draftToHtml(JSON.parse(item?.discription))
-                                  )}
-                                </td>
+                                <td>{item.venueMainId}</td>
+                                <td>{item.publishDate}</td>
+                                <td>{item.addDate}</td>
+                                <td>{item.firstPage ? "Yes" : "No"}</td>
                                 <td>{item.isActive ? "active" : "disabled"}</td>
                                 <td>{item.isApprove ? "Yes" : "No"}</td>
                                 <td className="center">
@@ -865,7 +889,10 @@ const VenuePlaceList = ({ venueid }) => {
                                     className="btn btn-primary btn-sm"
                                     onClick={() => handleFormEdit(item)}
                                   >
-                                    <i className="fa fa-edit"></i>
+                                    <i
+                                      className="fa fa-edit"
+                                      title="Edit VenueSpace"
+                                    ></i>
                                   </a>{" "}
                                   <Link
                                     href={{
@@ -884,9 +911,24 @@ const VenuePlaceList = ({ venueid }) => {
                                       data-target="#exampleModal"
                                       // onClick={() => handleItemDelete(item)}
                                     >
-                                      <i className="fa fa-envelope-o"></i>
+                                      <i
+                                        className="fa fa-list-alt"
+                                        title="Event Book"
+                                      ></i>
                                     </a>
                                   </Link>{" "}
+                                  <a
+                                    href="javascript:void(0)"
+                                    className="btn btn-primary btn-sm"
+                                    onClick={() =>
+                                      handleRedirect(item, router.ENQUIRY)
+                                    }
+                                  >
+                                    <i
+                                      className="fa fa-envelope-o"
+                                      title="Venue Enquiry"
+                                    ></i>
+                                  </a>{" "}
                                   <a
                                     href="javascript:void(0)"
                                     id="data.id"
@@ -895,7 +937,10 @@ const VenuePlaceList = ({ venueid }) => {
                                     data-target="#exampleModal"
                                     onClick={() => handleItemDelete(item)}
                                   >
-                                    <i className="fa fa-trash"></i>
+                                    <i
+                                      className="fa fa-trash"
+                                      title="Remove VenueSpace"
+                                    ></i>
                                   </a>
                                 </td>
                               </tr>

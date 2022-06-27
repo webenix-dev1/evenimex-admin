@@ -23,7 +23,6 @@ import { uploadImage } from "../../utils/s3";
 import { S3Bucket } from "../../utils/constant";
 import router from "../../utils/router";
 import Link from "next/link";
-import MyStatefulEditor from "../../components/Editor";
 import Pagination from "react-responsive-pagination";
 import { useRouter } from "next/router";
 import VenderFilter from "../../components/VenderFilter";
@@ -150,7 +149,7 @@ const EventBooking = () => {
 
         if (Router.query?.venueId)
           setTimeout(() => {
-            fetchVenueDetails(Router.query?.venueId);
+            // fetchVenueDetails(Router.query?.venueId);
           }, 300);
       })
       .catch((error) => {
@@ -374,7 +373,7 @@ const EventBooking = () => {
   };
 
   const handleVenderFilter = async (val) => {
-    const filter = { venderId: val === "all" ? null : val };
+    const filter = { venderId: val.venderId === "all" ? null : val.venderId };
     fetchVenueEntityList(1, filter);
   };
   // Render
@@ -733,7 +732,10 @@ const EventBooking = () => {
                                     data-target="#exampleModal"
                                     onClick={() => handleItemDelete(item)}
                                   >
-                                    <i className="fa fa-trash"></i>
+                                    <i
+                                      className="fa fa-trash"
+                                      title="Remove Eventbooking"
+                                    ></i>
                                   </a>
                                 </td>
                               </tr>

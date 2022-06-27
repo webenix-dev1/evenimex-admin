@@ -283,7 +283,7 @@ const AdminList = () => {
                           handleFormToggle(true);
                         }}
                       >
-                        <i className="fa fa-plus"></i>
+                        <i className="fa fa-plus" title="Add Admin"></i>
                       </a>
                     </div>
                   </div>
@@ -332,7 +332,10 @@ const AdminList = () => {
                                     className="btn btn-primary btn-sm"
                                     onClick={() => handleFormEdit(item)}
                                   >
-                                    <i className="fa fa-edit"></i>
+                                    <i
+                                      className="fa fa-edit"
+                                      title="Edit Admin"
+                                    ></i>
                                   </a>{" "}
                                   <a
                                     href="javascript:void(0)"
@@ -342,7 +345,10 @@ const AdminList = () => {
                                     data-target="#exampleModal"
                                     onClick={() => handleItemDelete(item)}
                                   >
-                                    <i className="fa fa-trash"></i>
+                                    <i
+                                      className="fa fa-trash"
+                                      title="Remove Admin"
+                                    ></i>
                                   </a>
                                 </td>
                               </tr>
