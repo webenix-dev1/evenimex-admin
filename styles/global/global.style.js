@@ -8643,6 +8643,12 @@ body.md-skin {
   font-size: 22px;
     color: red;
 }
+
+.user-number::-webkit-outer-spin-button,
+.user-number::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
 `;
 
 // export default GlobalStyle;

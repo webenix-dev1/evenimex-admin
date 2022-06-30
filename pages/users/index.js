@@ -56,8 +56,10 @@ const Users = () => {
   };
 
   const handleFormEdit = async (data) => {
-    const { fname, lname, email, id, isActive, mobile } = data;
+    const { fname, lname, email, id, enabled, mobile } = data;
     handleFormToggle(true);
+
+    console.log("EDIT DATA ::", data);
 
     setIsEditId(id);
     setTimeout(() => {
@@ -65,21 +67,30 @@ const Users = () => {
       setValue("lname", lname);
       setValue("email", email);
       setValue("mobile", mobile);
-      setValue("isActive", isActive);
+      setValue("enabled", enabled);
     }, 300);
   };
 
   const handleFormSubmit = async (val) => {
     setErrorMsg("");
     console.log("val ::", val);
-    const { fname, lname, email, mobile, password, isActive } = val;
+    const { fname, lname, email, mobile, password, enabled } = val;
     const insertData = {
       fname,
       lname,
       email,
       mobile,
-      isActive,
+      enabled,
     };
+
+    if (val.enabled === true) {
+      insertData.enabled = true;
+    } else if (val.enabled.length > 0) {
+      insertData.enabled = true;
+    } else {
+      insertData.enabled = false;
+    }
+
     if (password) {
       insertData.password = password;
       insertData.isUser = true;
@@ -88,7 +99,7 @@ const Users = () => {
     if (isEditId) {
       insertData.userId = isEditId;
     }
-    console.log("insertData ::", insertData, isActive);
+    console.log("insertData ::", insertData, enabled);
 
     try {
       setIsLoading(true);
@@ -101,7 +112,10 @@ const Users = () => {
         setIsEditId("");
         handleFormToggle(false);
         fetchVenueEntityList();
-        toaster("success", "User Create Successfully");
+        toaster(
+          "success",
+          isEditId ? "User Update Successfully" : "User Create Successfully"
+        );
       } else {
         toaster("error", result.message);
       }
@@ -223,10 +237,11 @@ const Users = () => {
                               </label>
                               <div className="col-sm-10">
                                 <input
-                                  type="email"
-                                  className="form-control"
+                                  type="number"
+                                  className="form-control user-number"
                                   name="mobile"
                                   placeholder="Enter mobile"
+                                  title="Please enter valid phone number"
                                   ref={register({
                                     required: false,
                                   })}
@@ -257,7 +272,7 @@ const Users = () => {
                                 {" "}
                                 <input
                                   type="checkbox"
-                                  name="isActive"
+                                  name="enabled"
                                   defaultChecked={true}
                                   ref={register({
                                     required: false,
@@ -332,7 +347,7 @@ const Users = () => {
                             {/* <!-- <th>Id</th> --> */}
                             <th>Name</th>
                             <th>Email</th>
-                            <th>UserType</th>
+                            <th>Status</th>
                             <th>Action</th>
                           </tr>
                         </thead>
@@ -341,7 +356,7 @@ const Users = () => {
                             {/* <!-- <th>Id</th> --> */}
                             <th>Name</th>
                             <th>Email</th>
-                            <th>UserType</th>
+                            <th>Status</th>
                             <th>Action</th>
                           </tr>
                         </tfoot>
@@ -353,11 +368,9 @@ const Users = () => {
                                   {item.fname} {item.lname}
                                 </td>
                                 <td>{item.email}</td>
-                                {item?.isAdmin ? (
-                                  <td>Admin</td>
-                                ) : (
-                                  <td>{item.isClient ? "Client" : "User"}</td>
-                                )}
+
+                                <td>{item.enabled ? "Active" : "De-Active"}</td>
+
                                 <td className="center">
                                   <a
                                     href="javascript:void(0)"

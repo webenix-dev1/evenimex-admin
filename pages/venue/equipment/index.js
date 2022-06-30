@@ -6,6 +6,7 @@ import LoaderComponent from "../../../components/LoaderComponent";
 import Sidebar from "../../../components/Sidebar";
 import apiRouter from "../../../utils/apiRouter";
 import { axiosGet, axiosPost } from "../../../utils/axiosHelper";
+import toaster from "../../../utils/toaster";
 
 const VenueEquipment = () => {
   // Const
@@ -74,6 +75,12 @@ const VenueEquipment = () => {
         setIsEditId("");
         handleFormToggle(false);
         fetchVenueEntityList();
+        toaster(
+          "success",
+          isEditId
+            ? "Equipment Successfully Updated!"
+            : "Equipment Successfully Added!"
+        );
       }
     } catch (error) {
       console.log("Error ::", error);
@@ -96,6 +103,7 @@ const VenueEquipment = () => {
         if (result.status) {
           fetchVenueEntityList();
           handleFormToggle(false);
+          toaster("success", "Equipment Remove Successfully");
         }
       } catch (error) {
         console.log("Error ::", error);

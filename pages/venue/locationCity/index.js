@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Head } from "next/document";
 import { useForm } from "react-hook-form";
+import Pagination from "react-responsive-pagination";
 import Header from "../../../components/Header";
 import LoaderComponent from "../../../components/LoaderComponent";
 import Sidebar from "../../../components/Sidebar";
@@ -8,6 +9,7 @@ import apiRouter from "../../../utils/apiRouter";
 import { axiosGet, axiosPost } from "../../../utils/axiosHelper";
 import { uploadImage } from "../../../utils/s3";
 import { S3Bucket } from "../../../utils/constant";
+import toaster from "../../../utils/toaster";
 
 const VenueCity = () => {
   // Const
@@ -18,6 +20,11 @@ const VenueCity = () => {
   const [isEditId, setIsEditId] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [bannerData, setBannerData] = useState({});
+  const [pagination, setPagination] = useState({
+    page: 0,
+    size: 50,
+    totalPages: 0,
+  });
 
   // Effects
   useEffect(() => {
@@ -25,12 +32,20 @@ const VenueCity = () => {
   }, []);
 
   // Method
-  const fetchVenueEntityList = async () => {
+  const fetchVenueEntityList = async (page = 1) => {
     try {
       setIsLoading(true);
-      const result = await axiosGet(apiRouter.VENUE_CITY_LIST);
+      const result = await axiosPost(apiRouter.VENUE_CITY_LIST_BY_PAGE, {
+        page: page - 1,
+        size: pagination.size,
+      });
       if (result.status) {
-        setHeroSliderList(result?.data?.data);
+        setHeroSliderList(result?.data?.data?.dataList);
+        setPagination({
+          ...pagination,
+          page: page,
+          totalPages: result.data?.data?.totalPages,
+        });
       }
     } catch (error) {
     } finally {
@@ -65,7 +80,7 @@ const VenueCity = () => {
   };
 
   const handleFormEdit = async (data) => {
-    const { name, description, id, isActive, image } = data;
+    const { name, description, id, isActive, image, first_page } = data;
     handleFormToggle(true);
 
     setBannerData({
@@ -81,15 +96,33 @@ const VenueCity = () => {
     setTimeout(() => {
       setValue("name", name);
       setValue("isActive", isActive);
+      setValue("first_page", first_page);
     }, 300);
   };
 
   const handleFormSubmit = async (val) => {
-    const { name, isActive, image } = val;
+    const { name, isActive, image, first_page } = val;
     const insertData = {
       name,
       isActive,
+      first_page,
     };
+
+    if (val.isActive === true) {
+      insertData.isActive = true;
+    } else if (val.isActive.length > 0) {
+      insertData.isActive = true;
+    } else {
+      insertData.isActive = false;
+    }
+
+    if (val.first_page === true) {
+      insertData.first_page = true;
+    } else if (val.first_page.length > 0) {
+      insertData.first_page = true;
+    } else {
+      insertData.first_page = false;
+    }
 
     if (isEditId) {
       insertData.id = isEditId;
@@ -112,6 +145,10 @@ const VenueCity = () => {
       if (result.status) {
         fetchVenueEntityList();
         handleFormToggle(false);
+        toaster(
+          "success",
+          isEditId ? "City Successfully Updated!" : "City Successfully Added!"
+        );
       }
     } catch (error) {
       console.log("Error ::", error);
@@ -142,6 +179,7 @@ const VenueCity = () => {
         if (result.status) {
           fetchVenueEntityList();
           handleFormToggle(false);
+          toaster("success", "City Remove Successfully");
         }
       } catch (error) {
         console.log("Error ::", error);
@@ -149,6 +187,10 @@ const VenueCity = () => {
         setIsLoading(false);
       }
     }
+  };
+
+  const handlePagination = (event) => {
+    fetchVenueEntityList(event);
   };
 
   return (
@@ -214,9 +256,7 @@ const VenueCity = () => {
                                         type="file"
                                         name="image"
                                         ref={register({
-                                          required: bannerData?.image?.url
-                                            ? false
-                                            : "Image is required",
+                                          required: false,
                                         })}
                                         onChange={(e) =>
                                           handleImages(e, "image")
@@ -246,6 +286,23 @@ const VenueCity = () => {
                                   class="i-checks"
                                 />{" "}
                                 Is Active{" "}
+                              </label>
+                            </div>
+                            <div>
+                              <label>
+                                {" "}
+                                <input
+                                  type="checkbox"
+                                  name="first_page"
+                                  defaultChecked={true}
+                                  ref={register({
+                                    required: bannerData.first_page
+                                      ? "Image is required"
+                                      : false,
+                                  })}
+                                  class="i-checks"
+                                />{" "}
+                                First Page{" "}
                               </label>
                             </div>
 
@@ -313,6 +370,7 @@ const VenueCity = () => {
                             <th>Image</th>
                             <th>City</th>
                             <th>Status</th>
+                            <th>First Page</th>
                             <th>Action</th>
                           </tr>
                         </thead>
@@ -322,6 +380,7 @@ const VenueCity = () => {
                             <th>Image</th>
                             <th>City</th>
                             <th>Status</th>
+                            <th>First Page</th>
                             <th>Action</th>
                           </tr>
                         </tfoot>
@@ -332,6 +391,7 @@ const VenueCity = () => {
                                 <td>{item.image}</td>
                                 <td>{item.name}</td>
                                 <td>{item.isActive ? "active" : "disabled"}</td>
+                                <td>{item.first_page ? "Yes" : "No"}</td>
                                 <td className="center">
                                   <a
                                     href="javascript:void(0)"
@@ -360,6 +420,11 @@ const VenueCity = () => {
                           })}
                         </tbody>
                       </table>
+                      <Pagination
+                        current={pagination.page}
+                        total={pagination.totalPages}
+                        onPageChange={handlePagination}
+                      />
                     </div>
                   </div>
                 </div>

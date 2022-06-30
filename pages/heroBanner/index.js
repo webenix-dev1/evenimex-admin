@@ -7,6 +7,7 @@ import apiRouter from "../../utils/apiRouter";
 import { axiosGet, axiosPost } from "../../utils/axiosHelper";
 import { S3Bucket } from "../../utils/constant";
 import { uploadImage } from "../../utils/s3";
+import toaster from "../../utils/toaster";
 
 const HeroBanner = () => {
   // Const
@@ -135,6 +136,12 @@ const HeroBanner = () => {
       if (result.status) {
         fetchHeroSliderList();
         handleFormToggle(false);
+        toaster(
+          "success",
+          isEditId
+            ? "Banner Successfully Updated!"
+            : "Banner Successfully Added!"
+        );
       }
     } catch (error) {
       console.log("Error ::", error);

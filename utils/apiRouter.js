@@ -53,6 +53,7 @@ const apiRouter = {
   REMOVE_VENUE_LOCATION: prefixRouteV1("removeVenueLocation"),
   // Venue List Route
   VENUE_CITY_LIST: prefixRouteV1("getVenueLocationCityList"),
+  VENUE_CITY_LIST_BY_PAGE: prefixRouteV1("getVenueLocationCityListByPage"),
   ADD_VENUE_CITY: prefixRouteV1("addVenueLocationCity"),
   REMOVE_VENUE_CITY: prefixRouteV1("removeVenueLocationCity"),
   // Venue Location Type

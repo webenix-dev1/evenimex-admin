@@ -27,6 +27,7 @@ import Pagination from "react-responsive-pagination";
 import { useRouter } from "next/router";
 import VenderFilter from "../../components/VenderFilter";
 import moment from "moment";
+import toaster from "../../utils/toaster";
 
 const EventBooking = () => {
   // Const
@@ -314,7 +315,7 @@ const EventBooking = () => {
         fetchVenueEntityList();
         toaster(
           "success",
-          isEditId ? "Venue Successfully Updated!" : "Venue Successfully Added!"
+          isEditId ? "Event Successfully Updated!" : "Event Successfully Added!"
         );
         setIsEditId("");
       } else {

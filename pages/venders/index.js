@@ -74,7 +74,7 @@ const Venders = () => {
   };
 
   const handleFormEdit = async (data) => {
-    const { fname, lname, email, id, isActive } = data;
+    const { fname, lname, email, id, enabled, mobile } = data;
     handleFormToggle(true);
 
     setIsEditId(id);
@@ -83,7 +83,7 @@ const Venders = () => {
       setValue("lname", lname);
       setValue("email", email);
       setValue("mobile", mobile);
-      setValue("isActive", isActive);
+      setValue("enabled", enabled);
     }, 300);
   };
 
@@ -91,14 +91,23 @@ const Venders = () => {
     setErrorMsg("");
 
     console.log("val ::", val);
-    const { fname, lname, email, mobile, password, isActive } = val;
+    const { fname, lname, email, mobile, password, enabled } = val;
     const insertData = {
       fname,
       lname,
       email,
-      isActive,
+      enabled,
       mobile,
     };
+
+    if (val.enabled === true) {
+      insertData.enabled = true;
+    } else if (val.enabled.length > 0) {
+      insertData.enabled = true;
+    } else {
+      insertData.enabled = false;
+    }
+
     if (password) {
       insertData.password = password;
       insertData.isClient = true;
@@ -107,7 +116,7 @@ const Venders = () => {
     if (isEditId) {
       insertData.userId = isEditId;
     }
-    console.log("insertData ::", insertData, isActive);
+    console.log("insertData ::", insertData, enabled);
 
     try {
       setIsLoading(true);
@@ -119,7 +128,12 @@ const Venders = () => {
         setIsEditId("");
         handleFormToggle(false);
         fetchVenueEntityList();
-        toaster("success", "User Create Successfully");
+        toaster(
+          "success",
+          isEditId
+            ? "Vender Successfully Updated!"
+            : "Vender Successfully Added!"
+        );
       } else {
         toaster("error", result.message);
       }
@@ -251,8 +265,8 @@ const Venders = () => {
                               </label>
                               <div className="col-sm-10">
                                 <input
-                                  type="tel"
-                                  className="form-control"
+                                  type="text"
+                                  className="form-control user-number"
                                   name="mobile"
                                   placeholder="Enter mobile"
                                   ref={register({
@@ -285,12 +299,12 @@ const Venders = () => {
                                 {" "}
                                 <input
                                   type="checkbox"
-                                  name="isActive"
+                                  name="enabled"
                                   defaultChecked={true}
                                   ref={register({
                                     required: false,
                                   })}
-                                  class="i-checks"
+                                  className="i-checks"
                                 />{" "}
                                 Is Active{" "}
                               </label>

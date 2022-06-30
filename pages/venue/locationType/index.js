@@ -6,6 +6,7 @@ import LoaderComponent from "../../../components/LoaderComponent";
 import Sidebar from "../../../components/Sidebar";
 import apiRouter from "../../../utils/apiRouter";
 import { axiosGet, axiosPost } from "../../../utils/axiosHelper";
+import toaster from "../../../utils/toaster";
 
 const VenueLocationType = () => {
   // Const
@@ -74,6 +75,12 @@ const VenueLocationType = () => {
         setIsEditId("");
         handleFormToggle(false);
         fetchVenueEntityList();
+        toaster(
+          "success",
+          isEditId
+            ? "Location Type Successfully Updated!"
+            : "Location Type Successfully Added!"
+        );
       }
     } catch (error) {
       console.log("Error ::", error);
@@ -96,6 +103,7 @@ const VenueLocationType = () => {
         if (result.status) {
           fetchVenueEntityList();
           handleFormToggle(false);
+          toaster("success", "Location Type Remove Successfully");
         }
       } catch (error) {
         console.log("Error ::", error);

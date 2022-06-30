@@ -17,6 +17,7 @@ import convert from "htmr";
 import draftToHtml from "draftjs-to-html";
 import Link from "next/link";
 import MCEEditor from "../../components/Editor2";
+import toaster from "../../utils/toaster";
 
 const VenuePlaceList = ({ venueid }) => {
   console.log("venueid ::", venueid);
@@ -284,6 +285,7 @@ const VenuePlaceList = ({ venueid }) => {
       setValue("seats", data?.seats);
       setValue("days", data?.days);
       setValue("standing", data?.standing);
+      setValue("publishDate", data?.publishDate);
       setValue("menu", venueMenuListTemp);
       setValue("beverage", venueBeverageListTemp);
       setValue("location", venueLocationListTemp);
@@ -335,9 +337,28 @@ const VenuePlaceList = ({ venueid }) => {
       name: val.name,
       price: val.price,
       discription: venueDescription,
+      isActive: val.isActive,
+      isApprove: val.isApprove,
+
       // discription: JSON.stringify(venueDescription),
       images: [],
     };
+
+    if (val.isActive === true) {
+      insertData.isActive = true;
+    } else if (val.isActive.length > 0) {
+      insertData.isActive = true;
+    } else {
+      insertData.isActive = false;
+    }
+
+    if (val.isApprove === true) {
+      insertData.isApprove = true;
+    } else if (val.isApprove.length > 0) {
+      insertData.isApprove = true;
+    } else {
+      insertData.isApprove = false;
+    }
 
     let amenities = [
       ...optionFormatMake(val?.location || []),
@@ -622,6 +643,22 @@ const VenuePlaceList = ({ venueid }) => {
                               </div>
                             </div>
                             <div className="form-group row">
+                              <label className="col-sm-2 col-form-label">
+                                Publish*
+                              </label>
+                              <div className="col-sm-10">
+                                <input
+                                  type="date"
+                                  className="form-control"
+                                  name="publishDate"
+                                  placeholder="Enter Publish"
+                                  ref={register({
+                                    required: false,
+                                  })}
+                                />
+                              </div>
+                            </div>
+                            <div className="form-group row">
                               <SelectAndCreateBox
                                 name={"location"}
                                 placeholder={"Location"}
@@ -824,7 +861,7 @@ const VenuePlaceList = ({ venueid }) => {
               <div className="col-lg-12">
                 <div className="ibox">
                   <div className="ibox-title">
-                    <h5>Venue List</h5>
+                    <h5>VenuePlace List</h5>
                     <div className="ibox-tools">
                       <a className="collapse-link">
                         <i className="fa fa-chevron-up"></i>

@@ -9,6 +9,7 @@ import { axiosGet, axiosPost } from "../../utils/axiosHelper";
 import SelectBox from "../../components/SelectBox";
 import moment from "moment";
 import { useRouter } from "next/router";
+import toaster from "../../utils/toaster";
 
 const VenueEnquiry = () => {
   // Const
@@ -136,6 +137,7 @@ const VenueEnquiry = () => {
         if (result.status) {
           fetchVenueEnquiryList({ venderData });
           handleFormToggle(false);
+          toaster("success", "Enquiry Remove Successfully");
         }
       } catch (error) {
         console.log("Error ::", error);

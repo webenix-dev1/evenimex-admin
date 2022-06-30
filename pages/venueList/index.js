@@ -299,6 +299,7 @@ const VenueList = () => {
       // Admin can change vender for current space
       userId: val.venderId,
       isActive: val.isActive,
+      isApprove: val.isApprove,
     };
 
     if (val.isActive === true) {
@@ -307,6 +308,13 @@ const VenueList = () => {
       insertData.isActive = true;
     } else {
       insertData.isActive = false;
+    }
+    if (val.isApprove === true) {
+      insertData.isApprove = true;
+    } else if (val.isApprove.length > 0) {
+      insertData.isApprove = true;
+    } else {
+      insertData.isApprove = false;
     }
 
     if (isEditId) {
