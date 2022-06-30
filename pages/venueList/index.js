@@ -24,6 +24,7 @@ import { useRouter } from "next/router";
 import VenderFilter from "../../components/VenderFilter";
 import MCEEditor from "../../components/Editor2";
 import { useRef } from "react";
+import toaster from "../../utils/toaster";
 
 const VenueList = () => {
   // Const
@@ -109,6 +110,15 @@ const VenueList = () => {
         setVenderList(option);
         if (id) {
           fetchVenueEntityList(1, { venderId: id });
+          setFilterData({
+            venderId: id,
+            searchVenueName: "",
+          });
+          handleFormToggle(true);
+          setTimeout(() => {
+            executeScroll();
+            setValue("venderId", venderId);
+          }, 200);
         } else {
           fetchVenueEntityList(1, { venderId: null });
         }
@@ -272,6 +282,7 @@ const VenueList = () => {
   };
 
   const handleFormSubmit = async (val) => {
+    console.log("val ::", val);
     setErrorMsg("");
     const insertData = {
       name: val.name,
@@ -287,7 +298,16 @@ const VenueList = () => {
       country: val.country,
       // Admin can change vender for current space
       userId: val.venderId,
+      isActive: val.isActive,
     };
+
+    if (val.isActive === true) {
+      insertData.isActive = true;
+    } else if (val.isActive.length > 0) {
+      insertData.isActive = true;
+    } else {
+      insertData.isActive = false;
+    }
 
     if (isEditId) {
       insertData.venueMainId = isEditId;
@@ -321,16 +341,18 @@ const VenueList = () => {
       if (result.status) {
         clearForm();
         handleFormToggle(false);
-        fetchVenueEntityList();
+        handlePagination(pagination.page);
         toaster(
           "success",
           isEditId ? "Venue Successfully Updated!" : "Venue Successfully Added!"
         );
+        await fetchVenueEntityList();
         setIsEditId("");
       } else {
         toaster("error", result.message);
       }
     } catch (error) {
+      console.log("Error", error);
     } finally {
       setIsLoading(false);
     }
@@ -345,7 +367,9 @@ const VenueList = () => {
         setIsLoading(true);
         const result = await axiosGet(apiRouter.VENUE_REMOVE + "/" + id);
         if (result.status) {
-          fetchVenueEntityList();
+          // await fetchVenueEntityList(1);
+          handlePagination(pagination.page);
+
           toaster("success", "Venue Delete Successfully");
         } else {
           toaster("error", "Venue not deleted");
@@ -396,6 +420,7 @@ const VenueList = () => {
     if (val === false) {
       setFilterData("");
     }
+    handleVenderFilter({ venderId: "all", name: "" });
     setIsReset(val);
   };
   // Render
@@ -414,13 +439,6 @@ const VenueList = () => {
           {/* Header */}
           <Header />
           {/* End Header */}
-          <VenderFilter
-            venderList={venderList}
-            handleVenderFilter={handleVenderFilter}
-            venderId={venderId}
-            isReset={isReset}
-            isSearch={true}
-          />
 
           {/* Banner Form */}
           {isFormOpen && (
@@ -642,7 +660,7 @@ const VenueList = () => {
                             </div>
 
                             {/* Image */}
-                            <div className="fieldCombine">
+                            {/* <div className="fieldCombine">
                               <div className="profilePicMain">
                                 <input
                                   type="file"
@@ -722,7 +740,7 @@ const VenueList = () => {
                                   <i className="fa fa-plus"></i>
                                 )}
                               </div>
-                            </div>
+                            </div> */}
 
                             {/* End Image */}
 
@@ -755,6 +773,18 @@ const VenueList = () => {
             </div>
           )}
           {/* End Banner Form */}
+
+          {/* Filter */}
+          {!venderId && (
+            <VenderFilter
+              venderList={venderList}
+              handleVenderFilter={handleVenderFilter}
+              venderId={venderId}
+              isReset={isReset}
+              isSearch={true}
+            />
+          )}
+          {/* End Filter */}
 
           {/* Hero Table */}
           <div className="wrapper wrapper-content animated fadeInRight">

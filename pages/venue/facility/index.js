@@ -212,7 +212,7 @@ const VenueFacility = () => {
                           handleFormToggle(true);
                         }}
                       >
-                        <i className="fa fa-plus"></i>
+                        <i className="fa fa-plus" title="Add Facility"></i>
                       </a>
                     </div>
                   </div>
@@ -252,7 +252,10 @@ const VenueFacility = () => {
                                     className="btn btn-primary btn-sm"
                                     onClick={() => handleFormEdit(item)}
                                   >
-                                    <i className="fa fa-edit"></i>
+                                    <i
+                                      className="fa fa-edit"
+                                      title="Edit Facility"
+                                    ></i>
                                   </a>{" "}
                                   <a
                                     href="javascript:void(0)"
@@ -262,7 +265,10 @@ const VenueFacility = () => {
                                     data-target="#exampleModal"
                                     onClick={() => handleItemDelete(item)}
                                   >
-                                    <i className="fa fa-trash"></i>
+                                    <i
+                                      className="fa fa-trash"
+                                      title="Remove Facility"
+                                    ></i>
                                   </a>
                                 </td>
                               </tr>

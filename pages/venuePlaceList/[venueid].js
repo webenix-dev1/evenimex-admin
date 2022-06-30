@@ -16,6 +16,7 @@ import MyStatefulEditor from "../../components/Editor";
 import convert from "htmr";
 import draftToHtml from "draftjs-to-html";
 import Link from "next/link";
+import MCEEditor from "../../components/Editor2";
 
 const VenuePlaceList = ({ venueid }) => {
   console.log("venueid ::", venueid);
@@ -579,7 +580,7 @@ const VenuePlaceList = ({ venueid }) => {
                                 Description*
                               </label>
                               <div className="col-sm-10">
-                                <MyStatefulEditor
+                                <MCEEditor
                                   value={venueDescription}
                                   onChange={(val) => {
                                     setVenueDescription(val);

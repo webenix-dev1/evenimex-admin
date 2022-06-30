@@ -60,6 +60,7 @@ const AdminList = () => {
 
   const handleFormEdit = async (data) => {
     const { fname, lname, email, id, isActive } = data;
+    console.log("Edit ::", data);
     handleFormToggle(true);
 
     setIsEditId(id);
@@ -67,7 +68,12 @@ const AdminList = () => {
       setValue("fname", fname);
       setValue("lname", lname);
       setValue("email", email);
-      setValue("isActive", isActive ? ["on"] : []);
+      setValue("isActive", isActive);
+      if (isActive) {
+        document.getElementById("radio-true").checked = true;
+      } else {
+        document.getElementById("radio-false").checked = true;
+      }
     }, 300);
   };
 
@@ -78,7 +84,7 @@ const AdminList = () => {
       fname,
       lname,
       email,
-      isActive: isActive.length > 0 ? true : false,
+      isActive,
     };
     if (password) {
       insertData.password = password;
@@ -221,7 +227,35 @@ const AdminList = () => {
                               </div>
                             )}
 
-                            <div>
+                            <div className="form-group row">
+                              <label className="col-sm-2 col-form-label">
+                                Is Active
+                              </label>
+                              <div className="col-sm-10">
+                                <input
+                                  type="radio"
+                                  name="isActive"
+                                  value={true}
+                                  ref={register({
+                                    required: false,
+                                  })}
+                                  id="radio-true"
+                                />{" "}
+                                Yes{" "}
+                                <input
+                                  type="radio"
+                                  name="isActive"
+                                  value={false}
+                                  ref={register({
+                                    required: false,
+                                  })}
+                                  id="radio-false"
+                                />{" "}
+                                No
+                              </div>
+                            </div>
+
+                            {/* <div>
                               <label>
                                 {" "}
                                 <input
@@ -235,7 +269,7 @@ const AdminList = () => {
                                 />{" "}
                                 Is Active{" "}
                               </label>
-                            </div>
+                            </div> */}
 
                             <div className="hr-line-dashed"></div>
                             <div className="form-group row">

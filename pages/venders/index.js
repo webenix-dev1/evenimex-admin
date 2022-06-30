@@ -414,7 +414,7 @@ const Venders = () => {
                                   >
                                     <i
                                       className="fa fa-edit"
-                                      title="Venue Edit"
+                                      title="Vender Edit"
                                     ></i>
                                   </a>{" "}
                                   <a
@@ -427,7 +427,7 @@ const Venders = () => {
                                   >
                                     <i
                                       className="fa fa-trash"
-                                      title="Venue Remove"
+                                      title="Vender Remove"
                                     ></i>
                                   </a>
                                 </td>

@@ -70,13 +70,14 @@ const HeroBanner = () => {
   };
 
   const handleFormEdit = async (data) => {
-    const { title, description, id, isActive } = data;
+    console.log("Data ::", data);
+    const { title, description, id, isActive, image } = data;
     handleFormToggle(true);
 
     setBannerData({
       ...data,
       image: {
-        url: data?.image || "",
+        url: image || "",
         isUpload: false,
         image: "",
       },
@@ -92,14 +93,23 @@ const HeroBanner = () => {
 
   const handleFormSubmit = async (val) => {
     const { title, description, isActive, image } = val;
+
+    console.log("VALUE ::", val);
+
     const insertData = {
       title,
       description,
       isActive,
-      image: bannerData.image.image,
     };
 
-    // return console.log("Insert ::", insertData);
+    if (isActive.length > 0) {
+      insertData.isActive = true;
+    }
+
+    console.log("Banner :: ", bannerData);
+
+    // return
+    console.log("Insert ::", insertData);
 
     if (isEditId) {
       insertData.id = isEditId;
@@ -108,12 +118,14 @@ const HeroBanner = () => {
     try {
       setIsLoading(true);
 
-      const imageUrl = await uploadImage(
-        insertData?.image,
-        S3Bucket.HOME_SLIDER
-      );
-      if (imageUrl.status) {
-        insertData.image = imageUrl.url;
+      if (bannerData.image?.isUpload) {
+        const imageUrl = await uploadImage(
+          bannerData?.image.image,
+          S3Bucket.HOME_SLIDER
+        );
+        if (imageUrl.status) {
+          insertData.image = imageUrl.url;
+        }
       }
 
       const result = await axiosPost(
@@ -151,6 +163,16 @@ const HeroBanner = () => {
       } finally {
         setIsLoading(false);
       }
+    }
+  };
+
+  const removeImage = (image, index) => {
+    const res = confirm(`Are you sure you want to remove the Banner Image`);
+    if (res) {
+      setBannerData({
+        ...bannerData,
+        image: "",
+      });
     }
   };
 
@@ -216,27 +238,32 @@ const HeroBanner = () => {
                             <label className="col-sm-2 col-form-label">
                               Image
                             </label>
-                            <div className="col-sm-10">
+                            <div className="col-md-4">
                               <div className="profilePicMain">
-                                <input
-                                  type="file"
-                                  name="image"
-                                  ref={register({
-                                    required: bannerData?.image?.url
-                                      ? false
-                                      : "Image is required",
-                                  })}
-                                  onChange={(e) => handleImages(e, "image")}
-                                />
                                 {bannerData?.image?.url ? (
-                                  <img
-                                    src={bannerData?.image?.url}
-                                    style={{
-                                      objectFit: "contain",
-                                    }}
-                                  />
+                                  <>
+                                    <div
+                                      className="venuimgdelete"
+                                      onClick={() => removeImage()}
+                                    >
+                                      <i className="fa fa-trash"></i>
+                                    </div>
+                                    <img src={bannerData?.image?.url} />
+                                  </>
                                 ) : (
-                                  <i className="fa fa-plus"></i>
+                                  <>
+                                    <input
+                                      type="file"
+                                      name="image"
+                                      ref={register({
+                                        required: bannerData?.image?.url
+                                          ? false
+                                          : "Image is required",
+                                      })}
+                                      onChange={(e) => handleImages(e, "image")}
+                                    />
+                                    <i className="fa fa-plus"></i>
+                                  </>
                                 )}
                               </div>
                               {errors?.image && (

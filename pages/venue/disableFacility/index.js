@@ -214,7 +214,10 @@ const VenueDisableFacility = () => {
                           handleFormToggle(true);
                         }}
                       >
-                        <i className="fa fa-plus"></i>
+                        <i
+                          className="fa fa-plus"
+                          title="Add Disable Facilities"
+                        ></i>
                       </a>
                     </div>
                   </div>
@@ -254,7 +257,10 @@ const VenueDisableFacility = () => {
                                     className="btn btn-primary btn-sm"
                                     onClick={() => handleFormEdit(item)}
                                   >
-                                    <i className="fa fa-edit"></i>
+                                    <i
+                                      className="fa fa-edit"
+                                      title="Edit Disable Facilities"
+                                    ></i>
                                   </a>{" "}
                                   <a
                                     href="javascript:void(0)"
@@ -262,7 +268,10 @@ const VenueDisableFacility = () => {
                                     className="admin_remove btn btn-danger btn-sm"
                                     onClick={() => handleItemDelete(item)}
                                   >
-                                    <i className="fa fa-trash"></i>
+                                    <i
+                                      className="fa fa-trash"
+                                      title="Remove Disable Facilities"
+                                    ></i>
                                   </a>
                                 </td>
                               </tr>

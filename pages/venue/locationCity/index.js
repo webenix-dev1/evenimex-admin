@@ -6,6 +6,8 @@ import LoaderComponent from "../../../components/LoaderComponent";
 import Sidebar from "../../../components/Sidebar";
 import apiRouter from "../../../utils/apiRouter";
 import { axiosGet, axiosPost } from "../../../utils/axiosHelper";
+import { uploadImage } from "../../../utils/s3";
+import { S3Bucket } from "../../../utils/constant";
 
 const VenueCity = () => {
   // Const
@@ -15,6 +17,7 @@ const VenueCity = () => {
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [isEditId, setIsEditId] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [bannerData, setBannerData] = useState({});
 
   // Effects
   useEffect(() => {
@@ -37,13 +40,42 @@ const VenueCity = () => {
   const handleFormToggle = (val) => {
     if (val === false) {
       reset();
+      setBannerData({});
     }
     setIsFormOpen(val);
   };
 
+  const handleImages = async (e, name) => {
+    console.log("Image ::", name, e.target.files[0]);
+    const image = e.target.files[0];
+
+    if (image) {
+      const url = URL.createObjectURL(image);
+      const coverImage = {
+        image,
+        url,
+        isUpload: true,
+      };
+
+      setBannerData({
+        ...bannerData,
+        image: coverImage,
+      });
+    }
+  };
+
   const handleFormEdit = async (data) => {
-    const { name, description, id, isActive } = data;
+    const { name, description, id, isActive, image } = data;
     handleFormToggle(true);
+
+    setBannerData({
+      ...data,
+      image: {
+        url: image || "",
+        isUpload: false,
+        image: "",
+      },
+    });
 
     setIsEditId(id);
     setTimeout(() => {
@@ -57,7 +89,6 @@ const VenueCity = () => {
     const insertData = {
       name,
       isActive,
-      image: "/images/home-slide-01.jpg",
     };
 
     if (isEditId) {
@@ -66,6 +97,17 @@ const VenueCity = () => {
 
     try {
       setIsLoading(true);
+
+      if (bannerData.image?.isUpload) {
+        const imageUrl = await uploadImage(
+          bannerData?.image.image,
+          S3Bucket.HOME_SLIDER
+        );
+        if (imageUrl.status) {
+          insertData.image = imageUrl.url;
+        }
+      }
+
       const result = await axiosPost(apiRouter.ADD_VENUE_CITY, insertData);
       if (result.status) {
         fetchVenueEntityList();
@@ -75,6 +117,16 @@ const VenueCity = () => {
       console.log("Error ::", error);
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const removeImage = () => {
+    const res = confirm(`Are you sure you want to remove the Banner Image`);
+    if (res) {
+      setBannerData({
+        ...bannerData,
+        image: "",
+      });
     }
   };
 
@@ -144,15 +196,36 @@ const VenueCity = () => {
                               <label className="col-sm-2 col-form-label">
                                 Image
                               </label>
-                              <div className="col-sm-10">
-                                <input
-                                  type="file"
-                                  className="form-control"
-                                  name="image"
-                                  ref={register({
-                                    required: "Image is required",
-                                  })}
-                                />
+                              <div className="col-md-4">
+                                <div className="profilePicMain">
+                                  {bannerData?.image?.url ? (
+                                    <>
+                                      <div
+                                        className="venuimgdelete"
+                                        onClick={() => removeImage()}
+                                      >
+                                        <i className="fa fa-trash"></i>
+                                      </div>
+                                      <img src={bannerData?.image?.url} />
+                                    </>
+                                  ) : (
+                                    <>
+                                      <input
+                                        type="file"
+                                        name="image"
+                                        ref={register({
+                                          required: bannerData?.image?.url
+                                            ? false
+                                            : "Image is required",
+                                        })}
+                                        onChange={(e) =>
+                                          handleImages(e, "image")
+                                        }
+                                      />
+                                      <i className="fa fa-plus"></i>
+                                    </>
+                                  )}
+                                </div>
                                 {errors?.image && (
                                   <p className="m-t text-danger">
                                     {errors?.image?.message}
@@ -222,7 +295,7 @@ const VenueCity = () => {
                           handleFormToggle(true);
                         }}
                       >
-                        <i className="fa fa-plus"></i>
+                        <i className="fa fa-plus" title="Add City"></i>
                       </a>
                     </div>
                   </div>
@@ -265,7 +338,10 @@ const VenueCity = () => {
                                     className="btn btn-primary btn-sm"
                                     onClick={() => handleFormEdit(item)}
                                   >
-                                    <i className="fa fa-edit"></i>
+                                    <i
+                                      className="fa fa-edit"
+                                      title="Edit City"
+                                    ></i>
                                   </a>{" "}
                                   <a
                                     href="javascript:void(0)"
@@ -273,7 +349,10 @@ const VenueCity = () => {
                                     className="admin_remove btn btn-danger btn-sm"
                                     onClick={() => handleItemDelete(item)}
                                   >
-                                    <i className="fa fa-trash"></i>
+                                    <i
+                                      className="fa fa-trash"
+                                      title="Remove City"
+                                    ></i>
                                   </a>
                                 </td>
                               </tr>

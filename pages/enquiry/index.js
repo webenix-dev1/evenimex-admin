@@ -55,7 +55,7 @@ const VenueEnquiry = () => {
           option.push({
             ...item,
             value: item?.id,
-            label: item?.fname + item?.lname,
+            label: item?.fname + " " + item?.lname,
           });
           if (venderId == item.id) {
             id = venderId;
