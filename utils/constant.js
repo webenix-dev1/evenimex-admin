@@ -68,4 +68,5 @@ export const staticImagesUrl = {
 export const S3Bucket = {
   venueImages: "venueImages",
   HOME_SLIDER: "homeSlider",
+  blogImages: "blogImages",
 };

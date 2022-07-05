@@ -108,6 +108,17 @@ const Sidebar = (props) => {
             </Link>
           </li>
           <li
+            className={Router.pathname === router.BLOGS ? "active" : ""}
+            onClick={cloaseForm}
+          >
+            <Link href={router.BLOGS}>
+              <a href={router.BLOGS}>
+                <i className="fa fa-diamond"></i>{" "}
+                <span className="nav-label">Blogs</span>
+              </a>
+            </Link>
+          </li>
+          <li
             className={Router.pathname === router.VENDERS ? "active" : ""}
             onClick={cloaseForm}
           >

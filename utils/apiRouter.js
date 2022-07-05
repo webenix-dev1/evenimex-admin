@@ -23,6 +23,11 @@ const apiRouter = {
   ADD_UPDATE_HERO_SLIDER_LIST: prefixRouteV1("addHeroSlider"),
   REMOVE_HERO_SLIDER_LIST: prefixRouteV1("removeHeroSlider"),
 
+  // Blogs
+  BLOGS_LIST: prefixRouteV1("blogList"),
+  ADD_UPDATE_BLOGS_LIST: prefixRouteV1("addBlogs"),
+  REMOVE_BLOGS_LIST: prefixRouteV1("removeBlog"),
+  
   // Venue Amenities
   ADD_VENUE_AMENITIES: prefixRouteV1("addAmenities"),
   VENUE_AMENITIES_LIST: prefixRouteV1("getAmenities"),
