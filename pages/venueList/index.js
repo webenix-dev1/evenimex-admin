@@ -7,13 +7,7 @@ import Sidebar from "../../components/Sidebar";
 import apiRouter from "../../utils/apiRouter";
 import { axiosGet, axiosPost } from "../../utils/axiosHelper";
 import SelectBox from "../../components/SelectBox";
-import {
-  getVenueLocationCityList,
-  getVenueLocationList,
-  getVenueLocationTypeList,
-  getVenueMenuList,
-  getVenueServiceList,
-} from "../../utils/helper";
+import { getVenueLocationCityList } from "../../utils/helper";
 import { uploadImage } from "../../utils/s3";
 import { S3Bucket } from "../../utils/constant";
 import router from "../../utils/router";
@@ -25,6 +19,8 @@ import VenderFilter from "../../components/VenderFilter";
 import MCEEditor from "../../components/Editor2";
 import { useRef } from "react";
 import toaster from "../../utils/toaster";
+import MyGoogleMap from "../../components/Maps/MyGoogleMap";
+import CitySelectAndCreateBox from "../../components/CitySelectAndCreateBox";
 
 const VenueList = () => {
   // Const
@@ -57,6 +53,12 @@ const VenueList = () => {
   });
   const [isReset, setIsReset] = useState("");
   const [filterData, setFilterData] = useState("");
+  const [editVenueData, setEditVenueData] = useState("");
+  const [location, setLocation] = useState({
+    lat: "",
+    long: "",
+  });
+  const [isEditLoad, setIsEditLoad] = useState(false);
 
   console.log("venueLocationCityList ::", venueLocationCityList);
 
@@ -65,6 +67,9 @@ const VenueList = () => {
     fetchVenueEntity();
     fetchVenueEntityList();
     fetchVendersList();
+    setTimeout(() => {
+      setIsEditLoad(true);
+    }, 6000);
   }, []);
 
   useEffect(() => {
@@ -214,6 +219,7 @@ const VenueList = () => {
     handleFormToggle(true);
 
     setIsEditId(id);
+    setEditVenueData(data);
     setTimeout(() => {
       setVenueImages({
         ...venueImages,
@@ -431,7 +437,93 @@ const VenueList = () => {
     handleVenderFilter({ venderId: "all", name: "" });
     setIsReset(val);
   };
+
+  const addressHandle = (addressValue) => {
+    console.log("address", addressValue);
+
+    if (!isEditLoad) {
+      return;
+    }
+
+    if (addressValue?.address_components?.length > 0) {
+      addressValue?.address_components?.map((index) => {
+        if (index?.types.length > 0) {
+          console.log("index ::", index);
+          console.log("index?.types ::", index?.types[0]);
+          setValue("address", addressValue.formatted_address);
+          setLocation({
+            lat: addressValue.geometry.location.lat(),
+            long: addressValue.geometry.location.lng(),
+          });
+
+          switch (index?.types[0]) {
+            case "administrative_area_level_1": {
+              setValue("state", index?.long_name);
+              break;
+            }
+            case "locality": {
+              const checkCity = venueLocationCityList?.some(function (ele) {
+                return ele.value == index?.long_name;
+              });
+              console.log("checkCity ::", checkCity);
+              if (checkCity) {
+                setValue("city", index?.long_name);
+              }
+              break;
+            }
+            case "sublocality_level_1": {
+              setValue("locality", index?.long_name);
+              break;
+            }
+            case "route": {
+              setValue("route", index?.long_name);
+              break;
+            }
+            case "street_number": {
+              setValue("streetNumber", index?.long_name);
+              break;
+            }
+            case "premise": {
+              setValue("streetNumber", index?.long_name);
+              break;
+            }
+            case "postal_code": {
+              setValue("zip", index?.long_name);
+              break;
+            }
+            case "country": {
+              setValue("country", index?.long_name);
+              break;
+            }
+            // No default
+          }
+        }
+      });
+    }
+    // });
+  };
+
+  const clearAddressFields = () => {
+    if (!isEditLoad) {
+      return;
+    }
+    setValue("state", "");
+    setValue("city", "");
+    setValue("locality", "");
+    setValue("route", "");
+    setValue("streetNumber", "");
+    setValue("streetNumber", "");
+    setValue("zip", "");
+    setValue("country", "");
+    setValue("address", "");
+    setLocation({
+      lat: "",
+      long: "",
+    });
+  };
+
   // Render
+  console.log("editVenueData ::", editVenueData);
 
   return (
     <>
@@ -505,22 +597,6 @@ const VenueList = () => {
                             </div>
                             <div className="form-group row">
                               <label className="col-sm-2 col-form-label">
-                                Address
-                              </label>
-                              <div className="col-sm-10">
-                                <input
-                                  type="text"
-                                  className="form-control"
-                                  name="address"
-                                  placeholder="Enter Address"
-                                  ref={register({
-                                    required: "Address is required",
-                                  })}
-                                />
-                              </div>
-                            </div>
-                            <div className="form-group row">
-                              <label className="col-sm-2 col-form-label">
                                 Participants
                               </label>
                               <div className="col-sm-10">
@@ -535,6 +611,49 @@ const VenueList = () => {
                                 />
                               </div>
                             </div>
+                            {/* {!isEditId && ( */}
+                            <div class="form-group row">
+                              <SelectBox
+                                name={"venderId"}
+                                placeholder={"Vender"}
+                                control={control}
+                                optionsList={venderList}
+                                label="Vender*"
+                              />
+                            </div>
+                            {/* )} */}
+                            <div className="form-group row">
+                              <label className="col-sm-2 col-form-label">
+                                Search Location
+                              </label>
+                              <div style={{ height: "350px" }}>
+                                <div style={{ height: "250px" }}>
+                                  <MyGoogleMap
+                                    addressHandle={addressHandle}
+                                    clearAddressFields={clearAddressFields}
+                                    isEdit={isEditId}
+                                    venueData={editVenueData}
+                                  />
+                                </div>
+                              </div>
+                            </div>
+                            <div className="form-group row">
+                              <label className="col-sm-2 col-form-label">
+                                Address
+                              </label>
+                              <div className="col-sm-10">
+                                <input
+                                  type="text"
+                                  className="form-control"
+                                  name="address"
+                                  placeholder="Enter Address"
+                                  ref={register({
+                                    required: "Address is required",
+                                  })}
+                                />
+                              </div>
+                            </div>
+
                             <div className="form-group row">
                               <label className="col-sm-2 col-form-label">
                                 Street Number*
@@ -562,7 +681,8 @@ const VenueList = () => {
                                   name="route"
                                   placeholder="Enter Route"
                                   ref={register({
-                                    required: "Route is required",
+                                    required: false,
+                                    // "Route is required",
                                   })}
                                 />
                               </div>
@@ -578,18 +698,20 @@ const VenueList = () => {
                                   name="locality"
                                   placeholder="Enter Locality"
                                   ref={register({
-                                    required: "Locality is required",
+                                    required: false,
+                                    //  "Locality is required",
                                   })}
                                 />
                               </div>
                             </div>
                             <div className="form-group row">
-                              <SelectBox
+                              <CitySelectAndCreateBox
                                 name={"city"}
                                 placeholder={"City"}
                                 control={control}
                                 optionsList={venueLocationCityList}
                                 label="City*"
+                                setValue={setValue}
                               />
                             </div>
                             <div className="form-group row">
@@ -624,17 +746,6 @@ const VenueList = () => {
                                 />
                               </div>
                             </div>
-                            {/* {!isEditId && ( */}
-                            <div class="form-group row">
-                              <SelectBox
-                                name={"venderId"}
-                                placeholder={"Vender"}
-                                control={control}
-                                optionsList={venderList}
-                                label="Vender*"
-                              />
-                            </div>
-                            {/* )} */}
 
                             <div>
                               <label>
