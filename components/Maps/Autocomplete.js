@@ -7,15 +7,23 @@ const Wrapper = styled.div`
   align-items: center;
   justify-content: center;
   width: 100%;
-  padding: 20px;
+  /* padding: 20px; */
   text-align: center;
-  input {
+  /* input {
     position: absolute;
     top: -27px;
     border-color: hsl(0, 0%, 80%);
     border-radius: 4px;
     border-style: solid;
     border-width: 1px;
+  } */
+  .autocomplete-input{
+    margin-bottom: 30px; 
+  }
+  input{
+    top: 0;
+    position: relative;
+    
   }
 `;
 
@@ -67,7 +75,7 @@ class AutoComplete extends Component {
   render() {
     return (
       <Wrapper>
-        <div className="col-sm-10">
+        <div className="autocomplete-input">
           <input
             // className="search-input"
             className="form-control"

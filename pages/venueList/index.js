@@ -626,8 +626,8 @@ const VenueList = () => {
                               <label className="col-sm-2 col-form-label">
                                 Search Location
                               </label>
-                              <div style={{ height: "350px" }}>
-                                <div style={{ height: "250px" }}>
+                              <div className="col-sm-10" style={{ height: "350px" }}>
+                                <div className="googlemap-col custom-map" style={{ height: "250px" }}>
                                   <MyGoogleMap
                                     addressHandle={addressHandle}
                                     clearAddressFields={clearAddressFields}
