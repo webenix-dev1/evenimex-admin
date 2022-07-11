@@ -582,7 +582,7 @@ const VenuePlaceList = ({ venueid }) => {
                             </div>
                             <div className="form-group row">
                               <label className="col-sm-2 col-form-label">
-                                Place Price*
+                                Place Price
                               </label>
                               <div className="col-sm-10">
                                 <input
@@ -591,7 +591,8 @@ const VenuePlaceList = ({ venueid }) => {
                                   name="price"
                                   placeholder="Enter Place Price"
                                   ref={register({
-                                    required: "Venue is required",
+                                    required: false,
+                                    //required: "Venue is required",
                                   })}
                                 />
                               </div>
@@ -628,7 +629,7 @@ const VenuePlaceList = ({ venueid }) => {
                             </div>
                             <div className="form-group row">
                               <label className="col-sm-2 col-form-label">
-                                Place Standing*
+                                Place Standing
                               </label>
                               <div className="col-sm-10">
                                 <input
@@ -637,7 +638,8 @@ const VenuePlaceList = ({ venueid }) => {
                                   name="standing"
                                   placeholder="Enter Place Standing"
                                   ref={register({
-                                    required: "Place Standing is required",
+                                    //required: "Place Standing is required",
+                                    required: false,
                                   })}
                                 />
                               </div>

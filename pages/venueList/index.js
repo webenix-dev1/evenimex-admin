@@ -672,7 +672,7 @@ const VenueList = () => {
                             </div>
                             <div className="form-group row">
                               <label className="col-sm-2 col-form-label">
-                                Route*
+                                Route
                               </label>
                               <div className="col-sm-10">
                                 <input
@@ -689,7 +689,7 @@ const VenueList = () => {
                             </div>
                             <div className="form-group row">
                               <label className="col-sm-2 col-form-label">
-                                Locality*
+                                Locality
                               </label>
                               <div className="col-sm-10">
                                 <input
@@ -716,7 +716,7 @@ const VenueList = () => {
                             </div>
                             <div className="form-group row">
                               <label className="col-sm-2 col-form-label">
-                                State*
+                                State
                               </label>
                               <div className="col-sm-10">
                                 <input
@@ -725,7 +725,8 @@ const VenueList = () => {
                                   name="state"
                                   placeholder="Enter State"
                                   ref={register({
-                                    required: "State is required",
+                                    required: false,
+                                    //required: "State is required",
                                   })}
                                 />
                               </div>
