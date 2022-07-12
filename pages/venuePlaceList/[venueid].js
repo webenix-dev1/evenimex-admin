@@ -642,7 +642,7 @@ const VenuePlaceList = ({ venueid }) => {
                                 />
                               </div>
                             </div>
-                            <div className="form-group row">
+                            <div className="form-group row hide">
                               <label className="col-sm-2 col-form-label">
                                 Publish*
                               </label>
