@@ -5,7 +5,15 @@ import Select from "react-select";
 import CreatableSelect from "react-select/creatable";
 
 const SelectAndCreateBox = (props) => {
-  const { label, name, control, optionsList, placeholder, categoryId } = props;
+  const {
+    label,
+    name,
+    control,
+    optionsList,
+    placeholder,
+    categoryId,
+    isRequired = false,
+  } = props;
   const brandColor = "#999999";
   const customStyles = {
     control: (base, state) => ({
@@ -51,53 +59,58 @@ const SelectAndCreateBox = (props) => {
 
   return (
     <>
-      <Form.Label>{label}*</Form.Label>
-      <Controller
-        name={name}
-        control={control}
-        rules={{
-          required: `${label} is required`,
-        }}
-        // defaultValue={options.filter((option) =>
-        //   options?.includes(option.value)
-        // )}
-        // defaultValue=""
-        render={({ value, onChange, onBlur }) => {
-          return (
-            <CreatableSelect
-              className="multiselect"
-              classNamePrefix="evenimex-select"
-              options={defualtOption}
-              placeholder={placeholder}
-              isMulti={name === "city" ? false : true}
-              onChange={(options) => {
-                if (name === "city") {
-                  onChange(options.value);
-                } else {
-                  onChange(options?.map((option) => option));
-                }
-              }}
-              onCreateOption={handleCreate}
-              onBlur={onBlur}
-              value={defualtOption.filter((option) => {
-                // value?.includes(option);
-                const doesExist = value?.some(function (ele) {
-                  return ele.label == option.label;
-                });
-                return doesExist && option;
-              })}
-              theme={(theme) => ({
-                ...theme,
-                colors: {
-                  ...theme.colors,
-                  neutral50: "transparent", // Placeholder color
-                },
-              })}
-              styles={customStyles}
-            />
-          );
-        }}
-      />
+      <label className="col-sm-2 col-form-label">
+        {/* Publish* */}
+        <Form.Label>{label}</Form.Label>
+      </label>
+      <div className="col-sm-10">
+        <Controller
+          name={name}
+          control={control}
+          rules={{
+            required: isRequired ? `${label} is required` : false,
+          }}
+          // defaultValue={options.filter((option) =>
+          //   options?.includes(option.value)
+          // )}
+          // defaultValue=""
+          render={({ value, onChange, onBlur }) => {
+            return (
+              <CreatableSelect
+                className="multiselect"
+                classNamePrefix="evenimex-select"
+                options={defualtOption}
+                placeholder={placeholder}
+                isMulti={name === "city" ? false : true}
+                onChange={(options) => {
+                  if (name === "city") {
+                    onChange(options.value);
+                  } else {
+                    onChange(options?.map((option) => option));
+                  }
+                }}
+                onCreateOption={handleCreate}
+                onBlur={onBlur}
+                value={defualtOption.filter((option) => {
+                  // value?.includes(option);
+                  const doesExist = value?.some(function (ele) {
+                    return ele.label == option.label;
+                  });
+                  return doesExist && option;
+                })}
+                theme={(theme) => ({
+                  ...theme,
+                  colors: {
+                    ...theme.colors,
+                    neutral50: "transparent", // Placeholder color
+                  },
+                })}
+                styles={customStyles}
+              />
+            );
+          }}
+        />
+      </div>
     </>
   );
 };

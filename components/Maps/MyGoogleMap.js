@@ -22,7 +22,7 @@ class MyGoogleMap extends Component {
     geoCoder: null,
     places: [],
     center: [44.439663, 26.096306],
-    zoom: 9,
+    zoom: 12,
     address: "",
     draggable: true,
     lat: 44.439663,
@@ -31,6 +31,19 @@ class MyGoogleMap extends Component {
 
   componentWillMount() {
     this.setCurrentLocation();
+  }
+
+  componentDidMount() {
+    setTimeout(() => {
+      this.setState({
+        center: [
+          this.props.isEdit ? Number(this.props.venueData.lat) : 44.439663,
+          this.props.isEdit ? Number(this.props.venueData.long) : 26.096306,
+        ],
+        lat: this.props.isEdit ? Number(this.props.venueData.lat) : 44.439663,
+        lng: this.props.isEdit ? Number(this.props.venueData.long) : 26.096306,
+      });
+    }, 1000);
   }
 
   onMarkerInteraction = (childKey, childProps, mouse) => {

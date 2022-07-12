@@ -42,6 +42,9 @@ const Box = styled.div`
   box-shadow: 0 2px 7px 1px rgb(0 0 0 / 30%);
   flex-direction: column;
   align-items: center;
+  p {
+    margin: 0 0 4px;
+  }
 }
 `;
 

@@ -582,7 +582,7 @@ const VenuePlaceList = ({ venueid }) => {
                             </div>
                             <div className="form-group row">
                               <label className="col-sm-2 col-form-label">
-                                Place Price*
+                                Place Price
                               </label>
                               <div className="col-sm-10">
                                 <input
@@ -591,7 +591,7 @@ const VenuePlaceList = ({ venueid }) => {
                                   name="price"
                                   placeholder="Enter Place Price"
                                   ref={register({
-                                    required: "Venue is required",
+                                    required: false,
                                   })}
                                 />
                               </div>
@@ -628,7 +628,7 @@ const VenuePlaceList = ({ venueid }) => {
                             </div>
                             <div className="form-group row">
                               <label className="col-sm-2 col-form-label">
-                                Place Standing*
+                                Place Standing
                               </label>
                               <div className="col-sm-10">
                                 <input
@@ -637,7 +637,7 @@ const VenuePlaceList = ({ venueid }) => {
                                   name="standing"
                                   placeholder="Enter Place Standing"
                                   ref={register({
-                                    required: "Place Standing is required",
+                                    required: false,
                                   })}
                                 />
                               </div>
@@ -660,11 +660,23 @@ const VenuePlaceList = ({ venueid }) => {
                             </div>
                             <div className="form-group row">
                               <SelectAndCreateBox
+                                name={"events"}
+                                placeholder={"Event"}
+                                control={control}
+                                optionsList={venueEventsList}
+                                label="Event*"
+                                categoryId={9}
+                                isRequired
+                              />
+                            </div>
+                            <div className="form-group row">
+                              <SelectAndCreateBox
                                 name={"location"}
                                 placeholder={"Location"}
                                 control={control}
                                 optionsList={venueLocationList}
-                                label="Location"
+                                label="Location*"
+                                isRequired
                                 categoryId={8}
                               />
                             </div>
@@ -674,7 +686,8 @@ const VenuePlaceList = ({ venueid }) => {
                                 placeholder={"Location Type"}
                                 control={control}
                                 optionsList={venueLocationTypeList}
-                                label="Location Type"
+                                label="Location Type*"
+                                isRequired
                                 categoryId={2}
                               />
                             </div>
@@ -684,27 +697,20 @@ const VenuePlaceList = ({ venueid }) => {
                                 placeholder={"Beverage"}
                                 control={control}
                                 optionsList={venueBeverageList}
-                                label="Beverage"
+                                label="Beverage*"
+                                isRequired
                                 categoryId={7}
                               />
                             </div>
-                            <div className="form-group row">
-                              <SelectAndCreateBox
-                                name={"events"}
-                                placeholder={"Event"}
-                                control={control}
-                                optionsList={venueEventsList}
-                                label="Event"
-                                categoryId={9}
-                              />
-                            </div>
+
                             <div className="form-group row">
                               <SelectAndCreateBox
                                 name={"equipment"}
                                 placeholder={"Equipment"}
                                 control={control}
                                 optionsList={venueEquipmentList}
-                                label="Equipment"
+                                label="Equipment*"
+                                isRequired
                                 categoryId={3}
                               />
                             </div>
@@ -714,7 +720,8 @@ const VenuePlaceList = ({ venueid }) => {
                                 placeholder={"Menus"}
                                 control={control}
                                 optionsList={venueMenuList}
-                                label="Menus"
+                                label="Menus*"
+                                isRequired
                                 categoryId={6}
                               />
                             </div>
