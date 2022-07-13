@@ -295,7 +295,7 @@ const VenueList = () => {
       discription: venueDescription,
       // discription: JSON.stringify(venueDescription),
       address: val.address,
-      participants: val.participants,
+      participants: val.participants || 0,
       city: val.city,
       streetNumber: val.streetNumber,
       route: val.route,

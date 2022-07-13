@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Head } from "next/document";
 import { useForm } from "react-hook-form";
 import Header from "../../components/Header";
@@ -16,16 +16,28 @@ const AdminList = () => {
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [isEditId, setIsEditId] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [errorMsg, setErrorMsg] = useState("");
   const [pagination, setPagination] = useState({
     page: 0,
     size: 20,
     totalPages: 0,
   });
+  const password = useRef({});
+  password.current = watch("password", "");
 
   // Effects
   useEffect(() => {
     fetchVenueEntityList();
   }, []);
+
+  useEffect(() => {
+    for (const error of Object.keys(errors)) {
+      const msg = errors[error]?.message;
+      if (msg) {
+        return setErrorMsg(msg || "");
+      }
+    }
+  }, [errors]);
 
   // Method
   const fetchVenueEntityList = async (page = 1, filter = {}) => {
@@ -168,7 +180,7 @@ const AdminList = () => {
                           <form onSubmit={handleSubmit(handleFormSubmit)}>
                             <div className="form-group row">
                               <label className="col-sm-2 col-form-label">
-                                First Name
+                                First Name*
                               </label>
                               <div className="col-sm-10">
                                 <input
@@ -177,14 +189,14 @@ const AdminList = () => {
                                   name="fname"
                                   placeholder="Enter First Name"
                                   ref={register({
-                                    required: false,
+                                    required: "First name is required",
                                   })}
                                 />
                               </div>
                             </div>
                             <div className="form-group row">
                               <label className="col-sm-2 col-form-label">
-                                Last Name
+                                Last Name*
                               </label>
                               <div className="col-sm-10">
                                 <input
@@ -193,14 +205,14 @@ const AdminList = () => {
                                   name="lname"
                                   placeholder="Enter Last Name"
                                   ref={register({
-                                    required: false,
+                                    required: "Last name is required",
                                   })}
                                 />
                               </div>
                             </div>
                             <div className="form-group row">
                               <label className="col-sm-2 col-form-label">
-                                Email
+                                Email*
                               </label>
                               <div className="col-sm-10">
                                 <input
@@ -209,28 +221,53 @@ const AdminList = () => {
                                   name="email"
                                   placeholder="Enter email"
                                   ref={register({
-                                    required: false,
+                                    required: "Email is required",
                                   })}
                                 />
                               </div>
                             </div>
                             {!isEditId && (
-                              <div className="form-group row">
-                                <label className="col-sm-2 col-form-label">
-                                  Password
-                                </label>
-                                <div className="col-sm-10">
-                                  <input
-                                    type="text"
-                                    className="form-control"
-                                    name="password"
-                                    placeholder="Enter Password"
-                                    ref={register({
-                                      required: false,
-                                    })}
-                                  />
+                              <>
+                                <div className="form-group row">
+                                  <label className="col-sm-2 col-form-label">
+                                    Password*
+                                  </label>
+                                  <div className="col-sm-10">
+                                    <input
+                                      type="password"
+                                      className="form-control"
+                                      name="password"
+                                      placeholder="Enter Password"
+                                      ref={register({
+                                        required: "Password is required",
+                                      })}
+                                    />
+                                  </div>
                                 </div>
-                              </div>
+                                <div className="form-group row">
+                                  <label className="col-sm-2 col-form-label">
+                                    Confirm Password*
+                                  </label>
+                                  <div className="col-sm-10">
+                                    <input
+                                      type="password"
+                                      className="form-control"
+                                      name="cpassword"
+                                      placeholder="Enter Confirm Password"
+                                      ref={register({
+                                        required:
+                                          "Confirm password is required",
+                                        validate: (value) => {
+                                          return (
+                                            value === password.current ||
+                                            "Confirm Password not matched"
+                                          );
+                                        },
+                                      })}
+                                    />
+                                  </div>
+                                </div>
+                              </>
                             )}
 
                             <div className="form-group row">
@@ -278,6 +315,8 @@ const AdminList = () => {
                             </div> */}
 
                             <div className="hr-line-dashed"></div>
+                            {errorMsg && <p>{errorMsg}</p>}
+
                             <div className="form-group row">
                               <div className="col-sm-4 col-sm-offset-2">
                                 <a

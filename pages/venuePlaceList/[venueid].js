@@ -896,7 +896,7 @@ const VenuePlaceList = ({ venueid }) => {
                             {/* <!-- <th>Id</th> --> */}
                             <th>Name</th>
                             <th>Venue ID</th>
-                            <th>Publish Date</th>
+                            {/* <th>Publish Date</th> */}
                             <th>Addition Date</th>
                             <th>First Page</th>
                             <th>Status</th>
@@ -909,7 +909,7 @@ const VenuePlaceList = ({ venueid }) => {
                             {/* <!-- <th>Id</th> --> */}
                             <th>Name</th>
                             <th>Venue ID</th>
-                            <th>Publish Date</th>
+                            {/* <th>Publish Date</th> */}
                             <th>Addition Date</th>
                             <th>First Page</th>
                             <th>Status</th>
@@ -923,7 +923,7 @@ const VenuePlaceList = ({ venueid }) => {
                               <tr className="gradeX" key={index}>
                                 <td>{item.name}</td>
                                 <td>{item.venueMainId}</td>
-                                <td>{item.publishDate}</td>
+                                {/* <td>{item.publishDate}</td> */}
                                 <td>{item.addDate}</td>
                                 <td>{item.firstPage ? "Yes" : "No"}</td>
                                 <td>{item.isActive ? "active" : "disabled"}</td>

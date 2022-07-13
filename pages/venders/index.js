@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Head } from "next/document";
 import { useForm } from "react-hook-form";
 import Header from "../../components/Header";
@@ -26,6 +26,8 @@ const Venders = () => {
     size: 20,
     totalPages: 0,
   });
+  const password = useRef({});
+  password.current = watch("password", "");
 
   // Effects
   useEffect(() => {
@@ -213,7 +215,7 @@ const Venders = () => {
                           <form onSubmit={handleSubmit(handleFormSubmit)}>
                             <div className="form-group row">
                               <label className="col-sm-2 col-form-label">
-                                First Name
+                                First Name*
                               </label>
                               <div className="col-sm-10">
                                 <input
@@ -229,7 +231,7 @@ const Venders = () => {
                             </div>
                             <div className="form-group row">
                               <label className="col-sm-2 col-form-label">
-                                Last Name
+                                Last Name*
                               </label>
                               <div className="col-sm-10">
                                 <input
@@ -245,7 +247,7 @@ const Venders = () => {
                             </div>
                             <div className="form-group row">
                               <label className="col-sm-2 col-form-label">
-                                Email
+                                Email*
                               </label>
                               <div className="col-sm-10">
                                 <input
@@ -276,22 +278,47 @@ const Venders = () => {
                               </div>
                             </div>
                             {!isEditId && (
-                              <div className="form-group row">
-                                <label className="col-sm-2 col-form-label">
-                                  Password
-                                </label>
-                                <div className="col-sm-10">
-                                  <input
-                                    type="text"
-                                    className="form-control"
-                                    name="password"
-                                    placeholder="Enter Password"
-                                    ref={register({
-                                      required: "Password is required",
-                                    })}
-                                  />
+                              <>
+                                <div className="form-group row">
+                                  <label className="col-sm-2 col-form-label">
+                                    Password*
+                                  </label>
+                                  <div className="col-sm-10">
+                                    <input
+                                      type="text"
+                                      className="form-control"
+                                      name="password"
+                                      placeholder="Enter Password"
+                                      ref={register({
+                                        required: "Password is required",
+                                      })}
+                                    />
+                                  </div>
                                 </div>
-                              </div>
+                                <div className="form-group row">
+                                  <label className="col-sm-2 col-form-label">
+                                    Confirm Password*
+                                  </label>
+                                  <div className="col-sm-10">
+                                    <input
+                                      type="password"
+                                      className="form-control"
+                                      name="cpassword"
+                                      placeholder="Enter Confirm Password"
+                                      ref={register({
+                                        required:
+                                          "Confirm password is required",
+                                        validate: (value) => {
+                                          return (
+                                            value === password?.current ||
+                                            "Confirm Password not matched"
+                                          );
+                                        },
+                                      })}
+                                    />
+                                  </div>
+                                </div>
+                              </>
                             )}
 
                             <div>
