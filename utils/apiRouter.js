@@ -114,6 +114,12 @@ const apiRouter = {
   NEWSLETTERLIST_LIST: prefixRouteV1("getNewslettereList"),
   REMOVE_CONTACTUS: prefixRouteV1("removeContact"),
 
+  // Ratings
+  RATINGS_LIST: prefixRouteV1("ratingList"),
+  REMOVE_RATINGS_LIST: prefixRouteV1("removeRating"),
+
+  VENUE_DETAIL: prefixRouteV1("venueMainDetail"),
+
   //third party api to get city from lat lng
   GETCITYAPI: "https://nominatim.openstreetmap.org/reverse",
 };
