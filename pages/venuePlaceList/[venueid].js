@@ -475,12 +475,16 @@ const VenuePlaceList = ({ venueid }) => {
 
     const tempImage = [...venuePlaceImages];
     for (const img of files) {
-      const data = {
-        image: img,
-        url: URL.createObjectURL(img),
-        isUpload: true,
-      };
-      tempImage.push(data);
+      if (img.size <= 2097300) {
+        const data = {
+          image: img,
+          url: URL.createObjectURL(img),
+          isUpload: true,
+        };
+        tempImage.push(data);
+      } else {
+        toaster("error", "Image Should not be larger than 2mb");
+      }
     }
     console.log("Temp image: ", tempImage);
     setVenuePlaceImages(tempImage);
