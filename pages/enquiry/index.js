@@ -234,9 +234,9 @@ const VenueEnquiry = () => {
                         <thead>
                           <tr>
                             <th>Name</th>
+                            <th>Enquiry</th>
                             <th>Start Date</th>
                             <th>End Date</th>
-                            <th>Enquiry</th>
                             <th>Contact</th>
                             <th>Action</th>
                           </tr>
@@ -244,9 +244,9 @@ const VenueEnquiry = () => {
                         <tfoot>
                           <tr>
                             <th>Name</th>
+                            <th>Enquiry</th>
                             <th>Start Date</th>
                             <th>End Date</th>
-                            <th>Enquiry</th>
                             <th>Contact</th>
                             <th>Action</th>
                           </tr>

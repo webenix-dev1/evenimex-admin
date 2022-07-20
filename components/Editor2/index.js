@@ -68,7 +68,7 @@ class MCEEditor extends React.Component {
     return (
       <div className="document-editor">
         <Editor
-          apiKey="qagffr3pkuv17a8on1afax661irst1hbr4e6tbv888sz91jc"
+          apiKey="8a43syhz8qtdbal4ozwv5c6uqqqdwzd6kn7mjqkl6stow3fv"
           onEditorChange={this.handleEditorChange}
           value={this.state.editorContent}
           init={{
