@@ -104,7 +104,7 @@ const Ratings = () => {
                         {ratingsList?.map((item, index) => {
                           return (
                             <tr className="gradeX" key={index}>
-                              <td>{item.venueMain.name}</td>
+                              <td>{item.venueSpace.name}</td>
                               <td>{item.rating}</td>
                               <td>{item.user.fname} {item.user.lname}</td>
                               <td>{item.isActive ? "active" : "disabled"}</td>
