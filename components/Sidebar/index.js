@@ -152,6 +152,17 @@ const Sidebar = (props) => {
             </Link>
           </li>
           <li
+            className={Router.pathname === router.RATINGS ? "active" : ""}
+            onClick={cloaseForm}
+          >
+            <Link href={router.RATINGS}>
+              <a href={router.RATINGS}>
+                <i className="fa fa-diamond"></i>{" "}
+                <span className="nav-label">Ratings</span>
+              </a>
+            </Link>
+          </li>
+          <li
             className={Router.pathname === router.CONTACTUS ? "active" : ""}
             onClick={cloaseForm}
           >
